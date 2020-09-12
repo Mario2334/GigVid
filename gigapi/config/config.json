@@ -11,14 +11,13 @@
     "password": "password",
     "database": "gigvid",
     "host": "gigvid-cluster.cluster-czxab5qtkqhn.ap-south-1.rds.amazonaws.com",
-    "dialect": "mysql",
-
+    "dialect": "mysql"
   },
   "prod": {
     "username": "gigvid_admin",
     "password": "password",
     "database": "gigvid",
-    "host": "arn:aws:rds:ap-south-1:760421048060:cluster:gigvid-cluster",
-    "dialect": "mysql",
+    "host": "gigvid-cluster.cluster-czxab5qtkqhn.ap-south-1.rds.amazonaws.com",
+    "dialect": "mysql"
   }
 }
