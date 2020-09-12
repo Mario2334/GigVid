@@ -12,7 +12,6 @@
     "database": "gigvid",
     "host": "gigvid-cluster.cluster-czxab5qtkqhn.ap-south-1.rds.amazonaws.com",
     "dialect": "mysql",
-    "dialectModulePath": "@fyreware/mysql-data-api"
 
   },
   "prod": {
@@ -21,6 +20,5 @@
     "database": "gigvid",
     "host": "arn:aws:rds:ap-south-1:760421048060:cluster:gigvid-cluster",
     "dialect": "mysql",
-    "dialectModulePath": "@fyreware/mysql-data-api"
   }
 }
