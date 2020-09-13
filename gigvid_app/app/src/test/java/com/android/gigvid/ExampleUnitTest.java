@@ -1,4 +1,4 @@
-package com.kavya.gigvid;
+package com.android.gigvid;
 
 import org.junit.Test;
 
