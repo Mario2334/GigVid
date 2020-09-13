@@ -3,7 +3,7 @@ service: gigvid-api
 provider:
   name: aws
   runtime: nodejs12.18
-  stage: dev
+  stage: prod
   region: ap-south-1
 
 functions:
