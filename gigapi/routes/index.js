@@ -10,7 +10,7 @@ let allowed_routes = [
 ]
 
 /* GET home page. */
-router.get('/', indexer.test);
+router.get('/test_this_api', indexer.test);
 
 
 module.exports = router;

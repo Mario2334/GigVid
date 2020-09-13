@@ -1,6 +1,6 @@
 let db = require('../models');
 var sequelize = require("sequelize")
-let bcrypt = require("bcrypt")
+var bcrypt = require('bcryptjs');
 let jwt = require("jsonwebtoken")
 
 exports.create_user = async (req, res, next) => {
@@ -11,7 +11,7 @@ exports.create_user = async (req, res, next) => {
             name: data.name,
             password: data.password,
             email: data.email,
-            username: data.password,
+            username: data.username,
         })
         res.send(user);
 

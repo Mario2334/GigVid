@@ -1,6 +1,6 @@
 let {allowed_routes} = require("../routes");
 let jwt = require("jsonwebtoken")
-let bcrypt = require("bcrypt");
+var bcrypt = require('bcryptjs');
 let db = require('../models');
 
 

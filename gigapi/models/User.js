@@ -2,7 +2,7 @@
 const {
     Model
 } = require('sequelize');
-const bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
 
 
 function cryptPassword(password, callback) {
