@@ -52,9 +52,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_32"
                         android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginEnd="@dimen/dp_8"
                         android:layout_marginTop="@dimen/dp_8"
                         android:theme="@style/TextViewHeaderTheme"
-                        android:text="Sign Up"
+                        android:text="@string/sign_up"
                         android:paddingStart="@dimen/dp_8"
                         android:paddingEnd="@dimen/dp_8"
                         android:textSize="20sp" />
@@ -64,9 +65,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="24dp"
                         android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginEnd="@dimen/dp_8"
                         android:fontFamily="@font/roboto_light"
                         android:theme="@style/TextViewSubHeaderTheme"
-                        android:text="Create an account"
+                        android:text="@string/create_an_account"
                         android:paddingStart="@dimen/dp_8"
                         android:paddingEnd="@dimen/dp_8"
                         android:textSize="12sp" />
@@ -88,7 +90,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     app:startIconDrawable="@drawable/ic_person_24"
-                    android:hint="Username"
+                    android:hint="@string/username"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -107,7 +109,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     app:startIconDrawable="@drawable/ic_email_24"
-                    android:hint="E-Mail"
+                    android:hint="@string/e_mail"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -126,7 +128,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     app:startIconDrawable="@drawable/ic_lock_24"
-                    android:hint="Password"
+                    android:hint="@string/password"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -145,7 +147,7 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_8"
                     app:startIconDrawable="@drawable/ic_lock_24"
-                    android:hint="Confirm Password"
+                    android:hint="@string/confirm_password"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -184,14 +186,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_32"
                     android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:theme="@style/TextViewSubHeaderTheme"
-                    android:text="Already have an account?"
+                    android:text="@string/already_have_an_account"
                     android:textSize="16sp" />
 
                 <Button
                     android:layout_width="100dp"
                     android:layout_height="40dp"
-                    android:text="Login"
+                    android:text="@string/login"
                     android:fontFamily="@font/roboto"
                     android:textStyle="bold"
                     style="@style/Widget.MaterialComponents.Button.TextButton"/>
