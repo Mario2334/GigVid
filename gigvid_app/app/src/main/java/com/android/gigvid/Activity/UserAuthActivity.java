@@ -53,7 +53,6 @@ public class UserAuthActivity extends AppCompatActivity
 
     /**
      * Method: Load SignUp fragment
-     * TODO: ADD TAG
      */
     private void loadSignUpFragment() {
         Timber.tag(TAG).e("loadSignUpFragment() called");
