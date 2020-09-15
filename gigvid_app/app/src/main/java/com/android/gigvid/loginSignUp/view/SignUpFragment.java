@@ -1,4 +1,4 @@
-package com.android.gigvid.Fragment;
+package com.android.gigvid.loginSignUp.view;
 
 import android.os.Bundle;
 
@@ -12,25 +12,27 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.android.gigvid.R;
-import com.android.gigvid.UserAuthFragmentCommunicator;
+import com.android.gigvid.loginSignUp.UserAuthFragmentCommunicator;
 import com.google.android.material.textfield.TextInputLayout;
 
 import timber.log.Timber;
 
-public class LoginFragment extends Fragment {
-    public static final String TAG = "LoginFragment";
+public class SignUpFragment extends Fragment {
+    public static final String TAG = "SignUpFragment";
 
     private TextInputLayout usernameTextInput;
+    private TextInputLayout emailTextInput;
     private TextInputLayout passwordTextInput;
-    private Button proceedToLoginButton;
-    private Button launchSignUpFragmentButton;
+    private TextInputLayout confirmPasswordTextInput;
+    private Button proceedWithSignUpButton;
+    private Button launchLoginFragmentButton;
 
-    public LoginFragment() {
+    public SignUpFragment() {
         // Required empty public constructor
     }
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    public static SignUpFragment newInstance() {
+        return new SignUpFragment();
     }
 
     @Override
@@ -43,13 +45,13 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Timber.tag(TAG).e("onCreateView() called");
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        return inflater.inflate(R.layout.fragment_sign_up, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         Timber.tag(TAG).e("onViewCreated() called");
+        super.onViewCreated(view, savedInstanceState);
         initializeUI(view);
     }
 
@@ -58,25 +60,26 @@ public class LoginFragment extends Fragment {
      * @param view: Refers to the Fragment View used to access view elements
      */
     private void initializeUI(View view) {
-        Timber.tag(TAG).e("initializeUI() called");
-        usernameTextInput = view.findViewById(R.id.name_text_field);
+        usernameTextInput = view.findViewById(R.id.user_name_text_field);
+        emailTextInput = view.findViewById(R.id.mail_id_text_field);
         passwordTextInput = view.findViewById(R.id.password_text_field);
-        proceedToLoginButton = view.findViewById(R.id.login_action_button);
-        launchSignUpFragmentButton = view.findViewById(R.id.sign_up_button);
+        confirmPasswordTextInput = view.findViewById(R.id.confirm_password_text_field);
+        proceedWithSignUpButton = view.findViewById(R.id.sign_up_action_button);
+        launchLoginFragmentButton = view.findViewById(R.id.launch_login_fragment_button);
 
-        launchSignUpOnClick();
+        launchLoginOnClick();
     }
 
     /**
      * Method: Launch SignUp fragment via Activity
      */
-    private void launchSignUpOnClick() {
-        launchSignUpFragmentButton.setOnClickListener(new View.OnClickListener() {
+    private void launchLoginOnClick() {
+        launchLoginFragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity()!= null){
-                    Timber.tag(TAG).e("onClick() of launchSignUpOnClick() called");
-                    ((UserAuthFragmentCommunicator)getActivity()).launchSignUpFragment();
+                if (getActivity() != null) {
+                    Timber.tag(TAG).e("onClick() of launchLoginOnClick() called");
+                    ((UserAuthFragmentCommunicator) getActivity()).launchLoginFragment();
                 }
             }
         });
