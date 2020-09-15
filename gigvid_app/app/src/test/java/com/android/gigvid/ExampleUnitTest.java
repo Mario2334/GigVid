@@ -1,4 +1,4 @@
-package com.influencers.android.gigvid;
+package com.android.gigvid;
 
 import org.junit.Test;
 

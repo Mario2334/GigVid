@@ -1,8 +1,10 @@
-package com.influencers.android.gigvid;
+package com.android.gigvid.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.android.gigvid.R;
 
 public class MainActivity extends AppCompatActivity {
 
