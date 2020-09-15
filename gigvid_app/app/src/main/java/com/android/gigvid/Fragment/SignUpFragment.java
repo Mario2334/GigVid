@@ -15,7 +15,7 @@ public class SignUpFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static SignUpFragment newInstance(String param1, String param2) {
+    public static SignUpFragment newInstance() {
         return new SignUpFragment();
     }
 

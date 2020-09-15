@@ -150,14 +150,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_32"
                     android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
                     android:theme="@style/TextViewSubHeaderTheme"
-                    android:text="Don't have an account?"
+                    android:text="@string/don_t_have_an_account"
                     android:textSize="16sp" />
 
                 <Button
+                    android:id="@+id/sign_up_button"
                     android:layout_width="100dp"
                     android:layout_height="40dp"
-                    android:text="Sign Up"
+                    android:text="@string/sign_up"
                     android:fontFamily="@font/roboto"
                     android:textStyle="bold"
                     style="@style/Widget.MaterialComponents.Button.TextButton"/>
