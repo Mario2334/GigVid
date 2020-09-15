@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/login_sign_up_background"
+    tools:context=".Fragment.SignUpFragment">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/material_card"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:cardElevation="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/dp_8">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/signUp_lottie_animation"
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_height="80dp"
+                    android:layout_weight="0.25"
+                    app:lottie_loop="true"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="signup.json" />
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp_0"
+                    android:layout_weight="0.75"
+                    android:layout_height="80dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/header_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_32"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:theme="@style/TextViewHeaderTheme"
+                        android:text="Sign Up"
+                        android:paddingStart="@dimen/dp_8"
+                        android:paddingEnd="@dimen/dp_8"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/sub_header_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:fontFamily="@font/roboto_light"
+                        android:theme="@style/TextViewSubHeaderTheme"
+                        android:text="Create an account"
+                        android:paddingStart="@dimen/dp_8"
+                        android:paddingEnd="@dimen/dp_8"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_8"
+                android:orientation="vertical">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/user_name_text_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    app:startIconDrawable="@drawable/ic_person_24"
+                    android:hint="Username"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:singleLine="true"
+                        android:fontFamily="@font/roboto_light"
+                        android:inputType="text"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/mail_id_text_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    app:startIconDrawable="@drawable/ic_email_24"
+                    android:hint="E-Mail"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:singleLine="true"
+                        android:fontFamily="@font/roboto_light"
+                        android:inputType="text"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/password_text_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    app:startIconDrawable="@drawable/ic_lock_24"
+                    android:hint="Password"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/roboto_light"
+                        android:singleLine="true"
+                        android:inputType="textPassword"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/confirm_password_text_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    app:startIconDrawable="@drawable/ic_lock_24"
+                    android:hint="Confirm Password"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fontFamily="@font/roboto_light"
+                        android:singleLine="true"
+                        android:inputType="textPassword"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                    android:id="@+id/login_action_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fabSize="auto"
+                    app:icon="@drawable/ic_proceed_24"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:elevation="@dimen/dp_8"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:layout_marginBottom="24dp"
+                    app:rippleColor="@color/colorPrimaryDark"
+                    android:layout_gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_8"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_32"
+                    android:layout_marginStart="@dimen/dp_8"
+                    android:theme="@style/TextViewSubHeaderTheme"
+                    android:text="Already have an account?"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:text="Login"
+                    android:fontFamily="@font/roboto"
+                    android:textStyle="bold"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
