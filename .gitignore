@@ -1,4 +1,11 @@
-*/node_modules/*
-.idea/*
+*/.idea
 */lambda.zip
 */.env
+
+ # Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Sqllite
+local.db

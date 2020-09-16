@@ -1,0 +1,9 @@
+# bcrypt==3.2.0
+Django==3.1.1
+django-s3-storage==0.13.4
+djangorestframework==3.11.1
+zappa==0.51.0
+zappa-django-utils==0.4.1
+python-dotenv==0.14.0
+django-s3-sqlite==0.0.3
+drf-yasg==1.17.1

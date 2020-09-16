@@ -13,7 +13,7 @@ exports.create_user = async (req, res, next) => {
             email: data.email,
             username: data.username,
         })
-        res.send(user);
+        res.status(201).send(user);
 
     }
     catch (e) {

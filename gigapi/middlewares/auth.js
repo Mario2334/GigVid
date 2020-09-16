@@ -21,14 +21,16 @@ let auth = async (req,res,next) =>{
                 return;
             }
             let user = await db.User.findOne({
-                email:cred_obj["email"],
-                password:cred_obj["password"]
+                email: cred_obj["email"],
+                password: cred_obj["password"]
+
             })
             if(user){
                 next();
             }
             else{
-                res.status(401).send("Invalid User")
+                console.log({"message":"Invalid User"})
+                res.status(401).send({"message":"Invalid User"})
             }
 
         }

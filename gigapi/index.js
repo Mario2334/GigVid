@@ -15,7 +15,7 @@ var app = express();
 app.use(cors({}))
 app.use(logger(process.env.NODE_ENV));
 
-app.use(express.json());
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser());
@@ -29,5 +29,11 @@ if(process.env.NODE_ENV === "dev"){
     module.exports = app;
 }
 else {
-    module.exports.handler = serverless(app);
+    const handler = serverless(app);
+    module.exports.handler = async (event, context) => {
+        // you can do other things here
+        const result = await handler(event, context);
+        // and here
+        return result;
+    };
 }
