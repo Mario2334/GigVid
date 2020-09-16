@@ -170,7 +170,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:singleLine="true"
                     android:text="@string/don_t_have_an_account"
-                    android:textSize="16dp"
+                    android:textSize="12dp"
                     android:theme="@style/TextViewSubHeaderTheme" />
 
                 <Button
@@ -179,8 +179,8 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:text="@string/sign_up"
+                    android:textSize="15dp"
                     android:fontFamily="@font/roboto"
-                    android:textStyle="bold"
                     style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
             </LinearLayout>
