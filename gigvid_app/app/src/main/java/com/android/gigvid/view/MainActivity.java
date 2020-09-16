@@ -1,4 +1,4 @@
-package com.android.gigvid;
+package com.android.gigvid.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.android.gigvid.R;
-import com.android.gigvid.Utils;
-import com.android.gigvid.loginSignUp.view.UserAuthActivity;
+import com.android.gigvid.Constants;
+import com.android.gigvid.view.loginsignup.UserAuthActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private boolean isUserAlreadyLoggedIn(){
-        SharedPreferences loginSP = getSharedPreferences(Utils.LOGIN_TOKEN_SP, MODE_PRIVATE);
-        return loginSP.getString(Utils.LOGIN_TOKEN_KEY, null) != null;
+        SharedPreferences loginSP = getSharedPreferences(Constants.LOGIN_TOKEN_SP, MODE_PRIVATE);
+        return loginSP.getString(Constants.LOGIN_TOKEN_KEY, null) != null;
     }
 }

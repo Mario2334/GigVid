@@ -1,4 +1,4 @@
-package com.android.gigvid.loginSignUp.view;
+package com.android.gigvid.view.loginsignup.fragment;
 
 import android.os.Bundle;
 
@@ -12,11 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.gigvid.R;
-import com.android.gigvid.loginSignUp.viewModel.LoginSignUpViewModel;
-import com.android.gigvid.loginSignUp.UserAuthFragmentCommunicator;
-import com.android.gigvid.loginSignUp.model.LoginResp;
+import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
+import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.google.android.material.textfield.TextInputLayout;
 
 import timber.log.Timber;
@@ -28,6 +29,7 @@ public class LoginFragment extends Fragment {
     private TextInputLayout passwordTextInput;
     private Button proceedToLoginButton;
     private Button launchSignUpFragmentButton;
+    private TextView launchSignUpFragmentMsg;
 
     private LoginSignUpViewModel loginSignUpViewModel;
 
@@ -77,6 +79,10 @@ public class LoginFragment extends Fragment {
         passwordTextInput = (TextInputLayout)view.findViewById(R.id.password_text_field);
         proceedToLoginButton = view.findViewById(R.id.login_action_button);
         launchSignUpFragmentButton = view.findViewById(R.id.sign_up_button);
+        launchSignUpFragmentMsg = view.findViewById(R.id.sign_up_msg);
+
+        //To enable marquee
+        launchSignUpFragmentMsg.setSelected(true);
 
         launchSignUpOnClick();
         verifyLoginDetail();

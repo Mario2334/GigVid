@@ -1,6 +1,6 @@
 package com.android.gigvid;
 
-public class Utils {
+public class Constants {
     public static final String LOGIN_TOKEN_SP = "loginSP";
     public static final String LOGIN_TOKEN_KEY = "login_key";
 

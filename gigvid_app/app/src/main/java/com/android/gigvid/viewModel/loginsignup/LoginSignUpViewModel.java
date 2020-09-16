@@ -1,4 +1,4 @@
-package com.android.gigvid.loginSignUp.viewModel;
+package com.android.gigvid.viewModel.loginsignup;
 
 import android.util.Log;
 
@@ -6,14 +6,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.android.gigvid.RetrofitClient;
-import com.android.gigvid.Utils;
-import com.android.gigvid.loginSignUp.LoginSignUpApi;
-import com.android.gigvid.loginSignUp.model.LogIn;
-import com.android.gigvid.loginSignUp.model.LoginResp;
-import com.android.gigvid.loginSignUp.model.Token;
-
-import java.util.Vector;
+import com.android.gigvid.Constants;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogIn;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.Token;
+import com.android.gigvid.utils.network.RetrofitUtils;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,6 +20,7 @@ import timber.log.Timber;
 
 public class LoginSignUpViewModel extends ViewModel {
 
+    public static final String TAG = "LoginSignUpViewModel";
     private MutableLiveData<LoginResp> logInMutableLiveData;
 
     public LiveData<LoginResp> getObservableLoginData(){
@@ -35,25 +34,25 @@ public class LoginSignUpViewModel extends ViewModel {
     public void callLoginApi(String mailId, String pass){
         LogIn logIn = new LogIn(mailId,pass);
 
-        Call<Token> call = RetrofitClient.getInstance().create(LoginSignUpApi.class).userLoginAuth(logIn);
+        Call<Token> call = RetrofitUtils.getInstance().create(LoginSignUpApi.class).userLoginAuth(logIn);
         call.enqueue(new Callback<Token>() {
             @Override
             public void onResponse(Call<Token> call, Response<Token> response) {
                 if(response.isSuccessful()){
                     Token token = (Token)response.body();
                     Timber.d("onResponse: res" + response.code() + token.getToken());
-                    logInMutableLiveData.setValue(new LoginResp(token.getToken(), Utils.SUCCESS));
+                    logInMutableLiveData.setValue(new LoginResp(token.getToken(), Constants.SUCCESS));
                 }else{
                     Timber.d("onResponse: fail");
-                    logInMutableLiveData.setValue(new LoginResp(null, Utils.FAIL));
+                    logInMutableLiveData.setValue(new LoginResp(null, Constants.FAIL));
                 }
 
             }
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                Log.d("SMP", "onFailure: t "+t.getMessage());
-                logInMutableLiveData.setValue(new LoginResp(null, Utils.FAIL));
+                Timber.d("onFailure: t %s", t.getMessage());
+                logInMutableLiveData.setValue(new LoginResp(null, Constants.FAIL));
             }
         });
     }

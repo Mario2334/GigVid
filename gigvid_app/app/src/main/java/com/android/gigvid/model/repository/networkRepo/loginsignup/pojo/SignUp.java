@@ -1,4 +1,4 @@
-package com.android.gigvid.loginSignUp.model;
+package com.android.gigvid.model.repository.networkRepo.loginsignup.pojo;
 
 public class SignUp {
 
