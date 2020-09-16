@@ -1,4 +1,4 @@
-package com.android.gigvid;
+package com.android.gigvid.view.loginsignup;
 
 /**
  * This interface enables communication between UserAuthenticationActivity

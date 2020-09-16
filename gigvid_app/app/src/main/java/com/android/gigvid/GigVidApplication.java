@@ -1,4 +1,4 @@
-package com.android.gigvid.Application;
+package com.android.gigvid;
 
 import android.app.Application;
 

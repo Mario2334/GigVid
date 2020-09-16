@@ -1,4 +1,4 @@
-package com.android.gigvid.Fragment;
+package com.android.gigvid.view.loginsignup.fragment;
 
 import android.os.Bundle;
 
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.android.gigvid.R;
-import com.android.gigvid.UserAuthFragmentCommunicator;
+import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.google.android.material.textfield.TextInputLayout;
 
 import timber.log.Timber;

@@ -1,4 +1,4 @@
-package com.android.gigvid.Activity;
+package com.android.gigvid.view.loginsignup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -6,10 +6,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-import com.android.gigvid.Fragment.LoginFragment;
-import com.android.gigvid.Fragment.SignUpFragment;
 import com.android.gigvid.R;
-import com.android.gigvid.UserAuthFragmentCommunicator;
+import com.android.gigvid.view.loginsignup.fragment.LoginFragment;
+import com.android.gigvid.view.loginsignup.fragment.SignUpFragment;
 
 import timber.log.Timber;
 

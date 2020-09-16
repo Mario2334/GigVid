@@ -1,18 +1,23 @@
-package com.android.gigvid.Fragment;
+package com.android.gigvid.view.loginsignup.fragment;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.gigvid.R;
-import com.android.gigvid.UserAuthFragmentCommunicator;
+import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
+import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.google.android.material.textfield.TextInputLayout;
 
 import timber.log.Timber;
@@ -24,6 +29,9 @@ public class LoginFragment extends Fragment {
     private TextInputLayout passwordTextInput;
     private Button proceedToLoginButton;
     private Button launchSignUpFragmentButton;
+    private TextView launchSignUpFragmentMsg;
+
+    private LoginSignUpViewModel loginSignUpViewModel;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -37,6 +45,7 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Timber.tag(TAG).e("onCreate() called");
+        loginSignUpViewModel = ViewModelProviders.of(this).get(LoginSignUpViewModel.class);
     }
 
     @Override
@@ -53,18 +62,42 @@ public class LoginFragment extends Fragment {
         initializeUI(view);
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loginSignUpViewModel.getObservableLoginData().observe(this, loginRespObserver);
+    }
+
     /**
      * Method: Initialize UI elements
      * @param view: Refers to the Fragment View used to access view elements
      */
     private void initializeUI(View view) {
         Timber.tag(TAG).e("initializeUI() called");
-        usernameTextInput = view.findViewById(R.id.name_text_field);
-        passwordTextInput = view.findViewById(R.id.password_text_field);
+        usernameTextInput = (TextInputLayout)view.findViewById(R.id.name_text_field);
+        passwordTextInput = (TextInputLayout)view.findViewById(R.id.password_text_field);
         proceedToLoginButton = view.findViewById(R.id.login_action_button);
         launchSignUpFragmentButton = view.findViewById(R.id.sign_up_button);
+        launchSignUpFragmentMsg = view.findViewById(R.id.sign_up_msg);
+
+        //To enable marquee
+        launchSignUpFragmentMsg.setSelected(true);
 
         launchSignUpOnClick();
+        verifyLoginDetail();
+    }
+
+    private void verifyLoginDetail(){
+        proceedToLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String username = usernameTextInput.getEditText().getText().toString();
+                String pass= passwordTextInput.getEditText().getText().toString();
+                loginSignUpViewModel.callLoginApi(username,pass);
+            }
+        });
     }
 
     /**
@@ -81,4 +114,11 @@ public class LoginFragment extends Fragment {
             }
         });
     }
+
+    private Observer<LoginResp> loginRespObserver = new Observer<LoginResp>() {
+        @Override
+        public void onChanged(LoginResp loginResp) {
+            Timber.d("onChanged: login response -- %s", loginResp.getStatus());
+        }
+    };
 }
