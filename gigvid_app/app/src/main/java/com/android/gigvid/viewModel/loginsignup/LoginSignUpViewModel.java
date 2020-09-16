@@ -1,7 +1,5 @@
 package com.android.gigvid.viewModel.loginsignup;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -31,8 +29,8 @@ public class LoginSignUpViewModel extends ViewModel {
     }
 
 
-    public void callLoginApi(String mailId, String pass){
-        LogIn logIn = new LogIn(mailId,pass);
+    public void callLoginApi(String username, String pass){
+        LogIn logIn = new LogIn(username,pass);
 
         Call<Token> call = RetrofitUtils.getInstance().create(LoginSignUpApi.class).userLoginAuth(logIn);
         call.enqueue(new Callback<Token>() {

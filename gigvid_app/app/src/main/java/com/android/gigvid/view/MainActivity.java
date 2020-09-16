@@ -1,15 +1,17 @@
 package com.android.gigvid.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.android.gigvid.R;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.gigvid.Constants;
+import com.android.gigvid.R;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
+
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             if(isUserAlreadyLoggedIn()){
                 //TODO launch home activity
+                Timber.d("SMP launch home screen astoken available");
             } else{
                 //TODO launch login page
                 Intent loginActivity = new Intent(getApplicationContext(), UserAuthActivity.class);

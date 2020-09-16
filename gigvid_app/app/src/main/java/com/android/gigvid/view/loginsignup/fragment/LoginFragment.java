@@ -1,6 +1,12 @@
 package com.android.gigvid.view.loginsignup.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,19 +14,16 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
+import com.android.gigvid.Constants;
 import com.android.gigvid.R;
-import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
-import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
+import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
+import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
 import timber.log.Timber;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class LoginFragment extends Fragment {
     public static final String TAG = "LoginFragment";
@@ -119,6 +122,14 @@ public class LoginFragment extends Fragment {
         @Override
         public void onChanged(LoginResp loginResp) {
             Timber.d("onChanged: login response -- %s", loginResp.getStatus());
+            saveTokenValueToSP(loginResp.getToken());
         }
     };
+
+    private void saveTokenValueToSP(String token){
+        SharedPreferences loginSP = this.getActivity().getSharedPreferences(Constants.LOGIN_TOKEN_SP, MODE_PRIVATE);
+        SharedPreferences.Editor editor = loginSP.edit();
+        editor.putString(Constants.LOGIN_TOKEN_KEY, token);
+        editor.apply();
+    }
 }

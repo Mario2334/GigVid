@@ -1,10 +1,10 @@
 package com.android.gigvid.model.repository.networkRepo.loginsignup.pojo;
 
 public class LogIn {
-    private String email;
+    private String username;
 
-    public LogIn(String email, String password) {
-        this.email = email;
+    public LogIn(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
