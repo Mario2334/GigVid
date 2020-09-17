@@ -26,26 +26,30 @@ public class LoginSignUpViewModel extends ViewModel {
 
     private MutableLiveData<SignUpResStatus> signUpResStatusMutableLiveData;
 
-    public LiveData<LoginRespStatus> getObservableLoginData(){
-        if(logInMutableLiveData == null){
+    public LiveData<LoginRespStatus> getObservableLoginData() {
+        if (logInMutableLiveData == null) {
             logInMutableLiveData = new MutableLiveData<>();
         }
         return logInMutableLiveData;
     }
 
+    private LoginSignUpApi client;
 
-    public void callLoginApi(String username, String pass){
-        LogIn logIn = new LogIn(username,pass);
+    public void callLoginApi(String username, String pass) {
+        LogIn logIn = new LogIn(username, pass);
 
-        Call<LoginResp> call = RetrofitUtils.getInstance().create(LoginSignUpApi.class).userLoginAuth(logIn);
+        if (client == null) {
+            client = RetrofitUtils.getInstance().getLoginClient();
+        }
+        Call<LoginResp> call = client.userLoginAuth(logIn);
         call.enqueue(new Callback<LoginResp>() {
             @Override
             public void onResponse(Call<LoginResp> call, Response<LoginResp> response) {
-                if(response.isSuccessful()){
-                    LoginResp token = (LoginResp)response.body();
+                if (response.isSuccessful()) {
+                    LoginResp token = (LoginResp) response.body();
                     Timber.d("onResponse: res" + response.code() + token.getToken());
                     logInMutableLiveData.setValue(new LoginRespStatus(token.getToken(), Constants.SUCCESS));
-                }else{
+                } else {
                     Timber.d("onResponse: fail");
                     logInMutableLiveData.setValue(new LoginRespStatus(null, Constants.FAIL));
                 }
@@ -61,28 +65,29 @@ public class LoginSignUpViewModel extends ViewModel {
     }
 
 
-
-    public LiveData<SignUpResStatus> getObservableSignUpData(){
-        if(signUpResStatusMutableLiveData == null){
+    public LiveData<SignUpResStatus> getObservableSignUpData() {
+        if (signUpResStatusMutableLiveData == null) {
             signUpResStatusMutableLiveData = new MutableLiveData<>();
         }
         return signUpResStatusMutableLiveData;
     }
 
 
-    public void callSignUpApi(SignUp signUp){
-
-        Call<SignUpResp> call = RetrofitUtils.getInstance().create(LoginSignUpApi.class).userSignUp(signUp);
+    public void callSignUpApi(SignUp signUp) {
+        if (client == null) {
+            client = RetrofitUtils.getInstance().getLoginClient();
+        }
+        Call<SignUpResp> call = client.userSignUp(signUp);
         call.enqueue(new Callback<SignUpResp>() {
             @Override
             public void onResponse(Call<SignUpResp> call, Response<SignUpResp> response) {
-                if(response.isSuccessful()){
-                    SignUpResp signUpRes = (SignUpResp)response.body();
+                if (response.isSuccessful()) {
+                    SignUpResp signUpRes = (SignUpResp) response.body();
                     Timber.d("onResponse: res" + response.code() + signUpRes.getUsername());
-                    signUpResStatusMutableLiveData.setValue(new SignUpResStatus(signUpRes.getUsername(),signUpRes.getEmail(), Constants.SUCCESS, null));
-                }else{
+                    signUpResStatusMutableLiveData.setValue(new SignUpResStatus(signUpRes.getUsername(), signUpRes.getEmail(), Constants.SUCCESS, null));
+                } else {
                     Timber.d("onResponse: fail");
-                    signUpResStatusMutableLiveData.setValue(new SignUpResStatus(null,null, Constants.FAIL, null));
+                    signUpResStatusMutableLiveData.setValue(new SignUpResStatus(null, null, Constants.FAIL, null));
                 }
 
             }
@@ -91,7 +96,7 @@ public class LoginSignUpViewModel extends ViewModel {
             @Override
             public void onFailure(Call<SignUpResp> call, Throwable t) {
                 Timber.d("onFailure: t %s", t.getMessage());
-                signUpResStatusMutableLiveData.setValue(new SignUpResStatus(null,null, Constants.FAIL, null));
+                signUpResStatusMutableLiveData.setValue(new SignUpResStatus(null, null, Constants.FAIL, null));
             }
         });
     }

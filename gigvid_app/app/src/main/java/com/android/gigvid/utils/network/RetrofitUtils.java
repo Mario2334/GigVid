@@ -16,12 +16,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class RetrofitUtils {
 
+    private static RetrofitUtils INSTANCE;
+
     private static Retrofit mRetrofit;
 
     private static final String BASE_URL = "https://31yqq2xqt7.execute-api.ap-south-1.amazonaws.com";
 
+    public static RetrofitUtils getInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new RetrofitUtils();
+        }
+        return INSTANCE;
+    }
 
-    public static Retrofit getInstance(){
+
+    private static Retrofit getRetrofit(){
         if(mRetrofit == null){
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             OkHttpClient.Builder mHttpClientBuilder = new OkHttpClient.Builder();
@@ -38,8 +47,8 @@ public class RetrofitUtils {
         return mRetrofit;
     }
 
-    public LoginSignUpApi getRetrofit() {
-        return mRetrofit.create(LoginSignUpApi.class);
+    public LoginSignUpApi getLoginClient() {
+        return getRetrofit().create(LoginSignUpApi.class);
     }
 
 }
