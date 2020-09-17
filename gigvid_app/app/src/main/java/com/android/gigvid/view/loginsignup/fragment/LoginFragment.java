@@ -1,6 +1,7 @@
 package com.android.gigvid.view.loginsignup.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
 import com.android.gigvid.utils.network.NetworkUtils;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
+import com.android.gigvid.view.homescreen.HomeScreenActivity;
+import com.android.gigvid.view.loginsignup.UserAuthActivity;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
 import com.google.android.material.textfield.TextInputLayout;
@@ -146,8 +149,18 @@ public class LoginFragment extends Fragment {
             } else{
                 SharedPrefUtils.saveTokenValueToSP(loginResp.getToken());
                 Toast.makeText(getActivity(), "Login Success",Toast.LENGTH_SHORT).show();
+                launchHomeScreenActivity();
             }
         }
     };
+
+    private void launchHomeScreenActivity() {
+        Intent homeScreenIntent = new Intent(this.getActivity(), HomeScreenActivity.class);
+        startActivity(homeScreenIntent);
+        if(getActivity() != null){
+            ((UserAuthActivity)getActivity()).finish();
+        }
+
+    }
 
 }

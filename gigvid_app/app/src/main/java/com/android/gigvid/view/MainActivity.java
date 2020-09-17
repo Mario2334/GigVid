@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gigvid.R;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
+import com.android.gigvid.view.homescreen.HomeScreenActivity;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
 
 import timber.log.Timber;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         uiHandler.postDelayed(uiLoading, 5000);
 
         //uncomment to logout if already sign up is successfull
-        SharedPrefUtils.saveTokenValueToSP(null);
+//        SharedPrefUtils.saveTokenValueToSP(null);
     }
 
     private Runnable uiLoading = new Runnable() {
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
             if(SharedPrefUtils.isUserAlreadyLoggedIn()){
                 //TODO launch home activity
                 Timber.d("SMP launch home screen astoken available");
+              launchHomeScreenActivity();
+
             } else{
                 //TODO launch login page
                 Intent loginActivity = new Intent(getApplicationContext(), UserAuthActivity.class);
@@ -39,6 +42,12 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     };
+
+    private void launchHomeScreenActivity() {
+        Intent homeScreenIntent = new Intent(this, HomeScreenActivity.class);
+        startActivity(homeScreenIntent);
+
+    }
 
 
 }
