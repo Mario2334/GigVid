@@ -10,6 +10,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 public interface LoginSignUpApi {
+//    TODO("To be converted to LiveData from Call type")
     @POST("/dev/user/login/")
     Call<LoginResp> userLoginAuth(@Body LogIn logIn);
 

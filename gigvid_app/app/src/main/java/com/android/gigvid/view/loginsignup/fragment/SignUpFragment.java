@@ -64,14 +64,9 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         initializeUI(view);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        loginSignUpViewModel.getObservableSignUpData().observe(this, signUpRespObserver);
-    }
-
     /**
      * Method: Initialize UI elements
+     *
      * @param view: Refers to the Fragment View used to access view elements
      */
     private void initializeUI(View view) {
@@ -104,9 +99,9 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onChanged(SignUpResStatus signUpResStatus) {
 
-            if(signUpResStatus.getStatus() == Constants.FAIL){
+            if (signUpResStatus.getStatus() == Constants.FAIL) {
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), "Please enter valid data", Toast.LENGTH_SHORT).show();
-            } else{
+            } else {
                 launchLoginOnClick();
             }
         }
@@ -114,7 +109,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.launch_login_fragment_button:
                 launchLoginOnClick();
                 break;
@@ -126,29 +121,29 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void handleSignUpClick(){
-        String username= usernameTextInput.getEditText().getText().toString();
-        String cnfirmPass = confirmPasswordTextInput.getEditText().getText().toString();
+    private void handleSignUpClick() {
+        String username = usernameTextInput.getEditText().getText().toString();
+        String confirmPass = confirmPasswordTextInput.getEditText().getText().toString();
         String pass = passwordTextInput.getEditText().getText().toString();
         String emailId = emailTextInput.getEditText().getText().toString();
 
-        if(isSignUpDataValid(username, emailId, pass, cnfirmPass)){
-            SignUp signUp = new SignUp();
-            signUp.setUsername(usernameTextInput.getEditText().getText().toString());
-            signUp.setEmail(emailTextInput.getEditText().getText().toString());
-            signUp.setPassword(confirmPasswordTextInput.getEditText().getText().toString());
-            loginSignUpViewModel.callSignUpApi(signUp);
-        } else{
+        if (isSignUpDataValid(username, emailId, pass, confirmPass)) {
+            SignUp signUpBody = new SignUp();
+            signUpBody.setUsername(usernameTextInput.getEditText().getText().toString());
+            signUpBody.setEmail(emailTextInput.getEditText().getText().toString());
+            signUpBody.setPassword(confirmPasswordTextInput.getEditText().getText().toString());
+            loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
+        } else {
             Toast.makeText(GigVidApplication.getGigVidAppContext(), "Invalid data", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private boolean isSignUpDataValid(String username, String emailId, String pass, String cnfirmPass){
+    private boolean isSignUpDataValid(String username, String emailId, String pass, String cnfirmPass) {
 
-        if(username.isEmpty() || emailId.isEmpty() || pass.isEmpty() || cnfirmPass.isEmpty()){
+        if (username.isEmpty() || emailId.isEmpty() || pass.isEmpty() || cnfirmPass.isEmpty()) {
             return false;
-        } else{
+        } else {
             return pass.equals(cnfirmPass);
         }
     }

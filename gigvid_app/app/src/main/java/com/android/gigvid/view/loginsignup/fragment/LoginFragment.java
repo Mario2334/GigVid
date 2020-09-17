@@ -1,6 +1,5 @@
 package com.android.gigvid.view.loginsignup.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,15 +18,12 @@ import androidx.lifecycle.ViewModelProviders;
 import com.android.gigvid.Constants;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
-import com.android.gigvid.utils.network.NetworkUtils;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 import com.android.gigvid.view.homescreen.HomeScreenActivity;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 
@@ -71,15 +67,9 @@ public class LoginFragment extends Fragment {
         initializeUI(view);
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        loginSignUpViewModel.getObservableLoginData().observe(this, loginRespObserver);
-    }
-
     /**
      * Method: Initialize UI elements
+     *
      * @param view: Refers to the Fragment View used to access view elements
      */
     private void initializeUI(View view) {
@@ -97,33 +87,33 @@ public class LoginFragment extends Fragment {
         verifyLoginDetail();
     }
 
-    private void verifyLoginDetail(){
+    private void verifyLoginDetail() {
         proceedToLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 String username = usernameTextInput.getEditText().getText().toString();
-                String pass= passwordTextInput.getEditText().getText().toString();
+                String pass = passwordTextInput.getEditText().getText().toString();
 
-                Timber.d("username ");
-
-                if(isCredentialValid(username,pass)){
-                    loginSignUpViewModel.callLoginApi(username,pass);
-                } else{
-                    Toast.makeText(getActivity(), "Invalid Credentials",Toast.LENGTH_SHORT).show();
+                if (isCredentialValid(username, pass)) {
+                    loginSignUpViewModel.login(username, pass).observe(LoginFragment.this, loginRespObserver);
+//                    TODO("Disable click listener to avoid multiple calls")
+                } else {
+                    Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
     }
 
-    private boolean isCredentialValid(String username, String pass){
-        if(username.isEmpty() && pass.isEmpty()){
+    private boolean isCredentialValid(String username, String pass) {
+        if (username.isEmpty() && pass.isEmpty()) {
             return false;
-        }else if(username.isEmpty()){
+        } else if (username.isEmpty()) {
             return false;
-        }else return !pass.isEmpty();
+        } else return !pass.isEmpty();
     }
+
     /**
      * Method: Launch SignUp fragment via Activity
      */
@@ -131,9 +121,9 @@ public class LoginFragment extends Fragment {
         launchSignUpFragmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity()!= null){
+                if (getActivity() != null) {
                     Timber.tag(TAG).e("onClick() of launchSignUpOnClick() called");
-                    ((UserAuthFragmentCommunicator)getActivity()).launchSignUpFragment();
+                    ((UserAuthFragmentCommunicator) getActivity()).launchSignUpFragment();
                 }
             }
         });
@@ -144,11 +134,12 @@ public class LoginFragment extends Fragment {
         public void onChanged(LoginRespStatus loginResp) {
             Timber.d("onChanged: login response -- %s", loginResp.getStatus());
 
-            if(loginResp.getStatus() == Constants.FAIL){
-                Toast.makeText(getActivity(), "Invalid Credentials",Toast.LENGTH_SHORT).show();
-            } else{
+            if (loginResp.getStatus() == Constants.FAIL) {
+//TODO("Enable OnClickListener to allow retry")
+                Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+            } else {
                 SharedPrefUtils.saveTokenValueToSP(loginResp.getToken());
-                Toast.makeText(getActivity(), "Login Success",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
                 launchHomeScreenActivity();
             }
         }
@@ -157,8 +148,8 @@ public class LoginFragment extends Fragment {
     private void launchHomeScreenActivity() {
         Intent homeScreenIntent = new Intent(this.getActivity(), HomeScreenActivity.class);
         startActivity(homeScreenIntent);
-        if(getActivity() != null){
-            ((UserAuthActivity)getActivity()).finish();
+        if (getActivity() != null) {
+            ((UserAuthActivity) getActivity()).finish();
         }
 
     }
