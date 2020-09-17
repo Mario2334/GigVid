@@ -22,7 +22,7 @@
     <!-- home activity -->
     <string name="title_home">Home</string>
     <string name="title_tickets">Tickets</string>
-    <string name="title_hostevent">Host Event</string>
+    <string name="title_hostevent">Host Gig</string>
     <string name="title_mygig">My Gig</string>
     <string name="title_profile">Profile</string>
 </resources>
