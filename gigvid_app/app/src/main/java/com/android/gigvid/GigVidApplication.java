@@ -1,17 +1,17 @@
 package com.android.gigvid;
 
 import android.app.Application;
-
-import com.android.gigvid.BuildConfig;
+import android.content.Context;
 
 import timber.log.Timber;
 
 public class GigVidApplication extends Application {
 
+    private static Context appCtx;
     @Override
     public void onCreate() {
         super.onCreate();
-
+        appCtx = getApplicationContext();
         initializeTimber();
     }
 
@@ -22,5 +22,9 @@ public class GigVidApplication extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+    }
+
+    public static Context getGigVidAppContext(){
+        return appCtx;
     }
 }

@@ -17,4 +17,12 @@
     <string name="e_mail">E-Mail</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="already_have_an_account">Already have an account?</string>
+    <string name="title_activity_home_screen">MainActivity</string>
+
+    <!-- home activity -->
+    <string name="title_home">Home</string>
+    <string name="title_tickets">Tickets</string>
+    <string name="title_hostevent">Host Gig</string>
+    <string name="title_mygig">My Gig</string>
+    <string name="title_profile">Profile</string>
 </resources>
