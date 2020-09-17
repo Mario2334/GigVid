@@ -7,6 +7,9 @@ import android.net.NetworkInfo;
 import java.lang.ref.WeakReference;
 
 /**
+ * Purpose:
+ * Network related Utility class:
+ *
  * Created by Kavya P S on 16/09/20.
  */
 public class NetworkUtils {
@@ -21,12 +24,17 @@ public class NetworkUtils {
     }
 
     private NetworkUtils(WeakReference<Context> contextWeakRef) {
-        Context ctx = (Context) contextWeakRef.get();
+        Context ctx = contextWeakRef.get();
         if (ctx != null) {
             mConnectivityManager = (ConnectivityManager) ctx.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         }
     }
 
+    /**
+     * Method: Check internet connectivity
+     *
+     * @return boolean: Returns true if connected to internet
+     */
     public boolean isConnectedToInternet() {
         if (mConnectivityManager != null) {
             NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
@@ -37,5 +45,6 @@ public class NetworkUtils {
 
     public void clear() {
         mConnectivityManager = null;
+        INSTANCE = null;
     }
 }
