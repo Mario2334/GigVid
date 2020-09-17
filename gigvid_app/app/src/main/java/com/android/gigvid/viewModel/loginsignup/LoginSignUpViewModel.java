@@ -101,4 +101,9 @@ public class LoginSignUpViewModel extends ViewModel {
         });
     }
 
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        client = null;
+    }
 }
