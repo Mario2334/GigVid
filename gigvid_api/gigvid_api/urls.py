@@ -45,5 +45,6 @@ urlpatterns = [
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
     path("", TestView.as_view()),
-    url("user/", include("user.urls"))
+    url("user/", include("user.urls")),
+    url("gig/",include("core.urls"))
 ]

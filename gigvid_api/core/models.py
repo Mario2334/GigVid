@@ -18,7 +18,8 @@ class Gig(models.Model):
     user = models.ForeignKey("user.User",null=False,on_delete=models.RESTRICT)
     url = models.URLField(default="https://www.testvid.com")
     scheduled_time = models.DateTimeField(default=add_datetime)
-    is_active = models.BooleanField(null=False)
+    is_active = models.BooleanField(default=True)
+    header_image = models.URLField(default="https://bit.ly/2FDitkQ")
 
 
 class Ticket(models.Model):
