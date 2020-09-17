@@ -30,6 +30,7 @@ public class LoginSignUpViewModel extends AndroidViewModel {
 
     public LiveData<LoginRespStatus> login(String username, String pass) {
         LiveData<LoginRespStatus> source = mDataRepository.loginToGigVid(username, pass);
+
         return Transformations.map(source, new Function<LoginRespStatus, LoginRespStatus>() {
             @Override
             public LoginRespStatus apply(LoginRespStatus input) {
@@ -40,8 +41,8 @@ public class LoginSignUpViewModel extends AndroidViewModel {
     }
 
     public LiveData<SignUpResStatus> signUp(SignUp signUpBody) {
-        mDataRepository.signUpForGigVid(signUpBody);
         LiveData<SignUpResStatus> source = mDataRepository.signUpForGigVid(signUpBody);
+
         return Transformations.map(source, new Function<SignUpResStatus, SignUpResStatus>() {
             @Override
             public SignUpResStatus apply(SignUpResStatus input) {
