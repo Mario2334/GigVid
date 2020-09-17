@@ -1,12 +1,12 @@
 package com.android.gigvid.view.loginsignup.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,13 +17,12 @@ import androidx.lifecycle.ViewModelProviders;
 import com.android.gigvid.Constants;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
+import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 
 import timber.log.Timber;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class LoginFragment extends Fragment {
     public static final String TAG = "LoginFragment";
@@ -78,8 +77,8 @@ public class LoginFragment extends Fragment {
      */
     private void initializeUI(View view) {
         Timber.tag(TAG).e("initializeUI() called");
-        usernameTextInput = (TextInputLayout)view.findViewById(R.id.name_text_field);
-        passwordTextInput = (TextInputLayout)view.findViewById(R.id.password_text_field);
+        usernameTextInput = view.findViewById(R.id.name_text_field);
+        passwordTextInput = view.findViewById(R.id.password_text_field);
         proceedToLoginButton = view.findViewById(R.id.login_action_button);
         launchSignUpFragmentButton = view.findViewById(R.id.sign_up_button);
         launchSignUpFragmentMsg = view.findViewById(R.id.sign_up_msg);
@@ -98,11 +97,26 @@ public class LoginFragment extends Fragment {
 
                 String username = usernameTextInput.getEditText().getText().toString();
                 String pass= passwordTextInput.getEditText().getText().toString();
-                loginSignUpViewModel.callLoginApi(username,pass);
+
+                Timber.d("username ");
+
+                if(isCredentialValid(username,pass)){
+                    loginSignUpViewModel.callLoginApi(username,pass);
+                } else{
+                    Toast.makeText(getActivity(), "Invalid Credentials",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
 
+    private boolean isCredentialValid(String username, String pass){
+        if(username.isEmpty() && pass.isEmpty()){
+            return false;
+        }else if(username.isEmpty()){
+            return false;
+        }else return !pass.isEmpty();
+    }
     /**
      * Method: Launch SignUp fragment via Activity
      */
@@ -122,14 +136,14 @@ public class LoginFragment extends Fragment {
         @Override
         public void onChanged(LoginResp loginResp) {
             Timber.d("onChanged: login response -- %s", loginResp.getStatus());
-            saveTokenValueToSP(loginResp.getToken());
+
+            if(loginResp.getStatus() == Constants.FAIL){
+                Toast.makeText(getActivity(), "Invalid Credentials",Toast.LENGTH_SHORT).show();
+            } else{
+                SharedPrefUtils.saveTokenValueToSP(loginResp.getToken());
+                Toast.makeText(getActivity(), "Login Success",Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
-    private void saveTokenValueToSP(String token){
-        SharedPreferences loginSP = this.getActivity().getSharedPreferences(Constants.LOGIN_TOKEN_SP, MODE_PRIVATE);
-        SharedPreferences.Editor editor = loginSP.edit();
-        editor.putString(Constants.LOGIN_TOKEN_KEY, token);
-        editor.apply();
-    }
 }

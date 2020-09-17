@@ -1,14 +1,13 @@
 package com.android.gigvid.view;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.gigvid.Constants;
 import com.android.gigvid.R;
+import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
 
 import timber.log.Timber;
@@ -21,12 +20,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Handler uiHandler = new Handler();
         uiHandler.postDelayed(uiLoading, 5000);
+
+        //uncomment to logout if already sign up is successfull
+//        SharedPrefUtils.saveTokenValueToSP(null);
     }
 
     private Runnable uiLoading = new Runnable() {
         @Override
         public void run() {
-            if(isUserAlreadyLoggedIn()){
+            if(SharedPrefUtils.isUserAlreadyLoggedIn()){
                 //TODO launch home activity
                 Timber.d("SMP launch home screen astoken available");
             } else{
@@ -38,8 +40,5 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private boolean isUserAlreadyLoggedIn(){
-        SharedPreferences loginSP = getSharedPreferences(Constants.LOGIN_TOKEN_SP, MODE_PRIVATE);
-        return loginSP.getString(Constants.LOGIN_TOKEN_KEY, null) != null;
-    }
+
 }
