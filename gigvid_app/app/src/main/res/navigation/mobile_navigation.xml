@@ -20,7 +20,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_host_gig"
+        android:id="@+id/navigation_host_event"
         android:name="com.android.gigvid.view.homescreen.fragment.HostGigFragment"
         android:label="@string/title_hostevent"
         tools:layout="@layout/fragment_hostgig" >
