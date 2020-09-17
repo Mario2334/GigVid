@@ -1,16 +1,15 @@
 package com.android.gigvid.view.loginsignup;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.os.Bundle;
 
 import com.android.gigvid.R;
 import com.android.gigvid.view.loginsignup.fragment.LoginFragment;
 import com.android.gigvid.view.loginsignup.fragment.SignUpFragment;
-
-import timber.log.Timber;
 
 public class UserAuthActivity extends AppCompatActivity
         implements UserAuthFragmentCommunicator {
@@ -29,7 +28,7 @@ public class UserAuthActivity extends AppCompatActivity
         setContentView(R.layout.activity_user_authentication);
 
         initializeUI();
-        loadLoginFragment();
+        loadFragment(loginFragment);
     }
 
     /**
@@ -40,23 +39,10 @@ public class UserAuthActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
     }
 
-    /**
-     * Method: Load Login fragment:
-     */
-    private void loadLoginFragment() {
-        Timber.tag(TAG).e("loadLoginFragment() called");
-        transaction = fragmentManager.beginTransaction();
-        transaction.replace(fragmentContainer, loginFragment, loginFragment.getTag());
-        transaction.commit();
-    }
 
-    /**
-     * Method: Load SignUp fragment
-     */
-    private void loadSignUpFragment() {
-        Timber.tag(TAG).e("loadSignUpFragment() called");
+    private void loadFragment(Fragment frag){
         transaction = fragmentManager.beginTransaction();
-        transaction.replace(fragmentContainer, signUpFragment, signUpFragment.getTag());
+        transaction.replace(fragmentContainer, frag, frag.getTag());
         transaction.commit();
     }
 
@@ -69,11 +55,11 @@ public class UserAuthActivity extends AppCompatActivity
      */
     @Override
     public void launchLoginFragment() {
-        loadLoginFragment();
+        loadFragment(loginFragment);
     }
 
     @Override
     public void launchSignUpFragment() {
-        loadSignUpFragment();
+        loadFragment(signUpFragment);
     }
 }

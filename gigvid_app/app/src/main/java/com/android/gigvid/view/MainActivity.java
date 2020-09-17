@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         uiHandler.postDelayed(uiLoading, 5000);
 
         //uncomment to logout if already sign up is successfull
-//        SharedPrefUtils.saveTokenValueToSP(null);
+        SharedPrefUtils.saveTokenValueToSP(null);
     }
 
     private Runnable uiLoading = new Runnable() {

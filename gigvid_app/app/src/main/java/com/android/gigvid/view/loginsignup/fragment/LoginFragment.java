@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.android.gigvid.Constants;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
@@ -132,9 +132,9 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private Observer<LoginResp> loginRespObserver = new Observer<LoginResp>() {
+    private Observer<LoginRespStatus> loginRespObserver = new Observer<LoginRespStatus>() {
         @Override
-        public void onChanged(LoginResp loginResp) {
+        public void onChanged(LoginRespStatus loginResp) {
             Timber.d("onChanged: login response -- %s", loginResp.getStatus());
 
             if(loginResp.getStatus() == Constants.FAIL){

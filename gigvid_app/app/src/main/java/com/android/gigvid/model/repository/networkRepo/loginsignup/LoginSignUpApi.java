@@ -1,6 +1,7 @@
 package com.android.gigvid.model.repository.networkRepo.loginsignup;
 
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.Token;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogIn;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUp;
 
@@ -10,9 +11,9 @@ import retrofit2.http.POST;
 
 public interface LoginSignUpApi {
     @POST("/dev/user/login/")
-    Call<Token> userLoginAuth(@Body LogIn logIn);
+    Call<LoginResp> userLoginAuth(@Body LogIn logIn);
 
 
-    @POST("/dev/user/create_user/")
-    Call<Void> userSignUp(@Body SignUp signUp);
+    @POST("/dev/user/")
+    Call<SignUpResp> userSignUp(@Body SignUp signUp);
 }
