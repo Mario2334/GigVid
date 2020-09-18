@@ -52,9 +52,7 @@ public class RetrofitUtils {
         return getRetrofit().create(LoginSignUpApi.class);
     }
 
-    public HomeScreenApi getHomeScreenApiClient(){
-        return getRetrofit().create(HomeScreenApi.class);
-    }
+    public HomeScreenApi getHomeScreenApiClient(){ return getRetrofit().create(HomeScreenApi.class); }
 
 }
 

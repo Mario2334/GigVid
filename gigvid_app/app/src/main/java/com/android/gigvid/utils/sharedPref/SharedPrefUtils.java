@@ -20,4 +20,9 @@ public class SharedPrefUtils {
         SharedPreferences loginSP = GigVidApplication.getGigVidAppContext().getSharedPreferences(Constants.LOGIN_TOKEN_SP, MODE_PRIVATE);
         return loginSP.getString(Constants.LOGIN_TOKEN_KEY, null) != null;
     }
+
+    public static String getAuthToken(){
+        SharedPreferences loginSP = GigVidApplication.getGigVidAppContext().getSharedPreferences(Constants.LOGIN_TOKEN_SP, MODE_PRIVATE);
+        return loginSP.getString(Constants.LOGIN_TOKEN_KEY,null);
+    }
 }

@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData;
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
 import com.android.gigvid.model.repository.networkRepo.NetworkManager;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUp;
@@ -88,6 +90,17 @@ public class DataRepository implements IManager {
     public LiveData<GigListRespStatus> getGigList() {
         if (mNetworkUtils.isConnectedToInternet()) {
             return mNetworkManager.getGigList();
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            return null;
+//            TODO("Implement live data for DB")
+        }
+    }
+
+
+    public LiveData<CreateGigRespStatus> createGig(CreateGig createGig) {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            return mNetworkManager.createGig(createGig);
         } else {
             Timber.d("Is NOT connected to internet!");
             return null;

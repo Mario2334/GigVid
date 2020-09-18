@@ -7,6 +7,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.gigvid.Constants;
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.HomeScreenApi;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
@@ -17,6 +20,7 @@ import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
 import com.android.gigvid.utils.network.RetrofitUtils;
+import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 
 import java.util.List;
 
@@ -37,6 +41,7 @@ public class NetworkManager implements IManager {
     private MutableLiveData<LoginRespStatus> mLogInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<SignUpResStatus> mSignUpResStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<GigListRespStatus> gigListRespStatusMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<CreateGigRespStatus> createGigRespStatusMutableLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
         if (INSTANCE == null) {
@@ -148,6 +153,38 @@ public class NetworkManager implements IManager {
 
         return gigListRespStatusMutableLiveData;
     }
+
+
+
+    public LiveData<CreateGigRespStatus> createGig(CreateGig createGig){
+        if(homeScreenApiClient == null){
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+
+        String authToken = "Token "+ SharedPrefUtils.getAuthToken();
+
+
+        Call<CreateGigResp> createGigCall = homeScreenApiClient.createGig(authToken,createGig);
+
+        createGigCall.enqueue(new Callback<CreateGigResp>() {
+            @Override
+            public void onResponse(Call<CreateGigResp> call, Response<CreateGigResp> response) {
+                if(response.isSuccessful()){
+                    createGigRespStatusMutableLiveData.setValue(new CreateGigRespStatus(response.body(), Constants.SUCCESS));
+                } else{
+                    createGigRespStatusMutableLiveData.setValue(new CreateGigRespStatus(null, Constants.FAIL));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreateGigResp> call, Throwable t) {
+                createGigRespStatusMutableLiveData.setValue(new CreateGigRespStatus(null, Constants.FAIL));
+            }
+        });
+
+        return createGigRespStatusMutableLiveData;
+    }
+
     @Override
     public void clear() {
 
