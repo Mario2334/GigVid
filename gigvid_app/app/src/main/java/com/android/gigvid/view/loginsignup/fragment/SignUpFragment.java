@@ -13,11 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.android.gigvid.Constants;
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUp;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResStatus;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
+import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
 import com.google.android.material.textfield.TextInputLayout;
@@ -64,14 +65,9 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         initializeUI(view);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        loginSignUpViewModel.getObservableSignUpData().observe(this, signUpRespObserver);
-    }
-
     /**
      * Method: Initialize UI elements
+     *
      * @param view: Refers to the Fragment View used to access view elements
      */
     private void initializeUI(View view) {
@@ -100,21 +96,21 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private Observer<SignUpResStatus> signUpRespObserver = new Observer<SignUpResStatus>() {
+    private Observer<DataResponse<SignUpResp>> signUpRespObserver = new Observer<DataResponse<SignUpResp>>() {
         @Override
-        public void onChanged(SignUpResStatus signUpResStatus) {
-
-            if(signUpResStatus.getStatus() == Constants.FAIL){
-                Toast.makeText(GigVidApplication.getGigVidAppContext(), "Please enter valid data", Toast.LENGTH_SHORT).show();
-            } else{
+        public void onChanged(DataResponse<SignUpResp> signUpResStatus) {
+            if (signUpResStatus.getStatus() == StateDefinition.State.COMPLETED) {
                 launchLoginOnClick();
+            } else if (signUpResStatus.getStatus() == StateDefinition.State.ERROR) {
+                proceedWithSignUpButton.setOnClickListener(SignUpFragment.this);
+                Toast.makeText(GigVidApplication.getGigVidAppContext(), "Please enter valid data", Toast.LENGTH_SHORT).show();
             }
         }
     };
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.launch_login_fragment_button:
                 launchLoginOnClick();
                 break;
@@ -126,29 +122,30 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void handleSignUpClick(){
-        String username= usernameTextInput.getEditText().getText().toString();
-        String cnfirmPass = confirmPasswordTextInput.getEditText().getText().toString();
+    private void handleSignUpClick() {
+        String username = usernameTextInput.getEditText().getText().toString();
+        String confirmPass = confirmPasswordTextInput.getEditText().getText().toString();
         String pass = passwordTextInput.getEditText().getText().toString();
         String emailId = emailTextInput.getEditText().getText().toString();
 
-        if(isSignUpDataValid(username, emailId, pass, cnfirmPass)){
-            SignUp signUp = new SignUp();
-            signUp.setUsername(usernameTextInput.getEditText().getText().toString());
-            signUp.setEmail(emailTextInput.getEditText().getText().toString());
-            signUp.setPassword(confirmPasswordTextInput.getEditText().getText().toString());
-            loginSignUpViewModel.callSignUpApi(signUp);
-        } else{
+        if (isSignUpDataValid(username, emailId, pass, confirmPass)) {
+            SignUpReqBody signUpBody = new SignUpReqBody();
+            signUpBody.setUsername(usernameTextInput.getEditText().getText().toString());
+            signUpBody.setEmail(emailTextInput.getEditText().getText().toString());
+            signUpBody.setPassword(confirmPasswordTextInput.getEditText().getText().toString());
+            loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
+            proceedWithSignUpButton.setOnClickListener(null);
+        } else {
             Toast.makeText(GigVidApplication.getGigVidAppContext(), "Invalid data", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private boolean isSignUpDataValid(String username, String emailId, String pass, String cnfirmPass){
+    private boolean isSignUpDataValid(String username, String emailId, String pass, String cnfirmPass) {
 
-        if(username.isEmpty() || emailId.isEmpty() || pass.isEmpty() || cnfirmPass.isEmpty()){
+        if (username.isEmpty() || emailId.isEmpty() || pass.isEmpty() || cnfirmPass.isEmpty()) {
             return false;
-        } else{
+        } else {
             return pass.equals(cnfirmPass);
         }
     }

@@ -1,14 +1,14 @@
 package com.android.gigvid.model.repository.networkRepo.loginsignup.pojo;
 
-public class SignUp {
+public class SignUpReqBody {
 
-    private String name,username,password,email;
+    private String name, username, password, email;
 
     public String getName() {
         return name;
     }
 
-    public SignUp() {
+    public SignUpReqBody() {
     }
 
     public void setName(String name) {
@@ -39,7 +39,7 @@ public class SignUp {
         this.email = email;
     }
 
-    public SignUp(String name, String username, String password, String email) {
+    public SignUpReqBody(String name, String username, String password, String email) {
         this.name = name;
         this.username = username;
         this.password = password;
