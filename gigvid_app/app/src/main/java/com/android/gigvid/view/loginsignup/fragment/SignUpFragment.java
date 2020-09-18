@@ -100,6 +100,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         public void onChanged(SignUpResStatus signUpResStatus) {
 
             if (signUpResStatus.getStatus() == Constants.FAIL) {
+                proceedWithSignUpButton.setOnClickListener(SignUpFragment.this);
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), "Please enter valid data", Toast.LENGTH_SHORT).show();
             } else {
                 launchLoginOnClick();
@@ -133,6 +134,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             signUpBody.setEmail(emailTextInput.getEditText().getText().toString());
             signUpBody.setPassword(confirmPasswordTextInput.getEditText().getText().toString());
             loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
+            proceedWithSignUpButton.setOnClickListener(null);
         } else {
             Toast.makeText(GigVidApplication.getGigVidAppContext(), "Invalid data", Toast.LENGTH_SHORT).show();
         }

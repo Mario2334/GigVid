@@ -34,9 +34,9 @@ public class LoginFragment extends Fragment {
     private TextInputLayout passwordTextInput;
     private Button proceedToLoginButton;
     private Button launchSignUpFragmentButton;
-    private TextView launchSignUpFragmentMsg;
 
     private LoginSignUpViewModel loginSignUpViewModel;
+
     private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -95,7 +95,7 @@ public class LoginFragment extends Fragment {
         passwordTextInput = view.findViewById(R.id.password_text_field);
         proceedToLoginButton = view.findViewById(R.id.login_action_button);
         launchSignUpFragmentButton = view.findViewById(R.id.sign_up_button);
-        launchSignUpFragmentMsg = view.findViewById(R.id.sign_up_msg);
+        TextView launchSignUpFragmentMsg = view.findViewById(R.id.sign_up_msg);
 
         //To enable marquee
         launchSignUpFragmentMsg.setSelected(true);
