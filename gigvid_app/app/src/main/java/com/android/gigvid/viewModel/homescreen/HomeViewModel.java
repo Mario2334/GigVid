@@ -8,11 +8,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
 
 import com.android.gigvid.model.DataRepository;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
 
 import java.lang.ref.WeakReference;
 

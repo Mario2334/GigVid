@@ -10,9 +10,10 @@ import com.android.gigvid.model.repository.networkRepo.NetworkManager;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUp;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResStatus;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.utils.network.NetworkUtils;
 
 import java.lang.ref.WeakReference;
@@ -61,7 +62,7 @@ public class DataRepository implements IManager {
         mNetworkUtils = NetworkUtils.getInstance(mApplicationContextWeakRef);
     }
 
-    public LiveData<LoginRespStatus> loginToGigVid(String username, String password) {
+    public LiveData<DataResponse<LoginResp>> loginToGigVid(String username, String password) {
         if (mNetworkUtils.isConnectedToInternet()) {
             // Handle network data fetching
             Timber.d("Is connected to internet!");
@@ -74,7 +75,7 @@ public class DataRepository implements IManager {
         }
     }
 
-    public LiveData<SignUpResStatus> signUpForGigVid(SignUp signUpBody) {
+    public LiveData<DataResponse<SignUpResp>> signUpForGigVid(SignUpReqBody signUpBody) {
         if (mNetworkUtils.isConnectedToInternet()) {
             // Handle network data fetching
             return mNetworkManager.signUpForGigVid(signUpBody);

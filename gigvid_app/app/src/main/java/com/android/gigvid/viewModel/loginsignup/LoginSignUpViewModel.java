@@ -9,9 +9,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.DataRepository;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUp;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResStatus;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
 
 import java.lang.ref.WeakReference;
 
@@ -27,24 +28,24 @@ public class LoginSignUpViewModel extends AndroidViewModel {
         mDataRepository = DataRepository.getInstance(new WeakReference<>(application.getApplicationContext()));
     }
 
-    public LiveData<LoginRespStatus> login(String username, String pass) {
-        LiveData<LoginRespStatus> source = mDataRepository.loginToGigVid(username, pass);
+    public LiveData<DataResponse<LoginResp>> login(String username, String pass) {
 
-        return Transformations.map(source, new Function<LoginRespStatus, LoginRespStatus>() {
+        LiveData<DataResponse<LoginResp>> source = mDataRepository.loginToGigVid(username, pass);
+        return Transformations.map(source, new Function<DataResponse<LoginResp>, DataResponse<LoginResp>>() {
             @Override
-            public LoginRespStatus apply(LoginRespStatus input) {
+            public DataResponse<LoginResp> apply(DataResponse<LoginResp> input) {
 //                Modification to Data as per UI to be done here
                 return input;
             }
         });
     }
 
-    public LiveData<SignUpResStatus> signUp(SignUp signUpBody) {
-        LiveData<SignUpResStatus> source = mDataRepository.signUpForGigVid(signUpBody);
+    public LiveData<DataResponse<SignUpResp>> signUp(SignUpReqBody signUpBody) {
+        LiveData<DataResponse<SignUpResp>> source = mDataRepository.signUpForGigVid(signUpBody);
 
-        return Transformations.map(source, new Function<SignUpResStatus, SignUpResStatus>() {
+        return Transformations.map(source, new Function<DataResponse<SignUpResp>, DataResponse<SignUpResp>>() {
             @Override
-            public SignUpResStatus apply(SignUpResStatus input) {
+            public DataResponse<SignUpResp> apply(DataResponse<SignUpResp> input) {
                 //                Modification to Data as per UI to be done here
                 return input;
             }

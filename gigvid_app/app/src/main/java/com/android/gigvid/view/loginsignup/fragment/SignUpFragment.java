@@ -13,11 +13,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.android.gigvid.Constants;
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUp;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResStatus;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
+import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
 import com.google.android.material.textfield.TextInputLayout;
@@ -95,15 +96,14 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private Observer<SignUpResStatus> signUpRespObserver = new Observer<SignUpResStatus>() {
+    private Observer<DataResponse<SignUpResp>> signUpRespObserver = new Observer<DataResponse<SignUpResp>>() {
         @Override
-        public void onChanged(SignUpResStatus signUpResStatus) {
-
-            if (signUpResStatus.getStatus() == Constants.FAIL) {
+        public void onChanged(DataResponse<SignUpResp> signUpResStatus) {
+            if (signUpResStatus.getStatus() == StateDefinition.State.COMPLETED) {
+                launchLoginOnClick();
+            } else if (signUpResStatus.getStatus() == StateDefinition.State.ERROR) {
                 proceedWithSignUpButton.setOnClickListener(SignUpFragment.this);
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), "Please enter valid data", Toast.LENGTH_SHORT).show();
-            } else {
-                launchLoginOnClick();
             }
         }
     };
@@ -129,7 +129,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         String emailId = emailTextInput.getEditText().getText().toString();
 
         if (isSignUpDataValid(username, emailId, pass, confirmPass)) {
-            SignUp signUpBody = new SignUp();
+            SignUpReqBody signUpBody = new SignUpReqBody();
             signUpBody.setUsername(usernameTextInput.getEditText().getText().toString());
             signUpBody.setEmail(emailTextInput.getEditText().getText().toString());
             signUpBody.setPassword(confirmPasswordTextInput.getEditText().getText().toString());

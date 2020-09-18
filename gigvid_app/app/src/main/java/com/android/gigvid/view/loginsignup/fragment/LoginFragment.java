@@ -15,9 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.android.gigvid.Constants;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRespStatus;
+import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
+import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 import com.android.gigvid.view.homescreen.HomeScreenActivity;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
@@ -131,19 +132,23 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private Observer<LoginRespStatus> loginRespObserver = new Observer<LoginRespStatus>() {
+    private Observer<DataResponse<LoginResp>> loginRespObserver = new Observer<DataResponse<LoginResp>>() {
         @Override
-        public void onChanged(LoginRespStatus loginResp) {
+        public void onChanged(DataResponse<LoginResp> loginResp) {
             Timber.d("onChanged: login response -- %s", loginResp.getStatus());
 
-            if (loginResp.getStatus() == Constants.FAIL) {
+            if (loginResp.getStatus() == StateDefinition.State.COMPLETED) {
+
+                SharedPrefUtils.saveTokenValueToSP(loginResp.getData().getToken());
+                Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
+                launchHomeScreenActivity();
+
+            } else if (loginResp.getStatus() == StateDefinition.State.ERROR) {
+
                 //Enable OnClickListener to allow retry
                 proceedToLoginButton.setOnClickListener(onLoginClickListener);
                 Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
-            } else {
-                SharedPrefUtils.saveTokenValueToSP(loginResp.getToken());
-                Toast.makeText(getActivity(), "Login Success", Toast.LENGTH_SHORT).show();
-                launchHomeScreenActivity();
+
             }
         }
     };
