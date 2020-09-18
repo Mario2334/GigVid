@@ -9,6 +9,8 @@ from . import serializers
 from . import models
 from django.utils import timezone
 
+from .zoom import ZoomApi
+
 
 class GigListView(ListAPIView):
     serializer_class = serializers.GigSerializer
@@ -25,7 +27,28 @@ class CreateGigView(CreateAPIView):
         if "user" not in serializer.initial_data:
             serializer.initial_data["user"] = request.user.id
         if serializer.is_valid():
-            user = serializer.save()
-            return Response(self.serializer_class(user).data)
+            gig = serializer.save()
+            params = {
+                "topic": gig.name,
+                "timezone": "Asia/Calcutta",
+                "type": 2,
+                "start_time": gig.scheduled_time.strftime("%Y-%m-%d T %H:%M:%S"),
+                "duration": gig.duration,
+                "settings": {
+                    "in_meeting": True,
+                    "join_before_host": False,
+                    "mute_upon_entry": True,
+                    "approval_type": 1,
+                    "waiting_room": True,
+                    "contact_name": gig.user.first_name,
+                    "contact_email": gig.user.email
+                }
+            }
+            response = ZoomApi().create(params)
+            gig.host_url = response["start_url"]
+            gig.join_url = response["join_url"]
+            gig.save()
+            print(gig)
+            return Response(status=201, data={"message": "success"})
         else:
-            return Response(status=400,data=serializer.errors)
+            return Response(status=400, data=serializer.errors)

@@ -14,3 +14,9 @@ class Hobby(models.Model):
     class Meta:
         verbose_name = 'hobby'
         verbose_name_plural = 'hobbies'
+
+
+class BankAccount(models.Model):
+    id = models.AutoField(primary_key=True)
+    ifsc = models.CharField(max_length=200)
+    account_no = models.CharField(max_length=200)
