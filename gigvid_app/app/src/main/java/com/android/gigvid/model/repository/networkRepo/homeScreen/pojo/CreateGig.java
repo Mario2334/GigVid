@@ -19,27 +19,32 @@ public class CreateGig {
     @Expose
     private String headerImage;
 
+    private String minutes;
+
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public CreateGig() {
     }
 
-    /**
-     * 
-     * @param scheduledTime
-     * @param headerImage
-     * @param name
-     * @param description
-     */
-    public CreateGig(String name, String description, String scheduledTime, String headerImage) {
-        super();
+    public CreateGig(String name, String description, String scheduledTime, String headerImage, String minutes) {
         this.name = name;
         this.description = description;
         this.scheduledTime = scheduledTime;
         this.headerImage = headerImage;
+        this.minutes = minutes;
     }
+
+    public String getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(String minutes) {
+        this.minutes = minutes;
+    }
+
+
 
     public String getName() {
         return name;
