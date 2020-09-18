@@ -37,6 +37,23 @@ public class LoginFragment extends Fragment {
     private TextView launchSignUpFragmentMsg;
 
     private LoginSignUpViewModel loginSignUpViewModel;
+    private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            String username = usernameTextInput.getEditText().getText().toString();
+            String pass = passwordTextInput.getEditText().getText().toString();
+
+            if (isCredentialValid(username, pass)) {
+                loginSignUpViewModel.login(username, pass).observe(LoginFragment.this, loginRespObserver);
+                //Disable click listener to avoid multiple calls
+                proceedToLoginButton.setOnClickListener(null);
+            } else {
+                Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    };
 
     public LoginFragment() {
         // Required empty public constructor
@@ -88,22 +105,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void verifyLoginDetail() {
-        proceedToLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String username = usernameTextInput.getEditText().getText().toString();
-                String pass = passwordTextInput.getEditText().getText().toString();
-
-                if (isCredentialValid(username, pass)) {
-                    loginSignUpViewModel.login(username, pass).observe(LoginFragment.this, loginRespObserver);
-//                    TODO("Disable click listener to avoid multiple calls")
-                } else {
-                    Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
+        proceedToLoginButton.setOnClickListener(onLoginClickListener);
     }
 
     private boolean isCredentialValid(String username, String pass) {
@@ -135,7 +137,8 @@ public class LoginFragment extends Fragment {
             Timber.d("onChanged: login response -- %s", loginResp.getStatus());
 
             if (loginResp.getStatus() == Constants.FAIL) {
-//TODO("Enable OnClickListener to allow retry")
+                //Enable OnClickListener to allow retry
+                proceedToLoginButton.setOnClickListener(onLoginClickListener);
                 Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
             } else {
                 SharedPrefUtils.saveTokenValueToSP(loginResp.getToken());

@@ -18,7 +18,6 @@ import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpRe
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
 import com.android.gigvid.utils.network.RetrofitUtils;
 
-import java.net.HttpCookie;
 import java.util.List;
 
 import retrofit2.Call;
