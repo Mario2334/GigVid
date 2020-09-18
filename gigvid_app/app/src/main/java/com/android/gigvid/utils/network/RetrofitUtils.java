@@ -1,6 +1,7 @@
 package com.android.gigvid.utils.network;
 
 
+import com.android.gigvid.model.repository.networkRepo.homeScreen.HomeScreenApi;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
 
 import okhttp3.OkHttpClient;
@@ -49,6 +50,10 @@ public class RetrofitUtils {
 
     public LoginSignUpApi getLoginClient() {
         return getRetrofit().create(LoginSignUpApi.class);
+    }
+
+    public HomeScreenApi getHomeScreenApiClient(){
+        return getRetrofit().create(HomeScreenApi.class);
     }
 
 }

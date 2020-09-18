@@ -11,12 +11,27 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.gigvid.Constants;
 import com.android.gigvid.R;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.viewModel.homescreen.HomeViewModel;
+
+import timber.log.Timber;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
+
+    private Observer<GigListRespStatus> gigListRespStatusObserver = new Observer<GigListRespStatus>() {
+        @Override
+        public void onChanged(GigListRespStatus gigListRespStatus) {
+            if(gigListRespStatus.getStatus() == Constants.FAIL){
+                Timber.d("list gig api failed");
+            } else{
+                Timber.d("list gig success %d",gigListRespStatus.getGigListResp().size());
+            }
+        }
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
@@ -30,6 +45,8 @@ public class HomeFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
+        homeViewModel.getGigListLiveData().observe(this, gigListRespStatusObserver);
         return root;
     }
 }

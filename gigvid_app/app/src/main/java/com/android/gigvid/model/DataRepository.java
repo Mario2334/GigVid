@@ -9,6 +9,8 @@ import com.android.gigvid.Constants;
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
 import com.android.gigvid.model.repository.networkRepo.NetworkManager;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogIn;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
@@ -19,6 +21,7 @@ import com.android.gigvid.utils.network.NetworkUtils;
 import com.android.gigvid.utils.network.RetrofitUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -90,6 +93,16 @@ public class DataRepository implements IManager {
 
 //            TODO("Implement live data for DB")
             return null;
+        }
+    }
+
+    public LiveData<GigListRespStatus> getGigList(){
+        if(mNetworkUtils.isConnectedToInternet()){
+            return mNetworkManager.getGigList();
+        } else{
+            Timber.d("Is NOT connected to internet!");
+            return null;
+//            TODO("Implement live data for DB")
         }
     }
 

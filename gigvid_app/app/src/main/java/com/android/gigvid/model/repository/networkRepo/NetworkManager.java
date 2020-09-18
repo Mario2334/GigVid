@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.android.gigvid.Constants;
 import com.android.gigvid.model.contract.IManager;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.HomeScreenApi;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogIn;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
@@ -16,6 +19,7 @@ import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpRe
 import com.android.gigvid.utils.network.RetrofitUtils;
 
 import java.net.HttpCookie;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,8 +33,11 @@ public class NetworkManager implements IManager {
     private static NetworkManager INSTANCE;
 
     private LoginSignUpApi client;
+    private HomeScreenApi homeScreenApiClient;
+
     private MutableLiveData<LoginRespStatus> mLogInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<SignUpResStatus> mSignUpResStatusMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<GigListRespStatus> gigListRespStatusMutableLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
         if (INSTANCE == null) {
@@ -114,6 +121,34 @@ public class NetworkManager implements IManager {
         return mSignUpResStatusMutableLiveData;
     }
 
+
+    public LiveData<GigListRespStatus> getGigList(){
+        if(homeScreenApiClient == null){
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+
+        Call<List<GigListResp>> callGigList = homeScreenApiClient.getGigList();
+        callGigList.enqueue(new Callback<List<GigListResp>>() {
+            @Override
+            public void onResponse(Call<List<GigListResp>> call, Response<List<GigListResp>> response) {
+                if(response.isSuccessful()){
+                    GigListRespStatus gigListRespStatus = new GigListRespStatus(response.body(), Constants.SUCCESS,null);
+                    gigListRespStatusMutableLiveData.setValue(gigListRespStatus);
+                } else{
+                    GigListRespStatus gigListRespStatus = new GigListRespStatus(null, Constants.FAIL,null);
+                    gigListRespStatusMutableLiveData.setValue(gigListRespStatus);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<GigListResp>> call, Throwable t) {
+                GigListRespStatus gigListRespStatus = new GigListRespStatus(null, Constants.FAIL,null);
+                gigListRespStatusMutableLiveData.setValue(gigListRespStatus);
+            }
+        });
+
+        return gigListRespStatusMutableLiveData;
+    }
     @Override
     public void clear() {
 
