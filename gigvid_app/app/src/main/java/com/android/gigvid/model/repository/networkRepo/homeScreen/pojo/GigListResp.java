@@ -9,9 +9,6 @@ public class GigListResp {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("url")
-    @Expose
-    private String url;
     @SerializedName("is_active")
     @Expose
     private Boolean isActive;
@@ -21,43 +18,61 @@ public class GigListResp {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("join_url")
+    @Expose
+    private String joinUrl;
+    @SerializedName("host_url")
+    @Expose
+    private String hostUrl;
     @SerializedName("scheduled_time")
     @Expose
     private String scheduledTime;
+    @SerializedName("duration")
+    @Expose
+    private Integer duration;
     @SerializedName("header_image")
     @Expose
     private String headerImage;
+    @SerializedName("created_at")
+    @Expose
+    private String createdAt;
     @SerializedName("user")
     @Expose
     private Integer user;
 
     /**
      * No args constructor for use in serialization
-     * 
+     *
      */
     public GigListResp() {
     }
 
     /**
-     * 
+     *
+     * @param duration
+     * @param createdAt
      * @param scheduledTime
      * @param headerImage
      * @param name
      * @param description
      * @param id
+     * @param hostUrl
      * @param isActive
+     * @param joinUrl
      * @param user
-     * @param url
      */
-    public GigListResp(Integer id, String url, Boolean isActive, String name, String description, String scheduledTime, String headerImage, Integer user) {
+    public GigListResp(Integer id, Boolean isActive, String name, String description, String joinUrl, String hostUrl, String scheduledTime, Integer duration, String headerImage, String createdAt, Integer user) {
         super();
         this.id = id;
-        this.url = url;
         this.isActive = isActive;
         this.name = name;
         this.description = description;
+        this.joinUrl = joinUrl;
+        this.hostUrl = hostUrl;
         this.scheduledTime = scheduledTime;
+        this.duration = duration;
         this.headerImage = headerImage;
+        this.createdAt = createdAt;
         this.user = user;
     }
 
@@ -67,14 +82,6 @@ public class GigListResp {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public Boolean getIsActive() {
@@ -101,12 +108,36 @@ public class GigListResp {
         this.description = description;
     }
 
+    public String getJoinUrl() {
+        return joinUrl;
+    }
+
+    public void setJoinUrl(String joinUrl) {
+        this.joinUrl = joinUrl;
+    }
+
+    public String getHostUrl() {
+        return hostUrl;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
+    }
+
     public String getScheduledTime() {
         return scheduledTime;
     }
 
     public void setScheduledTime(String scheduledTime) {
         this.scheduledTime = scheduledTime;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 
     public String getHeaderImage() {
@@ -117,6 +148,14 @@ public class GigListResp {
         this.headerImage = headerImage;
     }
 
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Integer getUser() {
         return user;
     }
@@ -124,5 +163,4 @@ public class GigListResp {
     public void setUser(Integer user) {
         this.user = user;
     }
-
 }

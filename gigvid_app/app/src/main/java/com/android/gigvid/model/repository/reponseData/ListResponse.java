@@ -7,6 +7,12 @@ import java.util.List;
  */
 public class ListResponse<T> {
 
+    public ListResponse(@StateDefinition.State int mStatus, List<T> mData, ErrorData mError) {
+        this.mStatus = mStatus;
+        this.mData = mData;
+        this.mError = mError;
+    }
+
     @StateDefinition.State
     private int mStatus;
 

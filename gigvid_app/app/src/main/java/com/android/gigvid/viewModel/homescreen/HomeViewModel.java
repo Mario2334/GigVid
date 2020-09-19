@@ -10,7 +10,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.DataRepository;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
+import com.android.gigvid.model.repository.reponseData.ListResponse;
 
 import java.lang.ref.WeakReference;
 
@@ -26,11 +28,11 @@ public class HomeViewModel extends AndroidViewModel {
         mText.setValue("This is home fragment");
     }
 
-    public LiveData<GigListRespStatus> getGigListLiveData(){
-        LiveData<GigListRespStatus> gigList = mDataRepository.getGigList();
-        return Transformations.map(gigList, new Function<GigListRespStatus, GigListRespStatus>() {
+    public LiveData<ListResponse<GigListResp>> getGigListLiveData(){
+        LiveData<ListResponse<GigListResp>> gigList = mDataRepository.getGigList();
+        return Transformations.map(gigList, new Function<ListResponse<GigListResp>, ListResponse<GigListResp>>() {
             @Override
-            public GigListRespStatus apply(GigListRespStatus input) {
+            public ListResponse<GigListResp> apply(ListResponse<GigListResp> input) {
 //                Modification to Data as per UI to be done here
                 return input;
             }

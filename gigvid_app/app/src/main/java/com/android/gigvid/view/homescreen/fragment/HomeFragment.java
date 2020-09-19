@@ -1,6 +1,7 @@
 package com.android.gigvid.view.homescreen.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.gigvid.Constants;
 import com.android.gigvid.R;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
+import com.android.gigvid.model.repository.reponseData.ListResponse;
+import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.viewModel.homescreen.HomeViewModel;
 
 import timber.log.Timber;
@@ -24,13 +28,13 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private RecyclerView listGigsRecyclerView;
 
-    private Observer<GigListRespStatus> gigListRespStatusObserver = new Observer<GigListRespStatus>() {
+    private Observer<ListResponse<GigListResp>> gigListRespStatusObserver = new Observer<ListResponse<GigListResp>>() {
         @Override
-        public void onChanged(GigListRespStatus gigListRespStatus) {
-            if(gigListRespStatus.getStatus() == Constants.FAIL){
-                Timber.d("list gig api failed");
+        public void onChanged(ListResponse<GigListResp> gigListRespStatus) {
+            if(gigListRespStatus.getStatus() == StateDefinition.State.COMPLETED){
+                Timber.d("list gig success %d",gigListRespStatus.getData().size());
             } else{
-                Timber.d("list gig success %d",gigListRespStatus.getGigListResp().size());
+                Timber.d("list gig api failed");
             }
         }
     };
@@ -48,7 +52,9 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
 //
-//        homeViewModel.getGigListLiveData().observe(this, gigListRespStatusObserver);
+        homeViewModel.getGigListLiveData().observe(this, gigListRespStatusObserver);
+
+        Timber.d("HomeFrag on create");
         return root;
     }
 
