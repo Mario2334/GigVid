@@ -7,4 +7,6 @@
     <color name="login_sign_up_background">#FAFAFA</color>
     <color name="black">#000000</color>
     <color name="colorError">#f44336</color>
+    <color name="colorTextDescription">#424242</color>
+    <color name="colorTime">#212121</color>
 </resources>

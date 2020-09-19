@@ -29,4 +29,6 @@
     <!-- Top Menu Bar -->
     <string name="help">Help</string>
     <string name="search">Search</string>
+    <string name="gig_image">Gig Image</string>
+    <string name="buy">Buy</string>
 </resources>
