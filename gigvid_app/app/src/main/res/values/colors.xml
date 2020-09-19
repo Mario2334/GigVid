@@ -6,4 +6,5 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="login_sign_up_background">#FAFAFA</color>
     <color name="black">#000000</color>
+    <color name="colorError">#f44336</color>
 </resources>
