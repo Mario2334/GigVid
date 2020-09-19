@@ -38,7 +38,7 @@
         style="@style/TextViewSubHeaderTheme"
 
         app:layout_constraintWidth_percent="0.2"
-        app:layout_constraintHeight_percent="0.156"
+        app:layout_constraintHeight_percent="0.16"
         app:layout_constraintStart_toStartOf="@id/list_gig_item_view"
         app:layout_constraintEnd_toStartOf="@id/gig_title"
         app:layout_constraintTop_toBottomOf="@id/gig_image_view" />
@@ -54,7 +54,7 @@
         style="@style/TextViewHeaderTheme"
 
         app:layout_constraintWidth_percent="0.2"
-        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintHeight_percent="0.16"
         app:layout_constraintStart_toStartOf="@id/list_gig_item_view"
         app:layout_constraintEnd_toStartOf="@id/gig_description"
         app:layout_constraintTop_toBottomOf="@id/gig_date" />
