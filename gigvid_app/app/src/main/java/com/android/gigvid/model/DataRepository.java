@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
 import com.android.gigvid.model.repository.networkRepo.NetworkManager;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
@@ -131,6 +133,20 @@ public class DataRepository implements IManager {
 //            TODO("Implement live data for DB")
         }
     }
+
+    public LiveData<DataResponse<BuyGigResp>> callBuyGigApi(BuyGigReqBody buyGigReqBody) {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            // Handle network data fetching
+            return mNetworkManager.buyGigApiCall(buyGigReqBody);
+        } else {
+            // Handle db data fetching OR handle unable to sign up state!
+            Timber.d("Is NOT connected to internet!");
+
+//            TODO("Implement live data for DB")
+            return null;
+        }
+    }
+
 
     /***
      * Clear memory here

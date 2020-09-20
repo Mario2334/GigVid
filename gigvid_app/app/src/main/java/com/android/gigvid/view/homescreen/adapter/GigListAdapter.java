@@ -1,5 +1,6 @@
 package com.android.gigvid.view.homescreen.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.gigvid.Constants;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ScheduleDateTime;
 import com.android.gigvid.utils.dateTime.DateTimeUtils;
+import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 
 import java.util.List;
 
 public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListAdapterVH> {
 
     private List<GigListResp> gigList;
-    public GigListAdapter(){
-
+    private AdapterEventCommunicator mAdapterEventCommunicator;
+    public GigListAdapter(AdapterEventCommunicator adapterEventCommunicator){
+        mAdapterEventCommunicator = adapterEventCommunicator;
     }
     @NonNull
     @Override
@@ -41,6 +45,9 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
         holder.getGigDate().setText(scheduleDateTime.getDate());
         holder.getGigTime().setText(scheduleDateTime.getTime());
         holder.getGigMonth().setText(scheduleDateTime.getMonth());
+
+        holder.getGigBuyBtn().setTag(Constants.BUY_BTN_TAG_KEY, gigListResp.getId());
+        holder.getGigBuyBtn().setOnClickListener(buyBtnClickEvent);
 
 //        Timber.d("date time == %s"+", duration == %d", gigListResp.getScheduledTime(), gigListResp.getDuration());
 
@@ -109,8 +116,22 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
             gigDescrip = (TextView) itemView.findViewById(R.id.gig_description);
             gigTime = (TextView) itemView.findViewById(R.id.gig_time);
             gigBuyBtn = (Button) itemView.findViewById(R.id.buy_gig_button);
+
+
         }
+
+
     }
+
+    private View.OnClickListener buyBtnClickEvent = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Log.d("SMP", "onClick: buy btn");
+            Button btn = (Button) view;
+            int gigId = (int)btn.getTag(Constants.BUY_BTN_TAG_KEY);
+            mAdapterEventCommunicator.buyBtnClickEvent(gigId);
+        }
+    };
 
 
 

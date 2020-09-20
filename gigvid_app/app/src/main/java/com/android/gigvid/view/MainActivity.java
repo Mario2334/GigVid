@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
             if(SharedPrefUtils.isUserAlreadyLoggedIn()){
                 //TODO launch home activity
                 Timber.d("SMP launch home screen as token available");
+                //To save latest token value
+//                SharedPrefUtils.saveTokenValueToSP("f6b91256f463149b982de6e658718506ae134e5f");
               launchHomeScreenActivity();
 
             } else{
