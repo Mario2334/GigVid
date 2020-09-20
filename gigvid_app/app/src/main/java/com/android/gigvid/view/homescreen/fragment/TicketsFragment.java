@@ -24,13 +24,13 @@ public class TicketsFragment extends Fragment {
         ticketsViewModel =
                 ViewModelProviders.of(this).get(TicketsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_tickets, container, false);
-        final TextView textView = root.findViewById(R.id.text_tickets);
-        ticketsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+//        final TextView textView = root.findViewById(R.id.text_tickets);
+//        ticketsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+//                textView.setText(s);
+//            }
+//        });
         return root;
     }
 }
