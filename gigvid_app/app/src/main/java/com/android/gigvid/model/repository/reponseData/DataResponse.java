@@ -18,11 +18,12 @@ public class DataResponse<T> {
         mError = errorData;
     }
 
+    @StateDefinition.State
     public int getStatus() {
         return mStatus;
     }
 
-    public void setStatus(int mStatus) {
+    public void setStatus(@StateDefinition.State int mStatus) {
         this.mStatus = mStatus;
     }
 

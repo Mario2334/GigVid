@@ -8,16 +8,241 @@
     tools:context=".view.homescreen.fragment.HostGigFragment" >
 
     <TextView
-        android:id="@+id/text_hostgig"
+        android:id="@+id/add_gig_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:paddingStart="@dimen/dp_4"
+        android:textAlignment="textStart"
+        android:text="@string/host_gig"
+        android:textSize="@dimen/dp_20"
+        style="@style/TextViewHeaderTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_name_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintHeight_percent="0.085"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_events_24"
+        android:hint="@string/event_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/add_gig_header"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/dp_16"
+            android:fontFamily="@font/roboto_light"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_description_text_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_description_24"
+        android:hint="@string/event_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_name_text_field"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:gravity="start"
+            android:textSize="@dimen/dp_16"
+            android:fontFamily="@font/roboto_light"
+            android:inputType="textMultiLine"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_genre"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintHeight_percent="0.085"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_audiotrack_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_description_text_field"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+        <AutoCompleteTextView
+            android:id="@+id/event_genre_autocomplete_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/dp_16"
+            android:fontFamily="@font/roboto_light"
+            android:hint="@string/event_genre"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_price_text_field"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintHeight_percent="0.085"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_rupee_indian"
+        android:hint="@string/price"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_genre"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/dp_16"
+            android:fontFamily="@font/roboto_light"
+            android:inputType="number"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_date_text_field"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.085"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_date_range_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_genre"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/event_date"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintHeight_percent="0.07"
+        app:layout_constraintWidth_percent="0.4"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_4"
+        android:gravity="center"
+        android:textAlignment="textStart"
+        android:textSize="@dimen/dp_16"
+        android:text="@string/event_date"
+        android:fontFamily="@font/roboto_light"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="@id/event_date_text_field"
+        app:layout_constraintTop_toTopOf="@id/event_date_text_field"
+        app:layout_constraintBottom_toBottomOf="@id/event_date_text_field" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_time_text_field"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintWidth_percent="0.4"
+        app:layout_constraintHeight_percent="0.085"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_time_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_price_text_field"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/event_time"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintHeight_percent="0.07"
+        app:layout_constraintWidth_percent="0.3"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_4"
+        android:gravity="center"
+        android:textAlignment="textStart"
+        android:textSize="@dimen/dp_16"
+        android:text="@string/event_time"
+        android:fontFamily="@font/roboto_light"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="@id/event_time_text_field"
+        app:layout_constraintTop_toTopOf="@id/event_time_text_field"
+        app:layout_constraintBottom_toBottomOf="@id/event_time_text_field" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/event_duration"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.085"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_watch_24"
+        android:hint="@string/duration_in_hrs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_date_text_field"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/event_time_autocomplete_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/dp_16"
+            android:fontFamily="@font/roboto_light"
+            android:inputType="number"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/host_gig_button"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        android:layout_margin="@dimen/dp_16"
+        android:fontFamily="@font/roboto"
+        android:text="@string/host_gig"
+        android:textSize="@dimen/dp_16"
+        app:layout_constraintWidth_percent="0.35"
+        app:layout_constraintHeight_percent="0.075"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:icon="@drawable/ic_add_24"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

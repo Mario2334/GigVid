@@ -8,12 +8,12 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
-import androidx.lifecycle.ViewModel;
 
 import com.android.gigvid.model.DataRepository;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
+
+import java.lang.ref.WeakReference;
 
 public class HostGigViewModel extends AndroidViewModel {
 
@@ -25,6 +25,7 @@ public class HostGigViewModel extends AndroidViewModel {
         super(application);
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
+        mDataRepository = DataRepository.getInstance(new WeakReference<>(application.getApplicationContext()));
     }
 
     public LiveData<String> getText() {

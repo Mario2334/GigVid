@@ -1,5 +1,7 @@
 package com.android.gigvid.model.repository.networkRepo.homeScreen;
 
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
@@ -25,4 +27,10 @@ public interface HomeScreenApi {
      */
     @POST("/dev/gig/create_verify/")
     Call<CreateGigResp> createGig(@Header("authorization") String auth, @Body CreateGig createGig);
+
+    /*
+     Buy gig ticket
+  */
+    @POST("/dev/gig/create_payment/")
+    Call<BuyGigResp> buyGig(@Header("authorization") String auth, @Body BuyGigReqBody buyGigReqBody);
 }

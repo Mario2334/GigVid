@@ -9,6 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.android.gigvid.Constants;
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.HomeScreenApi;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
@@ -45,6 +47,8 @@ public class NetworkManager implements IManager {
     private MutableLiveData<DataResponse<SignUpResp>> mSignUpResStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ListResponse<GigListResp>> gigListRespStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<CreateGigRespStatus> createGigRespStatusMutableLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<DataResponse<BuyGigResp>> mBuyGugMutableLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
         if (INSTANCE == null) {
@@ -314,6 +318,83 @@ public class NetworkManager implements IManager {
 
         return createGigRespStatusMutableLiveData;
     }
+
+
+
+
+    public LiveData<DataResponse<BuyGigResp>> buyGigApiCall(BuyGigReqBody buyGigReqBody) {
+        if (homeScreenApiClient == null) {
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+        //        TODO("Use Transformations for live data ")
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<BuyGigResp> call = homeScreenApiClient.buyGig(authToken, buyGigReqBody);
+        call.enqueue(new Callback<BuyGigResp>() {
+            @Override
+            public void onResponse(Call<BuyGigResp> call, Response<BuyGigResp> response) {
+                DataResponse<BuyGigResp> buyGigRespDataResponse;
+                if (response.isSuccessful()) {
+                    BuyGigResp signUpRes = (BuyGigResp) response.body();
+
+                    if (signUpRes != null) {
+                        Timber.d("onResponse: res" + response.code() + signUpRes.getOrderId());
+                        buyGigRespDataResponse = new DataResponse<BuyGigResp>(StateDefinition.State.COMPLETED, signUpRes, null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        buyGigRespDataResponse = new DataResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    buyGigRespDataResponse = new DataResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mBuyGugMutableLiveData.setValue(buyGigRespDataResponse);
+                } else {
+                    mBuyGugMutableLiveData.postValue(buyGigRespDataResponse);
+                }
+
+            }
+
+
+            @Override
+            public void onFailure(Call<BuyGigResp> call, Throwable t) {
+                DataResponse<BuyGigResp> buyGigRespDataResponse;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                buyGigRespDataResponse = new DataResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mBuyGugMutableLiveData.setValue(buyGigRespDataResponse);
+                } else {
+                    mBuyGugMutableLiveData.postValue(buyGigRespDataResponse);
+                }
+            }
+        });
+        return mBuyGugMutableLiveData;
+    }
+
 
     @Override
     public void clear() {

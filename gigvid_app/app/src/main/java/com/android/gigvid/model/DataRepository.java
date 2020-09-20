@@ -1,21 +1,26 @@
 package com.android.gigvid.model;
 
 import android.content.Context;
+import android.os.Looper;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
 import com.android.gigvid.model.repository.networkRepo.NetworkManager;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
+import com.android.gigvid.model.repository.reponseData.ErrorData;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
+import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.network.NetworkUtils;
 
 import java.lang.ref.WeakReference;
@@ -41,6 +46,9 @@ public class DataRepository implements IManager {
 
     private WeakReference<Context> mApplicationContextWeakRef;
 
+    ErrorData mNoInternetError = new ErrorData(StateDefinition.ErrorState.NO_INTERNET_ERROR,
+            "Cannot connect to internet at the moment.");
+
     public static DataRepository getInstance(WeakReference<Context> applicationCtxWeakRef) {
         if (INSTANCE == null) {
             INSTANCE = new DataRepository(applicationCtxWeakRef);
@@ -65,16 +73,25 @@ public class DataRepository implements IManager {
     }
 
     public LiveData<DataResponse<LoginResp>> loginToGigVid(String username, String password) {
+
         if (mNetworkUtils.isConnectedToInternet()) {
             // Handle network data fetching
             Timber.d("Is connected to internet!");
-            return mNetworkManager.loginToGigVid(username, password);
+            LiveData<DataResponse<LoginResp>> source = mNetworkManager.loginToGigVid(username, password);
+            return source;
         } else {
             Timber.d("Is NOT connected to internet!");
-            //            TODO("Implement live data for DB")
-            // Handle db data fetching OR handle unable to login state!
-            return null;
+            DataResponse<LoginResp> loginResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+            MutableLiveData<DataResponse<LoginResp>> loginLiveData = new MutableLiveData<>();
+
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                loginLiveData.setValue(loginResp);
+            } else {
+                loginLiveData.postValue(loginResp);
+            }
+            return loginLiveData;
         }
+
     }
 
     public LiveData<DataResponse<SignUpResp>> signUpForGigVid(SignUpReqBody signUpBody) {
@@ -82,11 +99,16 @@ public class DataRepository implements IManager {
             // Handle network data fetching
             return mNetworkManager.signUpForGigVid(signUpBody);
         } else {
-            // Handle db data fetching OR handle unable to sign up state!
             Timber.d("Is NOT connected to internet!");
+            MutableLiveData<DataResponse<SignUpResp>> signUpLiveData = new MutableLiveData<>();
+            DataResponse<SignUpResp> signUpResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
 
-//            TODO("Implement live data for DB")
-            return null;
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                signUpLiveData.setValue(signUpResp);
+            } else {
+                signUpLiveData.postValue(signUpResp);
+            }
+            return signUpLiveData;
         }
     }
 
@@ -111,6 +133,20 @@ public class DataRepository implements IManager {
 //            TODO("Implement live data for DB")
         }
     }
+
+    public LiveData<DataResponse<BuyGigResp>> callBuyGigApi(BuyGigReqBody buyGigReqBody) {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            // Handle network data fetching
+            return mNetworkManager.buyGigApiCall(buyGigReqBody);
+        } else {
+            // Handle db data fetching OR handle unable to sign up state!
+            Timber.d("Is NOT connected to internet!");
+
+//            TODO("Implement live data for DB")
+            return null;
+        }
+    }
+
 
     /***
      * Clear memory here

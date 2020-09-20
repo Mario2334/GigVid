@@ -7,4 +7,8 @@ public class Constants {
     public static final int SUCCESS = 1;
     public static final int FAIL = 0;
 
+    public static final int BUY_BTN_TAG_KEY = -11;
+
+    public static final String PAYMENT_URL_KEY = "pay_key";
+
 }

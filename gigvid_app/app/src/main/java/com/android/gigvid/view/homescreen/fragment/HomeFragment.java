@@ -1,9 +1,13 @@
 package com.android.gigvid.view.homescreen.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,19 +20,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
+import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 import com.android.gigvid.view.homescreen.adapter.GigListAdapter;
 import com.android.gigvid.viewModel.homescreen.HomeViewModel;
 
 import timber.log.Timber;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements AdapterEventCommunicator {
 
     private HomeViewModel homeViewModel;
     private RecyclerView listGigsRecyclerView;
     private GigListAdapter gigListAdapter;
+    private AdapterEventCommunicator mAdapterEventCommunicator;
 
     private Observer<ListResponse<GigListResp>> gigListRespStatusObserver = new Observer<ListResponse<GigListResp>>() {
         @Override
@@ -53,6 +62,7 @@ public class HomeFragment extends Fragment {
 
         homeViewModel.getGigListLiveData().observe(this, gigListRespStatusObserver);
 
+        mAdapterEventCommunicator = this;
         Timber.d("HomeFrag on create");
         return root;
     }
@@ -72,8 +82,32 @@ public class HomeFragment extends Fragment {
         listGigsRecyclerView.setLayoutManager(mLayoutManager);
         listGigsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         if(gigListAdapter == null){
-            gigListAdapter = new GigListAdapter();
+            gigListAdapter = new GigListAdapter(mAdapterEventCommunicator);
         }
         listGigsRecyclerView.setAdapter(gigListAdapter);
     }
+
+    @Override
+    public void buyBtnClickEvent(int gigId) {
+
+        homeViewModel.buyGigTicket(new BuyGigReqBody(gigId)).observe(this,mBuyGigRespObsever);
+    }
+
+
+    private Observer<DataResponse<BuyGigResp>> mBuyGigRespObsever = new Observer<DataResponse<BuyGigResp>>() {
+        @Override
+        public void onChanged(DataResponse<BuyGigResp> buyGigRespDataResponse) {
+            if(buyGigRespDataResponse.getStatus() == StateDefinition.State.COMPLETED){
+                Log.d("SMP", "onChanged: buy gig on change observer"+buyGigRespDataResponse.getData().getLink());
+
+
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(buyGigRespDataResponse.getData().getLink()));
+                startActivity(browserIntent);
+            } else{
+                Log.d("SMP", "onChanged: error");
+                Toast.makeText(GigVidApplication.getGigVidAppContext(), buyGigRespDataResponse.getError().getErrorMsg(), Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    };
 }

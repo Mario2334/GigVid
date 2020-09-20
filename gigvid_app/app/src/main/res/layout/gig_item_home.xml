@@ -78,6 +78,15 @@
         app:layout_constraintEnd_toStartOf="@id/gig_price"
         app:layout_constraintTop_toBottomOf="@id/gig_image_view" />
 
+    <ImageView
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintHeight_percent="0.08"
+        android:src="@drawable/ic_rupee"
+        app:layout_constraintStart_toStartOf="@id/gig_price"
+        app:layout_constraintTop_toTopOf="@id/gig_price"
+        app:layout_constraintBottom_toBottomOf="@id/gig_price"/>
+
     <TextView
         android:id="@+id/gig_price"
         android:layout_width="@dimen/dp_0"
@@ -126,22 +135,41 @@
         style="@style/TextViewHeaderTheme"
 
         app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintWidth_percent="0.43"
+        app:layout_constraintWidth_percent="0.2"
         app:layout_constraintStart_toEndOf="@id/gig_month"
-        app:layout_constraintEnd_toStartOf="@id/buy_gig_button"
+        app:layout_constraintEnd_toStartOf="@id/gig_duration"
         app:layout_constraintTop_toBottomOf="@id/gig_title"/>
 
-    <Button
+    <TextView
+        android:id="@+id/gig_duration"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+
+        android:textAlignment="textEnd"
+        android:textSize="@dimen/dp_10"
+        android:textColor="@color/colorError"
+        style="@style/TextViewHeaderTheme"
+
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintWidth_percent="0.2"
+        app:layout_constraintEnd_toStartOf="@id/buy_gig_button"
+        app:layout_constraintStart_toEndOf="@id/gig_time"
+        app:layout_constraintTop_toBottomOf="@id/gig_title"/>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buy_gig_button"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
         android:text="@string/buy"
         app:layout_constraintWidth_percent="0.25"
         app:layout_constraintHeight_percent="0.15"
+        android:textSize="@dimen/dp_16"
+        android:fontFamily="@font/roboto"
         app:layout_constraintEnd_toEndOf="@id/list_gig_item_view"
         app:layout_constraintStart_toEndOf="@id/gig_description"
         app:layout_constraintTop_toBottomOf="@id/gig_price"
         app:layout_constraintBottom_toBottomOf="@id/list_gig_item_view"
-        style="@style/Widget.MaterialComponents.Button" />
+        app:icon="@drawable/ic_shopping_bag"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

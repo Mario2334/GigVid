@@ -10,8 +10,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.DataRepository;
+import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 
 import java.lang.ref.WeakReference;
@@ -33,6 +37,18 @@ public class HomeViewModel extends AndroidViewModel {
         return Transformations.map(gigList, new Function<ListResponse<GigListResp>, ListResponse<GigListResp>>() {
             @Override
             public ListResponse<GigListResp> apply(ListResponse<GigListResp> input) {
+//                Modification to Data as per UI to be done here
+                return input;
+            }
+        });
+    }
+
+
+    public LiveData<DataResponse<BuyGigResp>> buyGigTicket(BuyGigReqBody buyGigReqBody){
+        LiveData<DataResponse<BuyGigResp>> buyGigResp = mDataRepository.callBuyGigApi(buyGigReqBody);
+        return Transformations.map(buyGigResp, new Function<DataResponse<BuyGigResp>, DataResponse<BuyGigResp>>() {
+            @Override
+            public DataResponse<BuyGigResp> apply(DataResponse<BuyGigResp> input) {
 //                Modification to Data as per UI to be done here
                 return input;
             }

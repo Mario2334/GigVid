@@ -98,15 +98,31 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     private Observer<DataResponse<SignUpResp>> signUpRespObserver = new Observer<DataResponse<SignUpResp>>() {
         @Override
-        public void onChanged(DataResponse<SignUpResp> signUpResStatus) {
-            if (signUpResStatus.getStatus() == StateDefinition.State.COMPLETED) {
+        public void onChanged(DataResponse<SignUpResp> signUpResp) {
+            if (signUpResp.getStatus() == StateDefinition.State.COMPLETED) {
                 launchLoginOnClick();
-            } else if (signUpResStatus.getStatus() == StateDefinition.State.ERROR) {
+            } else if (signUpResp.getStatus() == StateDefinition.State.ERROR) {
                 proceedWithSignUpButton.setOnClickListener(SignUpFragment.this);
-                Toast.makeText(GigVidApplication.getGigVidAppContext(), "Please enter valid data", Toast.LENGTH_SHORT).show();
+                handleErrorScenario(signUpResp.getError().getErrorStatus());
+            } else {
+//               TODO("Handle loading screen here.")
             }
         }
     };
+
+    private void handleErrorScenario(@StateDefinition.ErrorState int errorState) {
+        switch (errorState) {
+            case StateDefinition.ErrorState.NO_INTERNET_ERROR:
+                Toast.makeText(getActivity(), "Check internet connectivity", Toast.LENGTH_SHORT).show();
+                break;
+            case StateDefinition.ErrorState.INTERNAL_SERVER_ERROR:
+                Toast.makeText(getActivity(), "Something went wrong! Try again later.", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 
     @Override
     public void onClick(View view) {
@@ -133,8 +149,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             signUpBody.setUsername(usernameTextInput.getEditText().getText().toString());
             signUpBody.setEmail(emailTextInput.getEditText().getText().toString());
             signUpBody.setPassword(confirmPasswordTextInput.getEditText().getText().toString());
-            loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
             proceedWithSignUpButton.setOnClickListener(null);
+            loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
         } else {
             Toast.makeText(GigVidApplication.getGigVidAppContext(), "Invalid data", Toast.LENGTH_SHORT).show();
         }
