@@ -23,9 +23,9 @@ import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
+import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.viewModel.homescreen.HostGigViewModel;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Calendar;
@@ -50,8 +50,41 @@ public class HostGigFragment extends DialogFragment {
         @Override
         public void onChanged(DataResponse<CreateGigResp> createGigRespStatus) {
             Timber.d("created gig");
+            if (createGigRespStatus.getStatus() == StateDefinition.State.COMPLETED) {
+                Timber.d("Create Gig response: %s", createGigRespStatus.getData().getMessage());
+                Toast.makeText(GigVidApplication.getGigVidAppContext(), "Successfully hosted", Toast.LENGTH_SHORT).show();
+                if (!submitBtn.hasOnClickListeners()) {
+                    Timber.d("No on click listeners. So adding them.");
+                    submitBtn.setOnClickListener(submitBtnClickListener);
+                }
+            } else if (createGigRespStatus.getStatus() == StateDefinition.State.ERROR) {
+
+                //Enable OnClickListener to allow retry
+                handleErrorScenario(createGigRespStatus.getError().getErrorStatus());
+                if (!submitBtn.hasOnClickListeners()) {
+                    Timber.d("No on click listeners. So adding them.");
+                    submitBtn.setOnClickListener(submitBtnClickListener);
+                }
+            } else {
+//               TODO("Handle loading screen here.")
+            }
         }
     };
+
+    private void handleErrorScenario(@StateDefinition.ErrorState int errorState) {
+        switch (errorState) {
+            case StateDefinition.ErrorState.NO_INTERNET_ERROR:
+                Toast.makeText(getActivity(), "Check internet connectivity", Toast.LENGTH_SHORT).show();
+                break;
+            case StateDefinition.ErrorState.INTERNAL_SERVER_ERROR:
+                Toast.makeText(getActivity(), "Something went wrong! Try again later.", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(getActivity(), "Unable to host this event at the moment", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -91,7 +124,7 @@ public class HostGigFragment extends DialogFragment {
         eventDuration = view.findViewById(R.id.event_duration);
         eventDate = view.findViewById(R.id.event_date);
         submitBtn = view.findViewById(R.id.host_gig_button);
-        submitBtn.setOnClickListener(submitBtnClick);
+        submitBtn.setOnClickListener(submitBtnClickListener);
         eventTime = view.findViewById(R.id.event_time);
 
         buildDatePicker();
@@ -112,8 +145,8 @@ public class HostGigFragment extends DialogFragment {
      * Method: Build Time Picker
      */
     private void buildTimePicker() {
-      eventTime.setClickable(true);
-      eventTime.setFocusable(true);
+        eventTime.setClickable(true);
+        eventTime.setFocusable(true);
     }
 
     /**
@@ -182,7 +215,7 @@ public class HostGigFragment extends DialogFragment {
     /**
      * Method: handle Submit button click
      */
-    private View.OnClickListener submitBtnClick = new View.OnClickListener() {
+    private View.OnClickListener submitBtnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             String name = eventName.getEditText().getText().toString();
@@ -192,18 +225,18 @@ public class HostGigFragment extends DialogFragment {
             String date = eventDate.getText().toString();
             String time = eventTime.getText().toString();
 
-            if(name.isEmpty() || desc.isEmpty() || dur.isEmpty() || price.isEmpty()
-                || date.isEmpty() || time.isEmpty()){
+            if (name.isEmpty() || desc.isEmpty() || dur.isEmpty() || price.isEmpty()
+                    || date.isEmpty() || time.isEmpty()) {
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), "Enter all data", Toast.LENGTH_SHORT).show();
-            } else{
+            } else {
                 CreateGigReqBody createGigReqBody = new CreateGigReqBody();
                 createGigReqBody.setDescription(desc);
                 createGigReqBody.setDuration(Integer.parseInt(dur));
                 createGigReqBody.setName(name);
                 createGigReqBody.setPrice(Integer.parseInt(price));
-                createGigReqBody.setScheduledTime(date+"T"+time+":44.665788+05:30");
+                createGigReqBody.setScheduledTime(date + "T" + time + ":44.665788+05:30");
+                submitBtn.setOnClickListener(null);
                 hostGigViewModel.createGig(createGigReqBody).observe(HostGigFragment.this, createGigRespStatusObserver);
-                Toast.makeText(GigVidApplication.getGigVidAppContext(),"Successfully hosted", Toast.LENGTH_SHORT).show();
             }
         }
     };

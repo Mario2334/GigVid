@@ -121,7 +121,6 @@ public class DataRepository implements IManager {
             return mNetworkManager.getGigList();
         } else {
             Timber.d("Is NOT connected to internet!");
-
             return Transformations.switchMap(mDatabaseManager.getGigsList(), new Function<List<GigListResp>, LiveData<ListResponse<GigListResp>>>() {
 
                 @Override
@@ -148,21 +147,34 @@ public class DataRepository implements IManager {
             return mNetworkManager.createGig(createGig);
         } else {
             Timber.d("Is NOT connected to internet!");
-            return null;
-//            TODO("Implement live data for DB")
+            DataResponse<CreateGigResp> createGigResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+            MutableLiveData<DataResponse<CreateGigResp>> createGigLiveData = new MutableLiveData<>();
+
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                createGigLiveData.setValue(createGigResp);
+            } else {
+                createGigLiveData.postValue(createGigResp);
+            }
+            return createGigLiveData;
         }
     }
 
+    //    Need clarification.
     public LiveData<DataResponse<BuyGigResp>> callBuyGigApi(BuyGigReqBody buyGigReqBody) {
         if (mNetworkUtils.isConnectedToInternet()) {
             // Handle network data fetching
             return mNetworkManager.buyGigApiCall(buyGigReqBody);
         } else {
-            // Handle db data fetching OR handle unable to sign up state!
             Timber.d("Is NOT connected to internet!");
+            DataResponse<BuyGigResp> buyGigResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+            MutableLiveData<DataResponse<BuyGigResp>> buyGigLiveData = new MutableLiveData<>();
 
-//            TODO("Implement live data for DB")
-            return null;
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                buyGigLiveData.setValue(buyGigResp);
+            } else {
+                buyGigLiveData.postValue(buyGigResp);
+            }
+            return buyGigLiveData;
         }
     }
 

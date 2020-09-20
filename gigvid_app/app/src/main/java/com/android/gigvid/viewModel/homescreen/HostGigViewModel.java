@@ -33,7 +33,7 @@ public class HostGigViewModel extends AndroidViewModel {
         return mText;
     }
 
-    public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig){
+    public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
         LiveData<DataResponse<CreateGigResp>> createGigEvent = mDataRepository.createGig(createGig);
         return Transformations.map(createGigEvent, new Function<DataResponse<CreateGigResp>, DataResponse<CreateGigResp>>() {
             @Override

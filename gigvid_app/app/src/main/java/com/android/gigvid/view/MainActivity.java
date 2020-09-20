@@ -29,15 +29,13 @@ public class MainActivity extends AppCompatActivity {
     private Runnable uiLoading = new Runnable() {
         @Override
         public void run() {
-            if(SharedPrefUtils.isUserAlreadyLoggedIn()){
-                //TODO launch home activity
+            if (SharedPrefUtils.isUserAlreadyLoggedIn()) {
                 Timber.d("SMP launch home screen as token available");
                 //To save latest token value
 //                SharedPrefUtils.saveTokenValueToSP("f6b91256f463149b982de6e658718506ae134e5f");
-              launchHomeScreenActivity();
+                launchHomeScreenActivity();
 
-            } else{
-                //TODO launch login page
+            } else {
                 Intent loginActivity = new Intent(getApplicationContext(), UserAuthActivity.class);
                 startActivity(loginActivity);
             }
