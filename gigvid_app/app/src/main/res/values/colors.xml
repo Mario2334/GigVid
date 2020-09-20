@@ -3,7 +3,7 @@
     <color name="colorPrimary">#FB8C00</color>
     <color name="colorPrimaryDark">#D84315</color>
     <color name="login_sign_up_button_color">#FF5722</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#FB8C00</color>
     <color name="login_sign_up_background">#FAFAFA</color>
     <color name="black">#000000</color>
     <color name="colorError">#f44336</color>

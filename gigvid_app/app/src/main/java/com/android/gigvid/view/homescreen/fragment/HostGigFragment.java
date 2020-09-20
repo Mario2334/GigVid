@@ -1,13 +1,15 @@
 package com.android.gigvid.view.homescreen.fragment;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.Build;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,9 +30,7 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.util.Calendar;
 
 import timber.log.Timber;
 
@@ -39,11 +39,14 @@ public class HostGigFragment extends DialogFragment {
     private HostGigViewModel hostGigViewModel;
     private MaterialDatePicker<?> picker;
     private TextView eventDate;
+    private TextView eventTime;
+    private MaterialButton submitBtn;
+    private TextInputLayout eventName, eventDescrip, eventPrice, eventDuration;
+    private int hour;
+    private int minute;
     private int year;
     private int month;
     private int day;
-    private MaterialButton submitBtn;
-    private TextInputLayout eventName, eventDescrip, eventPrice, eventDuration;
 
 
     private Observer<DataResponse<CreateGigResp>> createGigRespStatusObserver = new Observer<DataResponse<CreateGigResp>>() {
@@ -92,101 +95,96 @@ public class HostGigFragment extends DialogFragment {
         eventDate = view.findViewById(R.id.event_date);
         submitBtn = view.findViewById(R.id.host_gig_button);
         submitBtn.setOnClickListener(submitBtnClick);
-
+        eventTime = view.findViewById(R.id.event_time);
 
         buildDatePicker();
+        buildTimePicker();
         handleDatePickerClickEvent();
-        handleDatePickerCallbacks(view);
+        handleTimePickerClickEvent();
     }
 
     /**
      * Method: Build Date Picker
      */
     private void buildDatePicker() {
-        MaterialDatePicker.Builder<?> dateBuilder = MaterialDatePicker.Builder.datePicker();
-        picker = dateBuilder.build();
+        eventDate.setClickable(true);
+        eventDate.setFocusableInTouchMode(true);
     }
 
     /**
      * Method: Build Time Picker
      */
     private void buildTimePicker() {
-
+      eventTime.setClickable(true);
+      eventTime.setFocusable(true);
     }
 
     /**
      * Method: Handle Date Picker button click
      */
     private void handleDatePickerClickEvent() {
-        eventDate.setClickable(true);
-        eventDate.setFocusableInTouchMode(true);
-
         eventDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getFragmentManager() != null) {
-                    picker.show(getFragmentManager(),picker.toString());
-                } else {
-                    Timber.e("getFragmentManager() is Null!");
-                }
+                final Calendar c = Calendar.getInstance();
+                year = c.get(Calendar.YEAR);
+                month = c.get(Calendar.MONTH);
+                day = c.get(Calendar.DAY_OF_MONTH);
+
+                launchDatePicker();
             }
         });
     }
 
     /**
-     * Method: Get TimeZone
-     * NOTE: Perform Null check when receiving value
-     *
-     * TODO: Implement for API level <26
+     * Method: Launch Date Picker
      */
-    private LocalDateTime returnLocalDateTime() {
-        LocalDateTime local = null;
-        if (Build.VERSION.SDK_INT >= 26) {
-            local = LocalDateTime.of(year, month, day, 0, 0);
-            local.atZone(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).toInstant().toEpochMilli();
-        }
-        return local;
+    private void launchDatePicker() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        eventDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                    }
+                }, year, month, day);
+        datePickerDialog.show();
     }
 
     /**
-     * Method: Handle Date Picker callback events
+     * Method: Handle Time Picker button click
      */
-    private void handleDatePickerCallbacks(final View view) {
-
-        // Handle Cancel Button Click
-        picker.addOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                Snackbar.make(view, "Date selection cancelled", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-
-        // Handle Dismiss
-        picker.addOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                Snackbar.make(view, "Dismissed", Snackbar.LENGTH_SHORT).show();
-
-            }
-        });
-
-        // Handle Negative Button Click listener
-        picker.addOnNegativeButtonClickListener(new View.OnClickListener() {
+    private void handleTimePickerClickEvent() {
+        eventTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(view, "Cancelled", Snackbar.LENGTH_SHORT).show();
-            }
-        });
+                final Calendar c = Calendar.getInstance();
+                hour = c.get(Calendar.HOUR_OF_DAY);
+                minute = c.get(Calendar.MINUTE);
 
-        // Handle Positive Button Click Listener
-        picker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Object>() {
-            @Override
-            public void onPositiveButtonClick(Object selection) {
-                eventDate.setText(picker.getHeaderText());
+                launchTimePicker();
             }
         });
     }
 
+    /**
+     * Method: Launch Time Picker
+     */
+    private void launchTimePicker() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this.getContext(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay,
+                                          int minute) {
+                        eventTime.setText(hourOfDay + ":" + minute);
+                    }
+                }, hour, minute, false);
+        timePickerDialog.show();
+    }
+
+    /**
+     * Method: handle Submit button click
+     */
     private View.OnClickListener submitBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -194,8 +192,11 @@ public class HostGigFragment extends DialogFragment {
             String desc = eventDescrip.getEditText().getText().toString();
             String dur = eventDuration.getEditText().getText().toString();
             String price = eventPrice.getEditText().getText().toString();
+            String date = eventDate.getText().toString();
+            String time = eventTime.getText().toString();
 
-            if(name.isEmpty() || desc.isEmpty() || dur.isEmpty() || price.isEmpty()){
+            if(name.isEmpty() || desc.isEmpty() || dur.isEmpty() || price.isEmpty()
+                || date.isEmpty() || time.isEmpty()){
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), "Enter all data", Toast.LENGTH_SHORT).show();
             } else{
                 CreateGigReqBody createGigReqBody = new CreateGigReqBody();
@@ -203,7 +204,7 @@ public class HostGigFragment extends DialogFragment {
                 createGigReqBody.setDuration(Integer.parseInt(dur));
                 createGigReqBody.setName(name);
                 createGigReqBody.setPrice(Integer.parseInt(price));
-                createGigReqBody.setScheduledTime("2020-09-26T10:30:44.665788+05:30");
+                createGigReqBody.setScheduledTime(date+"T"+time+":44.665788+05:30");
                 hostGigViewModel.createGig(createGigReqBody).observe(HostGigFragment.this, createGigRespStatusObserver);
                 Toast.makeText(GigVidApplication.getGigVidAppContext(),"Successfully hosted", Toast.LENGTH_SHORT).show();
             }
