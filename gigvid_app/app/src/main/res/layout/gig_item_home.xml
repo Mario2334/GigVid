@@ -156,7 +156,7 @@
         app:layout_constraintStart_toEndOf="@id/gig_time"
         app:layout_constraintTop_toBottomOf="@id/gig_title"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buy_gig_button"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
@@ -169,6 +169,7 @@
         app:layout_constraintStart_toEndOf="@id/gig_description"
         app:layout_constraintTop_toBottomOf="@id/gig_price"
         app:layout_constraintBottom_toBottomOf="@id/list_gig_item_view"
-        style="@style/Widget.MaterialComponents.Button" />
+        app:icon="@drawable/ic_shopping_bag"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
