@@ -1,14 +1,15 @@
 # import bcrypt
 from rest_framework import serializers
 
-from user.models import User, Hobby , BankAccount
+from user.models import User, Hobby, BankAccount
 
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ["username","first_name","last_name","email","hobby","password"]
+        fields = ["username", "first_name", "last_name", "email", "hobby", "password"]
 
     def create(self, validated_data):
         # salt = bcrypt.gensalt()
@@ -17,13 +18,21 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class RUDUserSerializer(serializers.ModelSerializer):
+    hobby = serializers.CharField(source="hobby.name")
+
+    class Meta:
+        model = User
+        fields = ["username", "first_name", "last_name", "email", "hobby"]
+
+
 class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
     username = serializers.CharField(required=True)
 
 
 class BankAccountSerializer(serializers.ModelSerializer):
-    contact_id = serializers.CharField(max_length=300,required=False)
+    contact_id = serializers.CharField(max_length=300, required=False)
 
     class Meta:
         model = BankAccount
@@ -33,4 +42,4 @@ class BankAccountSerializer(serializers.ModelSerializer):
 class HobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Hobby
-        fields = ["id","name"]
+        fields = ["id", "name"]

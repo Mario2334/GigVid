@@ -24,6 +24,8 @@ class ConfirmPaymentSerializer(serializers.Serializer):
 class TicketSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True,format="%d %b %y at %I:%M %p")
+    gig = GigSerializer(read_only=True)
+
     class Meta:
         model = models.Ticket
         fields = ["gig","user","order","id","created_at"]
