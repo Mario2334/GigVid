@@ -50,4 +50,6 @@
     <string name="registered_gigs">Registered Gigs:</string>
     <string name="my_gigs">My Gigs</string>
     <string name="my_tickets">My Tickets</string>
+    <string name="join">Join</string>
+    <string name="start">Start</string>
 </resources>

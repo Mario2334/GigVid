@@ -20,7 +20,7 @@
         android:layout_height="@dimen/dp_0"
         android:scaleType="fitCenter"
         android:background="@color/card_background"
-        android:src="@drawable/prom_night"
+        android:src="@drawable/microphone"
         app:layout_constraintWidth_percent="0.94"
         app:layout_constraintHeight_percent="0.6"
         android:layout_marginTop="@dimen/dp_12"
