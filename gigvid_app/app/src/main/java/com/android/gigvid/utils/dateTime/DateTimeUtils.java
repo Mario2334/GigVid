@@ -35,9 +35,12 @@ public class DateTimeUtils {
     public static ScheduleDateTime getSchedDtTime(String dateTime){
         String[] arr = dateTime.split(" ");
         ScheduleDateTime scheduleDateTime = new ScheduleDateTime();
-        scheduleDateTime.setDate(arr[0]);
-        scheduleDateTime.setMonth(arr[1]);
-        scheduleDateTime.setTime(arr[4]+arr[5]);
+        if(arr.length >= 5){
+            scheduleDateTime.setDate(arr[0]);
+            scheduleDateTime.setMonth(arr[1]);
+            scheduleDateTime.setTime(arr[4]+arr[5]);
+        }
+
         return scheduleDateTime;
 
     }
