@@ -4,7 +4,7 @@ package com.android.gigvid.model.repository.networkRepo.homeScreen.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CreateGig {
+public class CreateGigReqBody {
 
     @SerializedName("name")
     @Expose
@@ -18,33 +18,38 @@ public class CreateGig {
     @SerializedName("header_image")
     @Expose
     private String headerImage;
-
-    private String minutes;
+    @SerializedName("duration")
+    @Expose
+    private Integer duration;
+    @SerializedName("price")
+    @Expose
+    private Integer price;
 
     /**
      * No args constructor for use in serialization
-     *
+     * 
      */
-    public CreateGig() {
+    public CreateGigReqBody() {
     }
 
-    public CreateGig(String name, String description, String scheduledTime, String headerImage, String minutes) {
+    /**
+     * 
+     * @param duration
+     * @param scheduledTime
+     * @param headerImage
+     * @param price
+     * @param name
+     * @param description
+     */
+    public CreateGigReqBody(String name, String description, String scheduledTime, String headerImage, Integer duration, Integer price) {
+        super();
         this.name = name;
         this.description = description;
         this.scheduledTime = scheduledTime;
         this.headerImage = headerImage;
-        this.minutes = minutes;
+        this.duration = duration;
+        this.price = price;
     }
-
-    public String getMinutes() {
-        return minutes;
-    }
-
-    public void setMinutes(String minutes) {
-        this.minutes = minutes;
-    }
-
-
 
     public String getName() {
         return name;
@@ -76,6 +81,22 @@ public class CreateGig {
 
     public void setHeaderImage(String headerImage) {
         this.headerImage = headerImage;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
 }

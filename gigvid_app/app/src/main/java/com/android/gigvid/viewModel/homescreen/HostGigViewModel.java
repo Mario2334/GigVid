@@ -10,8 +10,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.DataRepository;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
 
 import java.lang.ref.WeakReference;
 
@@ -32,11 +33,11 @@ public class HostGigViewModel extends AndroidViewModel {
         return mText;
     }
 
-    public LiveData<CreateGigRespStatus> createGig(CreateGig createGig){
-        LiveData<CreateGigRespStatus> createGigEvent = mDataRepository.createGig(createGig);
-        return Transformations.map(createGigEvent, new Function<CreateGigRespStatus, CreateGigRespStatus>() {
+    public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig){
+        LiveData<DataResponse<CreateGigResp>> createGigEvent = mDataRepository.createGig(createGig);
+        return Transformations.map(createGigEvent, new Function<DataResponse<CreateGigResp>, DataResponse<CreateGigResp>>() {
             @Override
-            public CreateGigRespStatus apply(CreateGigRespStatus input) {
+            public DataResponse<CreateGigResp> apply(DataResponse<CreateGigResp> input) {
 //                Modification to Data as per UI to be done here
                 return input;
             }

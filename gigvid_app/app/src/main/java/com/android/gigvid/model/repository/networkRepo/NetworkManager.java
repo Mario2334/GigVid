@@ -11,9 +11,8 @@ import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.HomeScreenApi;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogInReqBody;
@@ -46,7 +45,7 @@ public class NetworkManager implements IManager {
     private MutableLiveData<DataResponse<LoginResp>> mLogInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<DataResponse<SignUpResp>> mSignUpResStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ListResponse<GigListResp>> gigListRespStatusMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<CreateGigRespStatus> createGigRespStatusMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<DataResponse<CreateGigResp>> createGigRespStatusMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<DataResponse<BuyGigResp>> mBuyGugMutableLiveData = new MutableLiveData<>();
 
@@ -228,6 +227,9 @@ public class NetworkManager implements IManager {
         callGigList.enqueue(new Callback<List<GigListResp>>() {
             @Override
             public void onResponse(Call<List<GigListResp>> call, Response<List<GigListResp>> response) {
+
+
+
                 ListResponse<GigListResp> gigListRespStatus;
                 if (response.isSuccessful()) {
 
@@ -263,6 +265,8 @@ public class NetworkManager implements IManager {
                 } else {
                     gigListRespStatusMutableLiveData.postValue(gigListRespStatus);
                 }
+
+
             }
 
             @Override
@@ -290,7 +294,7 @@ public class NetworkManager implements IManager {
         return gigListRespStatusMutableLiveData;
     }
 
-    public LiveData<CreateGigRespStatus> createGig(CreateGig createGig) {
+    public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -303,16 +307,64 @@ public class NetworkManager implements IManager {
         createGigCall.enqueue(new Callback<CreateGigResp>() {
             @Override
             public void onResponse(Call<CreateGigResp> call, Response<CreateGigResp> response) {
+
+                DataResponse<CreateGigResp> createGigRespDataResponse;
                 if (response.isSuccessful()) {
-                    createGigRespStatusMutableLiveData.setValue(new CreateGigRespStatus(response.body(), Constants.SUCCESS));
+                    CreateGigResp createGigResp = (CreateGigResp) response.body();
+
+                    if (createGigResp != null) {
+                        Timber.d("onResponse: res" + response.code() + createGigResp.getMessage());
+                        createGigRespDataResponse = new DataResponse<CreateGigResp>(StateDefinition.State.COMPLETED, createGigResp, null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        createGigRespDataResponse = new DataResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
                 } else {
-                    createGigRespStatusMutableLiveData.setValue(new CreateGigRespStatus(null, Constants.FAIL));
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    createGigRespDataResponse = new DataResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    createGigRespStatusMutableLiveData.setValue(createGigRespDataResponse);
+                } else {
+                    createGigRespStatusMutableLiveData.postValue(createGigRespDataResponse);
                 }
             }
 
             @Override
             public void onFailure(Call<CreateGigResp> call, Throwable t) {
-                createGigRespStatusMutableLiveData.setValue(new CreateGigRespStatus(null, Constants.FAIL));
+
+                DataResponse<CreateGigResp> createGigRespDataResponse;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                createGigRespDataResponse = new DataResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    createGigRespStatusMutableLiveData.setValue(createGigRespDataResponse);
+                } else {
+                    createGigRespStatusMutableLiveData.postValue(createGigRespDataResponse);
+                }
             }
         });
 

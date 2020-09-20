@@ -11,8 +11,8 @@ import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
 import com.android.gigvid.model.repository.networkRepo.NetworkManager;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
@@ -124,7 +124,7 @@ public class DataRepository implements IManager {
     }
 
 
-    public LiveData<CreateGigRespStatus> createGig(CreateGig createGig) {
+    public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
         if (mNetworkUtils.isConnectedToInternet()) {
             return mNetworkManager.createGig(createGig);
         } else {

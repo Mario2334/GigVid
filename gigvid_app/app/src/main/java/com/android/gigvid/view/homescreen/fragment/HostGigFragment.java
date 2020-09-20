@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,17 +16,21 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.viewModel.homescreen.HostGigViewModel;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.Date;
 
 import timber.log.Timber;
 
@@ -38,10 +42,13 @@ public class HostGigFragment extends DialogFragment {
     private int year;
     private int month;
     private int day;
+    private MaterialButton submitBtn;
+    private TextInputLayout eventName, eventDescrip, eventPrice, eventDuration;
 
-    private Observer<CreateGigRespStatus> createGigRespStatusObserver = new Observer<CreateGigRespStatus>() {
+
+    private Observer<DataResponse<CreateGigResp>> createGigRespStatusObserver = new Observer<DataResponse<CreateGigResp>>() {
         @Override
-        public void onChanged(CreateGigRespStatus createGigRespStatus) {
+        public void onChanged(DataResponse<CreateGigResp> createGigRespStatus) {
             Timber.d("created gig");
         }
     };
@@ -51,13 +58,7 @@ public class HostGigFragment extends DialogFragment {
         hostGigViewModel =
                 ViewModelProviders.of(this).get(HostGigViewModel.class);
         View root = inflater.inflate(R.layout.fragment_hostgig, container, false);
-//        final TextView textView = root.findViewById(R.id.text_hostgig);
-//        hostGigViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
+
 //
 //        //TODO call create Gig viewmodel api on click of submit button
 ////         hostGigViewModel.createGig(new CreateGig()).observe(this, createGigRespStatusObserver);
@@ -84,7 +85,14 @@ public class HostGigFragment extends DialogFragment {
      */
     private void initializeUI(View view) {
 
+        eventName = view.findViewById(R.id.event_name_text_field);
+        eventDescrip = view.findViewById(R.id.event_description_text_field);
+        eventPrice = view.findViewById(R.id.event_price_text_field);
+        eventDuration = view.findViewById(R.id.event_duration);
         eventDate = view.findViewById(R.id.event_date);
+        submitBtn = view.findViewById(R.id.host_gig_button);
+        submitBtn.setOnClickListener(submitBtnClick);
+
 
         buildDatePicker();
         handleDatePickerClickEvent();
@@ -103,7 +111,7 @@ public class HostGigFragment extends DialogFragment {
      * Method: Build Time Picker
      */
     private void buildTimePicker() {
-      
+
     }
 
     /**
@@ -178,4 +186,27 @@ public class HostGigFragment extends DialogFragment {
             }
         });
     }
+
+    private View.OnClickListener submitBtnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String name = eventName.getEditText().getText().toString();
+            String desc = eventDescrip.getEditText().getText().toString();
+            String dur = eventDuration.getEditText().getText().toString();
+            String price = eventPrice.getEditText().getText().toString();
+
+            if(name.isEmpty() || desc.isEmpty() || dur.isEmpty() || price.isEmpty()){
+                Toast.makeText(GigVidApplication.getGigVidAppContext(), "Enter all data", Toast.LENGTH_SHORT).show();
+            } else{
+                CreateGigReqBody createGigReqBody = new CreateGigReqBody();
+                createGigReqBody.setDescription(desc);
+                createGigReqBody.setDuration(Integer.parseInt(dur));
+                createGigReqBody.setName(name);
+                createGigReqBody.setPrice(Integer.parseInt(price));
+                createGigReqBody.setScheduledTime("2020-09-26T10:30:44.665788+05:30");
+                hostGigViewModel.createGig(createGigReqBody).observe(HostGigFragment.this, createGigRespStatusObserver);
+                Toast.makeText(GigVidApplication.getGigVidAppContext(),"Successfully hosted", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 }

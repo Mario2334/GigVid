@@ -2,7 +2,7 @@ package com.android.gigvid.model.repository.networkRepo.homeScreen;
 
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 
@@ -26,7 +26,7 @@ public interface HomeScreenApi {
         Create new gig
      */
     @POST("/dev/gig/create_verify/")
-    Call<CreateGigResp> createGig(@Header("authorization") String auth, @Body CreateGig createGig);
+    Call<CreateGigResp> createGig(@Header("authorization") String auth, @Body CreateGigReqBody createGig);
 
     /*
      Buy gig ticket
