@@ -1,7 +1,7 @@
 # import bcrypt
 from rest_framework import serializers
 
-from user.models import User, Hobby
+from user.models import User, Hobby , BankAccount
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,6 +20,14 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
     username = serializers.CharField(required=True)
+
+
+class BankAccountSerializer(serializers.ModelSerializer):
+    contact_id = serializers.CharField(max_length=300,required=False)
+
+    class Meta:
+        model = BankAccount
+        fields = "__all__"
 
 
 class HobbySerializer(serializers.ModelSerializer):
