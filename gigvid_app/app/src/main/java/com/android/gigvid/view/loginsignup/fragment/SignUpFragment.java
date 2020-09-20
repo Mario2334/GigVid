@@ -149,8 +149,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             signUpBody.setUsername(usernameTextInput.getEditText().getText().toString());
             signUpBody.setEmail(emailTextInput.getEditText().getText().toString());
             signUpBody.setPassword(confirmPasswordTextInput.getEditText().getText().toString());
-            loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
             proceedWithSignUpButton.setOnClickListener(null);
+            loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
         } else {
             Toast.makeText(GigVidApplication.getGigVidAppContext(), "Invalid data", Toast.LENGTH_SHORT).show();
         }

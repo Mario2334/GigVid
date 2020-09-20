@@ -3,10 +3,8 @@ package com.android.gigvid.model;
 import android.content.Context;
 import android.os.Looper;
 
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
@@ -46,8 +44,6 @@ public class DataRepository implements IManager {
 
     private WeakReference<Context> mApplicationContextWeakRef;
 
-    MutableLiveData<DataResponse<LoginResp>> loginLiveData = new MutableLiveData<>();
-
     ErrorData mNoInternetError = new ErrorData(StateDefinition.ErrorState.NO_INTERNET_ERROR,
             "Cannot connect to internet at the moment.");
 
@@ -80,16 +76,11 @@ public class DataRepository implements IManager {
             // Handle network data fetching
             Timber.d("Is connected to internet!");
             LiveData<DataResponse<LoginResp>> source = mNetworkManager.loginToGigVid(username, password);
-            return Transformations.switchMap(source, new Function<DataResponse<LoginResp>, LiveData<DataResponse<LoginResp>>>() {
-                @Override
-                public LiveData<DataResponse<LoginResp>> apply(DataResponse<LoginResp> input) {
-                    loginLiveData.setValue(input);
-                    return loginLiveData;
-                }
-            });
+            return source;
         } else {
             Timber.d("Is NOT connected to internet!");
             DataResponse<LoginResp> loginResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+            MutableLiveData<DataResponse<LoginResp>> loginLiveData = new MutableLiveData<>();
 
             if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
                 loginLiveData.setValue(loginResp);
