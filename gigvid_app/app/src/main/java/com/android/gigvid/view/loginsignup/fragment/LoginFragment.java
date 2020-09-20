@@ -41,14 +41,13 @@ public class LoginFragment extends Fragment {
     private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
+            Timber.d("KPS!!! clicked!!");
             String username = usernameTextInput.getEditText().getText().toString();
             String pass = passwordTextInput.getEditText().getText().toString();
-
             if (isCredentialValid(username, pass)) {
+                proceedToLoginButton.setOnClickListener(null);
                 loginSignUpViewModel.login(username, pass).observe(LoginFragment.this, loginRespObserver);
                 //Disable click listener to avoid multiple calls
-                proceedToLoginButton.setOnClickListener(null);
             } else {
                 Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
             }
@@ -146,12 +145,32 @@ public class LoginFragment extends Fragment {
             } else if (loginResp.getStatus() == StateDefinition.State.ERROR) {
 
                 //Enable OnClickListener to allow retry
-                proceedToLoginButton.setOnClickListener(onLoginClickListener);
-                Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                handleErrorScenario(loginResp.getError().getErrorStatus());
+                if (!proceedToLoginButton.hasOnClickListeners()) {
+                    Timber.d("No on click listeners. So adding them.");
+                    proceedToLoginButton.setOnClickListener(onLoginClickListener);
+                }
 
+            } else {
+//               TODO("Handle loading screen here.")
             }
         }
     };
+
+    private void handleErrorScenario(@StateDefinition.ErrorState int errorState) {
+        switch (errorState) {
+            case StateDefinition.ErrorState.NO_INTERNET_ERROR:
+                Toast.makeText(getActivity(), "Check internet connectivity", Toast.LENGTH_SHORT).show();
+                break;
+            case StateDefinition.ErrorState.INTERNAL_SERVER_ERROR:
+                Toast.makeText(getActivity(), "Something went wrong! Try again later.", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
 
     private void launchHomeScreenActivity() {
         Intent homeScreenIntent = new Intent(this.getActivity(), HomeScreenActivity.class);
