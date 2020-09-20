@@ -130,7 +130,7 @@
             android:singleLine="true"
             android:textSize="@dimen/dp_16"
             android:fontFamily="@font/roboto_light"
-            android:inputType="textCapWords"/>
+            android:inputType="number"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
