@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_24"
+        android:title="@string/search"
+        android:orderInCategory="1"
+        android:contentDescription="@string/search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        android:actionLayout="@layout/search_view_layout"
+        app:showAsAction="always|collapseActionView"/>
+
+    <item
+        android:id="@+id/help"
+        android:icon="@drawable/ic_help_outline_24"
+        android:title="@string/help"
+        android:orderInCategory="2"
+        android:contentDescription="@string/help"
+        app:showAsAction="always"/>
+
+</menu>

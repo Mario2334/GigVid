@@ -3,25 +3,30 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_explore"
+        android:icon="@drawable/ic_home_24"
+        android:orderInCategory="1"
         android:title="@string/title_home"/>
 
     <item
         android:id="@+id/navigation_tickets"
         android:icon="@drawable/ic_ticket"
+        android:orderInCategory="2"
         android:title="@string/title_tickets"/>
 
     <item
         android:id="@+id/navigation_host_event"
         android:icon="@drawable/ic_add"
+        android:orderInCategory="3"
         android:title="@string/title_hostevent"/>
     <item
         android:id="@+id/navigation_my_gig"
         android:icon="@drawable/ic_event"
+        android:orderInCategory="4"
         android:title="@string/title_mygig"/>
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile_24"
+        android:orderInCategory="5"
         android:title="@string/title_profile"/>
 
 </menu>

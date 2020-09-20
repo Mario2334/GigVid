@@ -20,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Handler uiHandler = new Handler();
-        uiHandler.postDelayed(uiLoading, 5000);
+        uiHandler.postDelayed(uiLoading, 3000);
 
-        //uncomment to logout if already sign up is successfull
+        //uncomment to logout if already sign up is successful
 //        SharedPrefUtils.saveTokenValueToSP(null);
     }
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             if(SharedPrefUtils.isUserAlreadyLoggedIn()){
                 //TODO launch home activity
-                Timber.d("SMP launch home screen astoken available");
+                Timber.d("SMP launch home screen as token available");
               launchHomeScreenActivity();
 
             } else{

@@ -9,11 +9,13 @@ import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
 import com.android.gigvid.model.repository.networkRepo.NetworkManager;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
+import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.utils.network.NetworkUtils;
 
 import java.lang.ref.WeakReference;
@@ -88,8 +90,9 @@ public class DataRepository implements IManager {
         }
     }
 
-    public LiveData<GigListRespStatus> getGigList() {
+    public LiveData<ListResponse<GigListResp>> getGigList() {
         if (mNetworkUtils.isConnectedToInternet()) {
+            Timber.d("SMP Data Repo fetch gig list");
             return mNetworkManager.getGigList();
         } else {
             Timber.d("Is NOT connected to internet!");

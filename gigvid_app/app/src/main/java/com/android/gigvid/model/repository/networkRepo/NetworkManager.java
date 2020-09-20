@@ -13,7 +13,6 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGig
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigRespStatus;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRespStatus;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogInReqBody;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
@@ -21,6 +20,7 @@ import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpRe
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.ErrorData;
+import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.network.RetrofitUtils;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
@@ -43,7 +43,7 @@ public class NetworkManager implements IManager {
 
     private MutableLiveData<DataResponse<LoginResp>> mLogInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<DataResponse<SignUpResp>> mSignUpResStatusMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<GigListRespStatus> gigListRespStatusMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ListResponse<GigListResp>> gigListRespStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<CreateGigRespStatus> createGigRespStatusMutableLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
@@ -157,10 +157,7 @@ public class NetworkManager implements IManager {
 
                     if (signUpRes != null) {
                         Timber.d("onResponse: res" + response.code() + signUpRes.getUsername());
-                        signUpResponseStatus = new DataResponse<SignUpResp>(
-                                StateDefinition.State.COMPLETED,
-                                signUpRes,
-                                null);
+                        signUpResponseStatus = new DataResponse<SignUpResp>(StateDefinition.State.COMPLETED, signUpRes, null);
                     } else {
                         ErrorData error = new ErrorData(
                                 StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
@@ -218,7 +215,7 @@ public class NetworkManager implements IManager {
     }
 
 
-    public LiveData<GigListRespStatus> getGigList() {
+    public LiveData<ListResponse<GigListResp>> getGigList() {
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -227,19 +224,62 @@ public class NetworkManager implements IManager {
         callGigList.enqueue(new Callback<List<GigListResp>>() {
             @Override
             public void onResponse(Call<List<GigListResp>> call, Response<List<GigListResp>> response) {
+                ListResponse<GigListResp> gigListRespStatus;
                 if (response.isSuccessful()) {
-                    GigListRespStatus gigListRespStatus = new GigListRespStatus(response.body(), Constants.SUCCESS, null);
+
+                    List<GigListResp> gigList = response.body();
+                    if(gigList != null ){
+                        gigListRespStatus = new ListResponse<>(StateDefinition.State.COMPLETED, gigList, null);
+                    } else{
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        gigListRespStatus = new ListResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    gigListRespStatus = new ListResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
                     gigListRespStatusMutableLiveData.setValue(gigListRespStatus);
                 } else {
-                    GigListRespStatus gigListRespStatus = new GigListRespStatus(null, Constants.FAIL, null);
-                    gigListRespStatusMutableLiveData.setValue(gigListRespStatus);
+                    gigListRespStatusMutableLiveData.postValue(gigListRespStatus);
                 }
             }
 
             @Override
             public void onFailure(Call<List<GigListResp>> call, Throwable t) {
-                GigListRespStatus gigListRespStatus = new GigListRespStatus(null, Constants.FAIL, null);
-                gigListRespStatusMutableLiveData.setValue(gigListRespStatus);
+
+                ListResponse<GigListResp> signUpResponseStatus;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                signUpResponseStatus = new ListResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    gigListRespStatusMutableLiveData.setValue(signUpResponseStatus);
+                } else {
+                    gigListRespStatusMutableLiveData.postValue(signUpResponseStatus);
+                }
             }
         });
 
