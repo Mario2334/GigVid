@@ -31,4 +31,12 @@
     <string name="search">Search</string>
     <string name="gig_image">Gig Image</string>
     <string name="buy">Buy</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_description">Event Description</string>
+    <string name="event_genre">Event Genre</string>
+    <string name="price">Price</string>
+    <string name="host_gig">Host Gig</string>
+    <string name="event_date">Event Date</string>
+    <string name="event_time">Event Time</string>
+    <string name="duration_in_hrs">Duration (in Hrs)</string>
 </resources>
