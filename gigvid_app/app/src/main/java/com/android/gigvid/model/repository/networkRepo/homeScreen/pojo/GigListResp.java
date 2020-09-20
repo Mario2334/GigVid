@@ -36,6 +36,9 @@ public class GigListResp {
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+    @SerializedName("price")
+    @Expose
+    private Integer price;
     @SerializedName("user")
     @Expose
     private Integer user;
@@ -53,6 +56,7 @@ public class GigListResp {
      * @param createdAt
      * @param scheduledTime
      * @param headerImage
+     * @param price
      * @param name
      * @param description
      * @param id
@@ -61,7 +65,7 @@ public class GigListResp {
      * @param joinUrl
      * @param user
      */
-    public GigListResp(Integer id, Boolean isActive, String name, String description, String joinUrl, String hostUrl, String scheduledTime, Integer duration, String headerImage, String createdAt, Integer user) {
+    public GigListResp(Integer id, Boolean isActive, String name, String description, String joinUrl, String hostUrl, String scheduledTime, Integer duration, String headerImage, String createdAt, Integer price, Integer user) {
         super();
         this.id = id;
         this.isActive = isActive;
@@ -73,6 +77,7 @@ public class GigListResp {
         this.duration = duration;
         this.headerImage = headerImage;
         this.createdAt = createdAt;
+        this.price = price;
         this.user = user;
     }
 
@@ -156,6 +161,14 @@ public class GigListResp {
         this.createdAt = createdAt;
     }
 
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
     public Integer getUser() {
         return user;
     }
@@ -163,4 +176,5 @@ public class GigListResp {
     public void setUser(Integer user) {
         this.user = user;
     }
+
 }

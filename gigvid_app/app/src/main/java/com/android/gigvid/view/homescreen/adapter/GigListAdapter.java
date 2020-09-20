@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ScheduleDateTime;
+import com.android.gigvid.utils.dateTime.DateTimeUtils;
 
 import java.util.List;
-
-import timber.log.Timber;
 
 public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListAdapterVH> {
 
@@ -33,10 +33,16 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
     @Override
     public void onBindViewHolder(@NonNull GigListAdapterVH holder, int position) {
         GigListResp gigListResp = gigList.get(position);
+        ScheduleDateTime scheduleDateTime = DateTimeUtils.getSchedDtTime(gigListResp.getScheduledTime());
         holder.getGigTitle().setText(gigListResp.getName());
         holder.getGigDescrip().setText(gigListResp.getDescription());
-//        holder.getGigPrice().setText(gigListResp.get);
-        Timber.d("date time == %s"+", duration == %d", gigListResp.getScheduledTime(), gigListResp.getDuration());
+
+        holder.getGigPrice().setText(String.valueOf(gigListResp.getPrice()));
+        holder.getGigDate().setText(scheduleDateTime.getDate());
+        holder.getGigTime().setText(scheduleDateTime.getTime());
+        holder.getGigMonth().setText(scheduleDateTime.getMonth());
+
+//        Timber.d("date time == %s"+", duration == %d", gigListResp.getScheduledTime(), gigListResp.getDuration());
 
     }
 
@@ -105,4 +111,7 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
             gigBuyBtn = (Button) itemView.findViewById(R.id.buy_gig_button);
         }
     }
+
+
+
 }
