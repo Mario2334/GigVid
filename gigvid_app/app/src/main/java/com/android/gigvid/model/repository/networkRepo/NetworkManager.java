@@ -234,9 +234,9 @@ public class NetworkManager implements IManager {
                 if (response.isSuccessful()) {
 
                     List<GigListResp> gigList = response.body();
-                    if(gigList != null ){
+                    if (gigList != null) {
                         gigListRespStatus = new ListResponse<>(StateDefinition.State.COMPLETED, gigList, null);
-                    } else{
+                    } else {
                         ErrorData error = new ErrorData(
                                 StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
                                 response.message());

@@ -4,7 +4,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.android.gigvid.model.repository.dbRepo.entitiy.EventEntity;
 import com.android.gigvid.model.repository.dbRepo.entitiy.TicketEntity;
 
 import java.util.List;
@@ -15,11 +14,11 @@ import java.util.List;
 @Dao
 public interface TicketDao {
     //    To be changed as per data & also add LiveData logic
-    @Query("SELECT * FROM ticket")
-    List<EventEntity> getAll();
+//    @Query("SELECT * FROM ticket")
+//    List<GigEntity> getAll();
 
-    @Query("SELECT * FROM ticket WHERE mTransactionId IN (:transactionIds)")
-    List<EventEntity> loadAllByIds(long[] transactionIds);
+//    @Query("SELECT * FROM ticket WHERE mTransactionId IN (:transactionIds)")
+//    List<GigEntity> loadAllByIds(long[] transactionIds);
 
     @Insert
     void insertAll(TicketEntity... tickets);

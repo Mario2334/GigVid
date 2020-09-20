@@ -3,8 +3,10 @@ package com.android.gigvid.model;
 import android.content.Context;
 import android.os.Looper;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
@@ -24,6 +26,7 @@ import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.network.NetworkUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -68,7 +71,7 @@ public class DataRepository implements IManager {
     @Override
     public void init() {
         mNetworkManager = NetworkManager.getInstance();
-        mDatabaseManager = DatabaseManager.getInstance();
+        mDatabaseManager = DatabaseManager.getInstance(mApplicationContextWeakRef);
         mNetworkUtils = NetworkUtils.getInstance(mApplicationContextWeakRef);
     }
 
@@ -118,8 +121,24 @@ public class DataRepository implements IManager {
             return mNetworkManager.getGigList();
         } else {
             Timber.d("Is NOT connected to internet!");
-            return null;
-//            TODO("Implement live data for DB")
+
+            return Transformations.switchMap(mDatabaseManager.getGigsList(), new Function<List<GigListResp>, LiveData<ListResponse<GigListResp>>>() {
+
+                @Override
+                public LiveData<ListResponse<GigListResp>> apply(List<GigListResp> input) {
+                    MutableLiveData<ListResponse<GigListResp>> gigListLiveData = new MutableLiveData<>();
+
+                    ListResponse<GigListResp> liveDataResp = new ListResponse<>(StateDefinition.State.COMPLETED, input, null);
+
+                    if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                        gigListLiveData.setValue(liveDataResp);
+                    } else {
+                        gigListLiveData.postValue(liveDataResp);
+                    }
+                    return gigListLiveData;
+                }
+
+            });
         }
     }
 

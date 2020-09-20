@@ -42,12 +42,12 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
     private Observer<ListResponse<GigListResp>> gigListRespStatusObserver = new Observer<ListResponse<GigListResp>>() {
         @Override
         public void onChanged(ListResponse<GigListResp> gigListRespStatus) {
-            if(gigListRespStatus.getStatus() == StateDefinition.State.COMPLETED){
-                Timber.d("list gig success %d",gigListRespStatus.getData().size());
+            if (gigListRespStatus.getStatus() == StateDefinition.State.COMPLETED) {
+                Timber.d("list gig success %d", gigListRespStatus.getData().size());
 
                 gigListAdapter.setData(gigListRespStatus.getData());
                 gigListAdapter.notifyDataSetChanged();
-            } else{
+            } else {
                 Timber.d("list gig api failed");
             }
         }
@@ -76,12 +76,12 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
 
     }
 
-    private void setUpRecyclerViewAdapter(){
+    private void setUpRecyclerViewAdapter() {
         mLayoutManager = new LinearLayoutManager(GigVidApplication.getGigVidAppContext());
         mLayoutManager.setOrientation(RecyclerView.VERTICAL);
         listGigsRecyclerView.setLayoutManager(mLayoutManager);
         listGigsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        if(gigListAdapter == null){
+        if (gigListAdapter == null) {
             gigListAdapter = new GigListAdapter(mAdapterEventCommunicator);
         }
         listGigsRecyclerView.setAdapter(gigListAdapter);
@@ -90,20 +90,20 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
     @Override
     public void buyBtnClickEvent(int gigId) {
 
-        homeViewModel.buyGigTicket(new BuyGigReqBody(gigId)).observe(this,mBuyGigRespObsever);
+        homeViewModel.buyGigTicket(new BuyGigReqBody(gigId)).observe(this, mBuyGigRespObsever);
     }
 
 
     private Observer<DataResponse<BuyGigResp>> mBuyGigRespObsever = new Observer<DataResponse<BuyGigResp>>() {
         @Override
         public void onChanged(DataResponse<BuyGigResp> buyGigRespDataResponse) {
-            if(buyGigRespDataResponse.getStatus() == StateDefinition.State.COMPLETED){
-                Log.d("SMP", "onChanged: buy gig on change observer"+buyGigRespDataResponse.getData().getLink());
+            if (buyGigRespDataResponse.getStatus() == StateDefinition.State.COMPLETED) {
+                Log.d("SMP", "onChanged: buy gig on change observer" + buyGigRespDataResponse.getData().getLink());
 
 
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(buyGigRespDataResponse.getData().getLink()));
                 startActivity(browserIntent);
-            } else{
+            } else {
                 Log.d("SMP", "onChanged: error");
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), buyGigRespDataResponse.getError().getErrorMsg(), Toast.LENGTH_SHORT).show();
             }

@@ -1,57 +1,82 @@
 
 package com.android.gigvid.model.repository.networkRepo.homeScreen.pojo;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "gig")
 public class GigListResp {
-
+    @PrimaryKey()
     @SerializedName("id")
     @Expose
     private Integer id;
+
+    @ColumnInfo(name = "is_active")
     @SerializedName("is_active")
     @Expose
     private Boolean isActive;
+
+    @ColumnInfo(name = "name")
     @SerializedName("name")
     @Expose
     private String name;
+
+    @ColumnInfo(name = "description")
     @SerializedName("description")
     @Expose
     private String description;
+
+    @ColumnInfo(name = "join_url")
     @SerializedName("join_url")
     @Expose
     private String joinUrl;
+
+    @ColumnInfo(name = "host_url")
     @SerializedName("host_url")
     @Expose
     private String hostUrl;
+
+    @ColumnInfo(name = "scheduled_time")
     @SerializedName("scheduled_time")
     @Expose
     private String scheduledTime;
+
+    @ColumnInfo(name = "duration")
     @SerializedName("duration")
     @Expose
     private Integer duration;
+
+    @ColumnInfo(name = "header_image")
     @SerializedName("header_image")
     @Expose
     private String headerImage;
+
+    @ColumnInfo(name = "created_at")
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+
+    @ColumnInfo(name = "price")
     @SerializedName("price")
     @Expose
     private Integer price;
+
+    @ColumnInfo(name = "user")
     @SerializedName("user")
     @Expose
     private Integer user;
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public GigListResp() {
     }
 
     /**
-     *
      * @param duration
      * @param createdAt
      * @param scheduledTime

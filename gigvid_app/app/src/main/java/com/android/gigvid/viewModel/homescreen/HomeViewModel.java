@@ -30,7 +30,7 @@ public class HomeViewModel extends AndroidViewModel {
         mText.setValue("This is home fragment");
     }
 
-    public LiveData<ListResponse<GigListResp>> getGigListLiveData(){
+    public LiveData<ListResponse<GigListResp>> getGigListLiveData() {
         LiveData<ListResponse<GigListResp>> gigList = mDataRepository.getGigList();
         return Transformations.map(gigList, new Function<ListResponse<GigListResp>, ListResponse<GigListResp>>() {
             @Override
@@ -40,9 +40,8 @@ public class HomeViewModel extends AndroidViewModel {
             }
         });
     }
-
-
-    public LiveData<DataResponse<BuyGigResp>> buyGigTicket(BuyGigReqBody buyGigReqBody){
+    
+    public LiveData<DataResponse<BuyGigResp>> buyGigTicket(BuyGigReqBody buyGigReqBody) {
         LiveData<DataResponse<BuyGigResp>> buyGigResp = mDataRepository.callBuyGigApi(buyGigReqBody);
         return Transformations.map(buyGigResp, new Function<DataResponse<BuyGigResp>, DataResponse<BuyGigResp>>() {
             @Override
@@ -52,6 +51,7 @@ public class HomeViewModel extends AndroidViewModel {
             }
         });
     }
+
     public LiveData<String> getText() {
         return mText;
     }
