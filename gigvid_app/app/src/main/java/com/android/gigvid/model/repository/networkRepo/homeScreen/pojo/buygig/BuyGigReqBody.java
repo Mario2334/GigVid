@@ -1,4 +1,4 @@
-package com.android.gigvid.model.repository.networkRepo.homeScreen.pojo;
+package com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

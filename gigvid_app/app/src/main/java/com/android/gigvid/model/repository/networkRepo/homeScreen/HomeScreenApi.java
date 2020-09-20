@@ -1,10 +1,11 @@
 package com.android.gigvid.model.repository.networkRepo.homeScreen;
 
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 
 import java.util.List;
 
@@ -33,4 +34,11 @@ public interface HomeScreenApi {
   */
     @POST("/dev/gig/create_payment/")
     Call<BuyGigResp> buyGig(@Header("authorization") String auth, @Body BuyGigReqBody buyGigReqBody);
+
+    /*
+     get list of tickets
+  */
+    @GET("dev/gig/list_tickets/")
+    Call<List<TicketResp>> getTicketList(@Header("authorization") String auth);
+
 }

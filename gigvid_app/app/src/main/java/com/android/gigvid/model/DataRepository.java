@@ -11,11 +11,12 @@ import androidx.lifecycle.Transformations;
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.dbRepo.DatabaseManager;
 import com.android.gigvid.model.repository.networkRepo.NetworkManager;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
@@ -159,7 +160,7 @@ public class DataRepository implements IManager {
         }
     }
 
-    //    Need clarification.
+    //    Need clarification on error scenario. KPS
     public LiveData<DataResponse<BuyGigResp>> callBuyGigApi(BuyGigReqBody buyGigReqBody) {
         if (mNetworkUtils.isConnectedToInternet()) {
             // Handle network data fetching
@@ -175,6 +176,24 @@ public class DataRepository implements IManager {
                 buyGigLiveData.postValue(buyGigResp);
             }
             return buyGigLiveData;
+        }
+    }
+
+    public LiveData<ListResponse<TicketResp>> getTicketsApiCall() {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            // Handle network data fetching
+            return mNetworkManager.getTicketsApiCall();
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            ListResponse<TicketResp> ticketListResp = new ListResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+            MutableLiveData<ListResponse<TicketResp>> ticketListLiveData = new MutableLiveData<>();
+
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                ticketListLiveData.setValue(ticketListResp);
+            } else {
+                ticketListLiveData.postValue(ticketListResp);
+            }
+            return ticketListLiveData;
         }
     }
 

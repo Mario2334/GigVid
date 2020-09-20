@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.ListResponse;

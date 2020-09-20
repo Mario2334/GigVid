@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.DataRepository;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
@@ -40,7 +40,7 @@ public class HomeViewModel extends AndroidViewModel {
             }
         });
     }
-    
+
     public LiveData<DataResponse<BuyGigResp>> buyGigTicket(BuyGigReqBody buyGigReqBody) {
         LiveData<DataResponse<BuyGigResp>> buyGigResp = mDataRepository.callBuyGigApi(buyGigReqBody);
         return Transformations.map(buyGigResp, new Function<DataResponse<BuyGigResp>, DataResponse<BuyGigResp>>() {

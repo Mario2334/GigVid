@@ -1,4 +1,4 @@
-package com.android.gigvid.model.repository.networkRepo.homeScreen.pojo;
+package com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig;
 
 public class CreateGigResp {
     private String message;

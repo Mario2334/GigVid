@@ -10,8 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.android.gigvid.model.DataRepository;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 
 import java.lang.ref.WeakReference;

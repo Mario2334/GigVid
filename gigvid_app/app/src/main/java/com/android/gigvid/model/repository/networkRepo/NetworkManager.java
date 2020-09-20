@@ -6,14 +6,14 @@ import android.os.Looper;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.gigvid.Constants;
 import com.android.gigvid.model.contract.IManager;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.HomeScreenApi;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.BuyGigResp;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogInReqBody;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
@@ -48,6 +48,7 @@ public class NetworkManager implements IManager {
     private MutableLiveData<DataResponse<CreateGigResp>> createGigRespStatusMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<DataResponse<BuyGigResp>> mBuyGugMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ListResponse<TicketResp>> mTicketListMutableLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
         if (INSTANCE == null) {
@@ -229,7 +230,6 @@ public class NetworkManager implements IManager {
             public void onResponse(Call<List<GigListResp>> call, Response<List<GigListResp>> response) {
 
 
-
                 ListResponse<GigListResp> gigListRespStatus;
                 if (response.isSuccessful()) {
 
@@ -301,7 +301,6 @@ public class NetworkManager implements IManager {
 
         String authToken = "Token " + SharedPrefUtils.getAuthToken();
 
-
         Call<CreateGigResp> createGigCall = homeScreenApiClient.createGig(authToken, createGig);
 
         createGigCall.enqueue(new Callback<CreateGigResp>() {
@@ -370,8 +369,6 @@ public class NetworkManager implements IManager {
 
         return createGigRespStatusMutableLiveData;
     }
-
-
 
 
     public LiveData<DataResponse<BuyGigResp>> buyGigApiCall(BuyGigReqBody buyGigReqBody) {
@@ -447,6 +444,78 @@ public class NetworkManager implements IManager {
         return mBuyGugMutableLiveData;
     }
 
+    public LiveData<ListResponse<TicketResp>> getTicketsApiCall() {
+        if (homeScreenApiClient == null) {
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+        //        TODO("Use Transformations for live data ")
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<List<TicketResp>> call = homeScreenApiClient.getTicketList(authToken);
+        call.enqueue(new Callback<List<TicketResp>>() {
+            @Override
+            public void onResponse(Call<List<TicketResp>> call, Response<List<TicketResp>> response) {
+                ListResponse<TicketResp> ticketListResponse;
+                if (response.isSuccessful()) {
+                    List<TicketResp> ticketList = response.body();
+
+                    if (ticketList != null) {
+                        Timber.d("onResponse: res" + response.code() + " || size:" + ticketList.size());
+                        ticketListResponse = new ListResponse<>(StateDefinition.State.COMPLETED, ticketList, null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        ticketListResponse = new ListResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    ticketListResponse = new ListResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mTicketListMutableLiveData.setValue(ticketListResponse);
+                } else {
+                    mTicketListMutableLiveData.postValue(ticketListResponse);
+                }
+
+            }
+
+
+            @Override
+            public void onFailure(Call<List<TicketResp>> call, Throwable t) {
+                ListResponse<TicketResp> ticketListResponse;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                ticketListResponse = new ListResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mTicketListMutableLiveData.setValue(ticketListResponse);
+                } else {
+                    mTicketListMutableLiveData.postValue(ticketListResponse);
+                }
+            }
+        });
+        return mTicketListMutableLiveData;
+    }
 
     @Override
     public void clear() {

@@ -20,8 +20,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.CreateGigResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.viewModel.homescreen.HostGigViewModel;
