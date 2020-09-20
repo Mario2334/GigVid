@@ -26,8 +26,6 @@ import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.viewModel.homescreen.HostGigViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Calendar;
@@ -37,7 +35,6 @@ import timber.log.Timber;
 public class HostGigFragment extends DialogFragment {
 
     private HostGigViewModel hostGigViewModel;
-    private MaterialDatePicker<?> picker;
     private TextView eventDate;
     private TextView eventTime;
     private MaterialButton submitBtn;

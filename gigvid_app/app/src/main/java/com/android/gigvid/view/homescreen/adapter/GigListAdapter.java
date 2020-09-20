@@ -20,6 +20,8 @@ import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListAdapterVH> {
 
     private List<GigListResp> gigList;
@@ -45,6 +47,7 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
         holder.getGigDate().setText(scheduleDateTime.getDate());
         holder.getGigTime().setText(scheduleDateTime.getTime());
         holder.getGigMonth().setText(scheduleDateTime.getMonth());
+        holder.getGigDuration().setText(gigListResp.getDuration().toString()+"hr(s)");
 
         holder.getGigBuyBtn().setTag(Constants.BUY_BTN_TAG_KEY, gigListResp.getId());
         holder.getGigBuyBtn().setOnClickListener(buyBtnClickEvent);
@@ -69,6 +72,7 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
         private TextView gigTitle;
         private TextView gigPrice;
         private TextView gigDescrip;
+        private TextView gigDuration;
 
         public ImageView getGigImg() {
             return gigImg;
@@ -98,6 +102,10 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
             return gigTime;
         }
 
+        private TextView getGigDuration() {
+            return gigDuration;
+        }
+
         public Button getGigBuyBtn() {
             return gigBuyBtn;
         }
@@ -115,9 +123,8 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
             gigPrice = (TextView) itemView.findViewById(R.id.gig_price);
             gigDescrip = (TextView) itemView.findViewById(R.id.gig_description);
             gigTime = (TextView) itemView.findViewById(R.id.gig_time);
+            gigDuration = (TextView) itemView.findViewById(R.id.gig_duration);
             gigBuyBtn = (Button) itemView.findViewById(R.id.buy_gig_button);
-
-
         }
 
 
@@ -126,7 +133,7 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
     private View.OnClickListener buyBtnClickEvent = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Log.d("SMP", "onClick: buy btn");
+            Timber.d("onClick: buy btn");
             Button btn = (Button) view;
             int gigId = (int)btn.getTag(Constants.BUY_BTN_TAG_KEY);
             mAdapterEventCommunicator.buyBtnClickEvent(gigId);
