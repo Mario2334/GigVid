@@ -13,6 +13,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.Bu
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
@@ -53,6 +54,8 @@ public class NetworkManager implements IManager {
     private MutableLiveData<DataResponse<BuyGigResp>> mBuyGugMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<DataResponse<String>> mBankDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<ListResponse<TicketResp>> mTicketListMutableLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<DataResponse<BankDetailResp>> mBankDetailsRespMutableLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
         if (INSTANCE == null) {
@@ -769,6 +772,94 @@ public class NetworkManager implements IManager {
         });
         return mBankDetailsLiveData;
     }
+
+
+
+    public LiveData<DataResponse<BankDetailResp>> getBankDetails() {
+        DataResponse<BankDetailResp> buyGigRespDataResponse = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mBankDetailsRespMutableLiveData.setValue(buyGigRespDataResponse);
+        } else {
+            mBankDetailsRespMutableLiveData.postValue(buyGigRespDataResponse);
+        }
+
+        if (homeScreenApiClient == null) {
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+        //        TODO("Use Transformations for live data ")
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<BankDetailResp> call = homeScreenApiClient.getBankDetailsForUser(authToken);
+        call.enqueue(new Callback<BankDetailResp>() {
+            @Override
+            public void onResponse(Call<BankDetailResp> call, Response<BankDetailResp> response) {
+                DataResponse<BankDetailResp> buyGigRespDataResponse;
+                if (response.isSuccessful()) {
+                    BankDetailResp signUpRes = (BankDetailResp) response.body();
+
+                    if (signUpRes != null) {
+                        Timber.d("onResponse: res" + response.body());
+                        buyGigRespDataResponse = new DataResponse<BankDetailResp>(StateDefinition.State.COMPLETED, response.body(), null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        buyGigRespDataResponse = new DataResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    buyGigRespDataResponse = new DataResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mBankDetailsRespMutableLiveData.setValue(buyGigRespDataResponse);
+                } else {
+                    mBankDetailsRespMutableLiveData.postValue(buyGigRespDataResponse);
+                }
+
+            }
+
+
+            @Override
+            public void onFailure(Call<BankDetailResp> call, Throwable t) {
+                DataResponse<BankDetailResp> buyGigRespDataResponse;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                buyGigRespDataResponse = new DataResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mBankDetailsRespMutableLiveData.setValue(buyGigRespDataResponse);
+                } else {
+                    mBankDetailsRespMutableLiveData.postValue(buyGigRespDataResponse);
+                }
+            }
+        });
+        return mBankDetailsRespMutableLiveData;
+    }
+
+
 
     @Override
     public void clear() {

@@ -16,6 +16,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.Bu
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
@@ -59,6 +60,7 @@ public class DataRepository implements IManager {
     public MutableLiveData<ListResponse<GigListResp>> gigListLiveData = new MutableLiveData<>();
     public MutableLiveData<ListResponse<TicketResp>> ticketListLiveData = new MutableLiveData<>();
     public MutableLiveData<DataResponse<String>> updateBankDetailsLiveData = new MutableLiveData<>();
+    public MutableLiveData<DataResponse<BankDetailResp>> userBankDetails = new MutableLiveData<>();
 
     //IN-RAM caching
     public List<GigListResp> gigList = new ArrayList<>();
@@ -255,6 +257,23 @@ public class DataRepository implements IManager {
                 updateBankDetailsLiveData.postValue(ticketListResp);
             }
             return updateBankDetailsLiveData;
+        }
+    }
+
+    public LiveData<DataResponse<BankDetailResp>> getBankDetails() {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            // Handle network data fetching
+            return mNetworkManager.getBankDetails();
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            DataResponse<BankDetailResp> ticketListResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                userBankDetails.setValue(ticketListResp);
+            } else {
+                userBankDetails.postValue(ticketListResp);
+            }
+            return userBankDetails;
         }
     }
 

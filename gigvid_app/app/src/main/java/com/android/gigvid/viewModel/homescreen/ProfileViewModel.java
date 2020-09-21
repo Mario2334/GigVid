@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.android.gigvid.model.DataRepository;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 
@@ -31,8 +32,12 @@ public class ProfileViewModel extends AndroidViewModel {
         return mText;
     }
 
-    public LiveData<DataResponse<String>> addBankDetails() {
-        BankDetailsReqBody bankDetailsReqBody = new BankDetailsReqBody("Gaurav Kumar", "HDFC0000053", "765432123456789");
+    public LiveData<DataResponse<String>> addBankDetails(BankDetailsReqBody bankDetailsReqBody) {
+//        BankDetailsReqBody bankDetailsReqBody = new BankDetailsReqBody("Gaurav Kumar", "HDFC0000053", "765432123456789");
         return mDataRepository.updateBankDetails(bankDetailsReqBody);
+    }
+
+    public LiveData<DataResponse<BankDetailResp>> getBankDetails(){
+        return mDataRepository.getBankDetails();
     }
 }
