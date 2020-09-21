@@ -1,6 +1,7 @@
 package com.android.gigvid.view.homescreen;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,6 +16,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.android.gigvid.R;
+import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
+import com.android.gigvid.view.loginsignup.UserAuthActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -132,9 +135,24 @@ public class HomeScreenActivity extends AppCompatActivity {
                 .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO: 1.Clear shared prefs 2.Manager 3.Redirect to login activity
+                        SharedPrefUtils.clearPrefOnLogout();
+                        redirectToUserAuthActivity();
                     }
                 })
                 .show();
     }
+
+    /**
+     * Method: Access Shared pref and clear
+     */
+
+    /**
+     * Method: Launch UserAuthActivity and open Login fragment
+     */
+    private void redirectToUserAuthActivity() {
+        Intent loginActivity = new Intent(getApplicationContext(), UserAuthActivity.class);
+        startActivity(loginActivity);
+        finish();
+    }
+
 }
