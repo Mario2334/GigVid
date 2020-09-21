@@ -6,6 +6,7 @@ from user.models import User, Hobby, BankAccount
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    first_name = serializers.CharField(required=True)
 
     class Meta:
         model = User
