@@ -234,7 +234,7 @@ public class HostGigFragment extends DialogFragment {
                 createGigReqBody.setDuration(Integer.parseInt(dur));
                 createGigReqBody.setName(name);
                 createGigReqBody.setPrice(Integer.parseInt(price));
-                createGigReqBody.setScheduledTime(date + "T" + time + ":44.665788+05:30");
+                createGigReqBody.setScheduledTime(date + "T" + time + ":00+05:30");
                 submitBtn.setOnClickListener(null);
                 hostGigViewModel.createGig(createGigReqBody).observe(HostGigFragment.this, createGigRespStatusObserver);
             }

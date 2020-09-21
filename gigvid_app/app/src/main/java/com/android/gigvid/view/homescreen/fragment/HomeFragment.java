@@ -93,6 +93,11 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
         homeViewModel.buyGigTicket(new BuyGigReqBody(gigId)).observe(this, mBuyGigRespObsever);
     }
 
+    @Override
+    public void joinEventBtnClick() {
+
+    }
+
 
     private Observer<DataResponse<BuyGigResp>> mBuyGigRespObsever = new Observer<DataResponse<BuyGigResp>>() {
         @Override
