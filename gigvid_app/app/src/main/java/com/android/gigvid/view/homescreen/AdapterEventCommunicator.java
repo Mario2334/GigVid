@@ -4,5 +4,5 @@ public interface AdapterEventCommunicator {
 
     void buyBtnClickEvent(int gigId);
 
-    void joinEventBtnClick();
+    void joinEventBtnClick(String joinUrl);
 }

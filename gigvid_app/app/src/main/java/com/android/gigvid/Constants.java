@@ -11,4 +11,5 @@ public class Constants {
 
     public static final String PAYMENT_URL_KEY = "pay_key";
 
+    public static final int JOIN_URL_KEY = -12;
 }

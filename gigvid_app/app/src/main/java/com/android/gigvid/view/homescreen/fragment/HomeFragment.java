@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
     }
 
     @Override
-    public void joinEventBtnClick() {
+    public void joinEventBtnClick(String joinUrl) {
 
     }
 

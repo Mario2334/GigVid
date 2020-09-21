@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.gigvid.Constants;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ScheduleDateTime;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.Gig;
@@ -50,6 +51,9 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         holder.getGigDate().setText(scheduleDateTime.getDate());
         holder.getGigMonth().setText(scheduleDateTime.getMonth());
         holder.getGigTime().setText(scheduleDateTime.getTime());
+
+        holder.getGigJoinBtn().setOnClickListener(joinBtnClick);
+        holder.getGigJoinBtn().setTag(Constants.JOIN_URL_KEY, gigData.getmJoinUrl());
 
     }
 
@@ -109,6 +113,17 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
             gigTime = (TextView) itemView.findViewById(R.id.ticket_time);
             gigDuration = (TextView) itemView.findViewById(R.id.ticket_duration);
             gigJoinBtn = (Button) itemView.findViewById(R.id.launch_event_button);
+
         }
+
+
     }
+
+    private View.OnClickListener joinBtnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String joinUrl = (String) view.getTag(Constants.JOIN_URL_KEY);
+            mAdapterEventCommunicator.joinEventBtnClick(joinUrl);
+        }
+    };
 }

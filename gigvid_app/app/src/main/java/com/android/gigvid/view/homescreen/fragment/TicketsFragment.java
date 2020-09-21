@@ -85,7 +85,9 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
     }
 
     @Override
-    public void joinEventBtnClick() {
-
+    public void joinEventBtnClick(String joinUrl) {
+        //TODO launch zoom meeting
+        Timber.d("Launch zoom meeting URL -- %s",joinUrl);
+//        Intent launchMeeting = new Intent();
     }
 }
