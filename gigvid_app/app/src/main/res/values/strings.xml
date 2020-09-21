@@ -54,4 +54,5 @@
     <string name="start">Start</string>
     <string name="retry">Retry</string>
     <string name="enter_username">Enter Username</string>
+    <string name="payout_feature_is_coming_soon">Payout feature is coming soon...</string>
 </resources>
