@@ -1,10 +1,13 @@
 package com.android.gigvid.view.homescreen;
 
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.navigation.NavController;
@@ -14,12 +17,16 @@ import androidx.navigation.ui.NavigationUI;
 import com.android.gigvid.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+
+import timber.log.Timber;
 
 public class HomeScreenActivity extends AppCompatActivity {
     private BottomNavigationView navView;
     private MaterialToolbar topAppBar;
     private MenuItem searchMenuItem;
+    private MenuItem logoutMenuItem;
     private SearchView searchView;
     private View activityView;
 
@@ -37,22 +44,13 @@ public class HomeScreenActivity extends AppCompatActivity {
     private void initializeUI() {
         activityView = findViewById(android.R.id.content);
         navView = findViewById(R.id.nav_view);
-        topAppBar = findViewById(R.id.top_menu_bar);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
-    }
 
-    /**
-     * Method: Launch Home Fragment when home button is clicked
-     */
-    private void handleNavigationIconClick() {
-        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: Launch Home Fragment
-            }
-        });
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.app_logo_drawable);// set drawable icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     @Override
@@ -60,16 +58,52 @@ public class HomeScreenActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.top_menu, menu);
 
         searchMenuItem = menu.findItem(R.id.search);
-        searchView = (SearchView) searchMenuItem.getActionView();
+        logoutMenuItem = menu.findItem(R.id.logout);
 
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // TODO: Launch Home Fragment
+                return true;
+            case R.id.logout:
+                onLogoutMenuItemClicked();
+                return true;
+            case R.id.search:
+                onSearchMenuItemClicked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    /**
+     * Method: Click Listener for Logout Menu Button
+     */
+    private void onLogoutMenuItemClicked(){
+        logoutMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                launchLogoutAlertDialog();
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Method: Launch Search option
+     */
+    private void onSearchMenuItemClicked() {
+        searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-
-                // Show message on Snack-bar
                 Snackbar.make(activityView, "Searching: " + query, Snackbar.LENGTH_SHORT).show();
-
                 searchMenuItem.collapseActionView();
                 return false;
             }
@@ -79,6 +113,28 @@ public class HomeScreenActivity extends AppCompatActivity {
                 return false;
             }
         });
-        return true;
+    }
+
+    /**
+     * Method: Launch Logout Alert Dialog
+     */
+    private void launchLogoutAlertDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("LOGOUT")
+                .setMessage("Are you sure you want to Logout?")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Snackbar.make(activityView, "Operation Cancelled", Snackbar.LENGTH_SHORT)
+                                .show();
+                    }
+                })
+                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //TODO: 1.Clear shared prefs 2.Manager 3.Redirect to login activity
+                    }
+                })
+                .show();
     }
 }

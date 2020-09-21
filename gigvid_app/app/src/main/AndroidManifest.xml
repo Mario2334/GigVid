@@ -19,6 +19,7 @@
 
         <activity
             android:name=".view.homescreen.HomeScreenActivity"
+            android:theme="@style/AppThemeActionBar"
             android:label="@string/title_activity_home_screen" >
         </activity>
         <activity android:name=".view.loginsignup.UserAuthActivity" />
