@@ -61,6 +61,7 @@ public class DataRepository implements IManager {
     //IN-RAM caching
     public List<GigListResp> gigList = new ArrayList<>();
     public List<TicketResp> ticketList = new ArrayList<>();
+    private List<GigListResp> myGigList = new ArrayList<>();
 
     public static DataRepository getInstance(WeakReference<Context> applicationCtxWeakRef) {
         if (INSTANCE == null) {
@@ -155,6 +156,35 @@ public class DataRepository implements IManager {
         }
     }
 
+    public LiveData<ListResponse<GigListResp>> getMyGigList() {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            Timber.d("Data Repo fetch gig list");
+            LiveData<ListResponse<GigListResp>> nwGigList = mNetworkManager.getMyGigList();
+            if (nwGigList.getValue() != null && nwGigList.getValue().getData().size() > 0) {
+                myGigList = nwGigList.getValue().getData();
+            }
+            return nwGigList;
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            return Transformations.switchMap(mDatabaseManager.getGigsList(), new Function<List<GigListResp>, LiveData<ListResponse<GigListResp>>>() {
+
+                @Override
+                public LiveData<ListResponse<GigListResp>> apply(List<GigListResp> input) {
+                    myGigList = input;
+                    Collections.reverse(myGigList);
+                    ListResponse<GigListResp> liveDataResp = new ListResponse<>(StateDefinition.State.COMPLETED, input, null);
+
+                    if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                        gigListLiveData.setValue(liveDataResp);
+                    } else {
+                        gigListLiveData.postValue(liveDataResp);
+                    }
+                    return gigListLiveData;
+                }
+
+            });
+        }
+    }
 
     public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
 
@@ -212,6 +242,7 @@ public class DataRepository implements IManager {
     public void cacheContents() {
         List<Long> ids = mDatabaseManager.storeGigsList(gigList);
     }
+
 
     /***
      * Clear memory here

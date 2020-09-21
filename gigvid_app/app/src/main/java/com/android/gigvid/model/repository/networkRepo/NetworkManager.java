@@ -46,6 +46,7 @@ public class NetworkManager implements IManager {
     private MutableLiveData<DataResponse<LoginResp>> mLogInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<DataResponse<SignUpResp>> mSignUpResStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ListResponse<GigListResp>> gigListRespStatusMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ListResponse<GigListResp>> myGigListRespStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<DataResponse<CreateGigResp>> createGigRespStatusMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<DataResponse<BuyGigResp>> mBuyGugMutableLiveData = new MutableLiveData<>();
@@ -591,6 +592,96 @@ public class NetworkManager implements IManager {
             }
         });
         return mTicketListMutableLiveData;
+    }
+
+
+    public LiveData<ListResponse<GigListResp>> getMyGigList() {
+        ListResponse<GigListResp> myGigListResponseStatus;
+
+        List<GigListResp> data = new ArrayList<>();
+        myGigListResponseStatus = new ListResponse<>(
+                StateDefinition.State.LOADING,
+                data,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            myGigListRespStatusMutableLiveData.setValue(myGigListResponseStatus);
+        } else {
+            myGigListRespStatusMutableLiveData.postValue(myGigListResponseStatus);
+        }
+        if (homeScreenApiClient == null) {
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<List<GigListResp>> callGigList = homeScreenApiClient.getMyGigsList(authToken);
+        callGigList.enqueue(new Callback<List<GigListResp>>() {
+            @Override
+            public void onResponse(Call<List<GigListResp>> call, Response<List<GigListResp>> response) {
+
+
+                ListResponse<GigListResp> myGigListRespStatus;
+                if (response.isSuccessful()) {
+
+                    List<GigListResp> myGigList = response.body();
+                    if (myGigList != null) {
+                        myGigListRespStatus = new ListResponse<>(StateDefinition.State.COMPLETED, myGigList, null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        myGigListRespStatus = new ListResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    myGigListRespStatus = new ListResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    myGigListRespStatusMutableLiveData.setValue(myGigListRespStatus);
+                } else {
+                    myGigListRespStatusMutableLiveData.postValue(myGigListRespStatus);
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<GigListResp>> call, Throwable t) {
+
+                ListResponse<GigListResp> myGigsResponseStatus;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                myGigsResponseStatus = new ListResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    myGigListRespStatusMutableLiveData.setValue(myGigsResponseStatus);
+                } else {
+                    myGigListRespStatusMutableLiveData.postValue(myGigsResponseStatus);
+                }
+            }
+        });
+
+        return myGigListRespStatusMutableLiveData;
     }
 
     @Override

@@ -41,4 +41,10 @@ public interface HomeScreenApi {
     @GET("dev/gig/list_tickets/")
     Call<List<TicketResp>> getTicketList(@Header("authorization") String auth);
 
+    /*
+   get gigs hosted by me
+*/
+    @GET("dev/gig/my_gigs/")
+    Call<List<GigListResp>> getMyGigsList(@Header("authorization") String auth);
+
 }

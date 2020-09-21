@@ -21,7 +21,7 @@ public class MyGigFragment extends Fragment {
         myGigViewModel =
                 ViewModelProviders.of(this).get(MyGigViewModel.class);
         View root = inflater.inflate(R.layout.fragment_mygig, container, false);
-
+        myGigViewModel.getMyGigList();
 //        final TextView textView = root.findViewById(R.id.text_mygig);
 //        myGigViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
