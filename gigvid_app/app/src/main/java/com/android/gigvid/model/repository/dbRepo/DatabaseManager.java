@@ -20,7 +20,6 @@ public class DatabaseManager {
 
     public DatabaseManager(Context context) {
         mGigDao = GigVidDB.getGigVidDB(context).gigDao();
-
     }
 
     public static DatabaseManager getInstance(WeakReference<Context> contextWeakReference) {
@@ -32,7 +31,10 @@ public class DatabaseManager {
 
     public LiveData<List<GigListResp>> getGigsList() {
         return mGigDao.getAll();
+    }
 
+    public List<Long> storeGigsList(List<GigListResp> gigs) {
+        return mGigDao.deleteAndCreate(gigs);
     }
 
 }

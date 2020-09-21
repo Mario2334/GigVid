@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.android.gigvid.R;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
+import com.android.gigvid.model.BackupService;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -86,7 +87,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     /**
      * Method: Click Listener for Logout Menu Button
      */
-    private void onLogoutMenuItemClicked(){
+    private void onLogoutMenuItemClicked() {
         logoutMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -150,4 +151,10 @@ public class HomeScreenActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(this, BackupService.class);
+        startService(intent);
+    }
 }

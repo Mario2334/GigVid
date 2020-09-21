@@ -41,7 +41,6 @@ public class LoginFragment extends Fragment {
     private View.OnClickListener onLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Timber.d("KPS!!! clicked!!");
             String username = usernameTextInput.getEditText().getText().toString();
             String pass = passwordTextInput.getEditText().getText().toString();
             if (isCredentialValid(username, pass)) {
