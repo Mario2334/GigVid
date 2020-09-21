@@ -4,16 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.android.gigvid.R;
-import com.android.gigvid.viewModel.homescreen.MyGigViewModel;
 import com.android.gigvid.viewModel.homescreen.ProfileViewModel;
 
 public class ProfileFragment extends Fragment {
@@ -32,6 +28,7 @@ public class ProfileFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
+        profileViewModel.addBankDetails();
         return root;
     }
 }

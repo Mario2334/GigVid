@@ -16,6 +16,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.Bu
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
@@ -57,6 +58,7 @@ public class DataRepository implements IManager {
 
     public MutableLiveData<ListResponse<GigListResp>> gigListLiveData = new MutableLiveData<>();
     public MutableLiveData<ListResponse<TicketResp>> ticketListLiveData = new MutableLiveData<>();
+    public MutableLiveData<DataResponse<String>> updateBankDetailsLiveData = new MutableLiveData<>();
 
     //IN-RAM caching
     public List<GigListResp> gigList = new ArrayList<>();
@@ -236,6 +238,23 @@ public class DataRepository implements IManager {
                 ticketListLiveData.postValue(ticketListResp);
             }
             return ticketListLiveData;
+        }
+    }
+
+    public LiveData<DataResponse<String>> updateBankDetails(BankDetailsReqBody requestBody) {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            // Handle network data fetching
+            return mNetworkManager.addBankDetails(requestBody);
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            DataResponse<String> ticketListResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                updateBankDetailsLiveData.setValue(ticketListResp);
+            } else {
+                updateBankDetailsLiveData.postValue(ticketListResp);
+            }
+            return updateBankDetailsLiveData;
         }
     }
 
