@@ -25,6 +25,8 @@ public class CreateGigReqBody {
     @Expose
     private Integer price;
 
+
+
     /**
      * No args constructor for use in serialization
      * 

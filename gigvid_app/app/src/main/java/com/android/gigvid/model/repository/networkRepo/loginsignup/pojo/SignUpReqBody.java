@@ -2,10 +2,18 @@ package com.android.gigvid.model.repository.networkRepo.loginsignup.pojo;
 
 public class SignUpReqBody {
 
-    private String name, username, password, email;
+    private String name, username, password, email, first_name;
 
     public String getName() {
         return name;
+    }
+
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
     }
 
     public SignUpReqBody() {

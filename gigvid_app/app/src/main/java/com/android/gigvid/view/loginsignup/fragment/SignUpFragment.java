@@ -171,6 +171,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
         if (isSignUpDataValid(username, emailId, pass, confirmPass)) {
             SignUpReqBody signUpBody = new SignUpReqBody();
+            signUpBody.setFirst_name("Dummy");
             signUpBody.setUsername(usernameTextInput.getEditText().getText().toString());
             signUpBody.setEmail(emailTextInput.getEditText().getText().toString());
             signUpBody.setPassword(confirmPasswordTextInput.getEditText().getText().toString());

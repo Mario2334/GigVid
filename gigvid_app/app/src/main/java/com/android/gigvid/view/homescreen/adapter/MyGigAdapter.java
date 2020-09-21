@@ -29,6 +29,7 @@ public class MyGigAdapter extends RecyclerView.Adapter<MyGigAdapter.MyGigAdapter
     @Override
     public void onBindViewHolder(@NonNull MyGigAdapterVH holder, int position) {
         GigListResp myGigData = gigList.get(position);
+
         ScheduleDateTime scheduleDateTime = DateTimeUtils.getSchedDtTime(myGigData.getScheduledTime());
         holder.getGigTitle().setText(myGigData.getName());
         holder.getGigDescrip().setText(myGigData.getDescription());
