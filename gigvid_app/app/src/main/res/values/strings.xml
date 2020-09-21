@@ -52,4 +52,6 @@
     <string name="my_tickets">My Tickets</string>
     <string name="join">Join</string>
     <string name="start">Start</string>
+    <string name="retry">Retry</string>
+    <string name="enter_username">Enter Username</string>
 </resources>

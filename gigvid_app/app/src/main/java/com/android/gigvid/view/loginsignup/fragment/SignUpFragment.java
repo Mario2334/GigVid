@@ -9,10 +9,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
@@ -28,6 +30,9 @@ import timber.log.Timber;
 public class SignUpFragment extends Fragment implements View.OnClickListener {
     public static final String TAG = "SignUpFragment";
 
+    private String LOADING_ANIMATION = "progress_bar.json";
+    private String ERROR_ANIMATION = "error.json";
+
     private TextInputLayout usernameTextInput;
     private TextInputLayout emailTextInput;
     private TextInputLayout passwordTextInput;
@@ -35,6 +40,9 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private Button proceedWithSignUpButton;
     private Button launchLoginFragmentButton;
     private LoginSignUpViewModel loginSignUpViewModel;
+    private ConstraintLayout progressBarLayoutView;
+    private Button retryButton;
+    private LottieAnimationView progressBarLottieView;
 
     public SignUpFragment() {
         // Required empty public constructor
@@ -71,6 +79,10 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
      * @param view: Refers to the Fragment View used to access view elements
      */
     private void initializeUI(View view) {
+        progressBarLayoutView = view.findViewById(R.id.progress_bar_view);
+        progressBarLottieView = view.findViewById(R.id.display_current_progress);
+        retryButton = view.findViewById(R.id.retry_button);
+
         usernameTextInput = view.findViewById(R.id.user_name_text_field);
         emailTextInput = view.findViewById(R.id.mail_id_text_field);
         passwordTextInput = view.findViewById(R.id.password_text_field);
@@ -99,13 +111,27 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private Observer<DataResponse<SignUpResp>> signUpRespObserver = new Observer<DataResponse<SignUpResp>>() {
         @Override
         public void onChanged(DataResponse<SignUpResp> signUpResp) {
+
+            String loadingAnimation;
             if (signUpResp.getStatus() == StateDefinition.State.COMPLETED) {
+                progressBarLayoutView.setVisibility(View.GONE);
                 launchLoginOnClick();
             } else if (signUpResp.getStatus() == StateDefinition.State.ERROR) {
+                if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
+                    progressBarLayoutView.setVisibility(View.VISIBLE);
+                }
+                loadingAnimation = ERROR_ANIMATION;
+                loadLottieAnimations(loadingAnimation);
+                retryButton.setVisibility(View.VISIBLE);
+                handleRetryButtonClick();
+
                 proceedWithSignUpButton.setOnClickListener(SignUpFragment.this);
                 handleErrorScenario(signUpResp.getError().getErrorStatus());
             } else {
-//               TODO("Handle loading screen here.")
+                progressBarLayoutView.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.GONE);
+                loadingAnimation = LOADING_ANIMATION;
+                loadLottieAnimations(loadingAnimation);
             }
         }
     };
@@ -164,5 +190,31 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         } else {
             return pass.equals(cnfirmPass);
         }
+    }
+
+    /**
+     * Method: Load Lottie Animation View to display progress
+     */
+    private void loadLottieAnimations(String animationName) {
+        if(progressBarLottieView.isAnimating()) {
+            progressBarLottieView.cancelAnimation();
+        }
+        progressBarLottieView.setAnimation(animationName);
+        progressBarLottieView.loop(true);
+        progressBarLottieView.playAnimation();
+    }
+
+    /**
+     * Method: Retry Button
+     *          1. Hides progress UI
+     *          2. TODO: Will reconnect to network
+     */
+    private void handleRetryButtonClick() {
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBarLayoutView.setVisibility(View.GONE);
+            }
+        });
     }
 }

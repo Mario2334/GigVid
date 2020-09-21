@@ -105,7 +105,34 @@
         style="@style/TextViewHeaderTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/user_bank_account_number" />
+        app:layout_constraintBottom_toTopOf="@id/bank_user_name" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/bank_user_name"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintHeight_percent="0.08"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        app:startIconDrawable="@drawable/ic_person_24"
+        android:hint="@string/enter_username"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/user_bank_account_number"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:textSize="@dimen/dp_16"
+            android:fontFamily="@font/roboto_light"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/user_bank_account_number"

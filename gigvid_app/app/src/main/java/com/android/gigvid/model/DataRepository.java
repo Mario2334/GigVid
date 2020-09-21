@@ -16,6 +16,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.Bu
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
@@ -27,6 +28,8 @@ import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.network.NetworkUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import timber.log.Timber;
@@ -52,6 +55,15 @@ public class DataRepository implements IManager {
 
     ErrorData mNoInternetError = new ErrorData(StateDefinition.ErrorState.NO_INTERNET_ERROR,
             "Cannot connect to internet at the moment.");
+
+    public MutableLiveData<ListResponse<GigListResp>> gigListLiveData = new MutableLiveData<>();
+    public MutableLiveData<ListResponse<TicketResp>> ticketListLiveData = new MutableLiveData<>();
+    public MutableLiveData<DataResponse<String>> updateBankDetailsLiveData = new MutableLiveData<>();
+
+    //IN-RAM caching
+    public List<GigListResp> gigList = new ArrayList<>();
+    public List<TicketResp> ticketList = new ArrayList<>();
+    private List<GigListResp> myGigList = new ArrayList<>();
 
     public static DataRepository getInstance(WeakReference<Context> applicationCtxWeakRef) {
         if (INSTANCE == null) {
@@ -119,15 +131,19 @@ public class DataRepository implements IManager {
     public LiveData<ListResponse<GigListResp>> getGigList() {
         if (mNetworkUtils.isConnectedToInternet()) {
             Timber.d("SMP Data Repo fetch gig list");
-            return mNetworkManager.getGigList();
+            LiveData<ListResponse<GigListResp>> nwGigList = mNetworkManager.getGigList();
+            if (nwGigList.getValue() != null && nwGigList.getValue().getData().size() > 0) {
+                gigList = nwGigList.getValue().getData();
+            }
+            return nwGigList;
         } else {
             Timber.d("Is NOT connected to internet!");
             return Transformations.switchMap(mDatabaseManager.getGigsList(), new Function<List<GigListResp>, LiveData<ListResponse<GigListResp>>>() {
 
                 @Override
                 public LiveData<ListResponse<GigListResp>> apply(List<GigListResp> input) {
-                    MutableLiveData<ListResponse<GigListResp>> gigListLiveData = new MutableLiveData<>();
-
+                    gigList = input;
+                    Collections.reverse(gigList);
                     ListResponse<GigListResp> liveDataResp = new ListResponse<>(StateDefinition.State.COMPLETED, input, null);
 
                     if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
@@ -142,8 +158,38 @@ public class DataRepository implements IManager {
         }
     }
 
+    public LiveData<ListResponse<GigListResp>> getMyGigList() {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            Timber.d("Data Repo fetch gig list");
+            LiveData<ListResponse<GigListResp>> nwGigList = mNetworkManager.getMyGigList();
+            if (nwGigList.getValue() != null && nwGigList.getValue().getData().size() > 0) {
+                myGigList = nwGigList.getValue().getData();
+            }
+            return nwGigList;
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            return Transformations.switchMap(mDatabaseManager.getGigsList(), new Function<List<GigListResp>, LiveData<ListResponse<GigListResp>>>() {
+
+                @Override
+                public LiveData<ListResponse<GigListResp>> apply(List<GigListResp> input) {
+                    myGigList = input;
+                    Collections.reverse(myGigList);
+                    ListResponse<GigListResp> liveDataResp = new ListResponse<>(StateDefinition.State.COMPLETED, input, null);
+
+                    if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                        gigListLiveData.setValue(liveDataResp);
+                    } else {
+                        gigListLiveData.postValue(liveDataResp);
+                    }
+                    return gigListLiveData;
+                }
+
+            });
+        }
+    }
 
     public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
+
         if (mNetworkUtils.isConnectedToInternet()) {
             return mNetworkManager.createGig(createGig);
         } else {
@@ -160,7 +206,6 @@ public class DataRepository implements IManager {
         }
     }
 
-    //    Need clarification on error scenario. KPS
     public LiveData<DataResponse<BuyGigResp>> callBuyGigApi(BuyGigReqBody buyGigReqBody) {
         if (mNetworkUtils.isConnectedToInternet()) {
             // Handle network data fetching
@@ -186,7 +231,6 @@ public class DataRepository implements IManager {
         } else {
             Timber.d("Is NOT connected to internet!");
             ListResponse<TicketResp> ticketListResp = new ListResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
-            MutableLiveData<ListResponse<TicketResp>> ticketListLiveData = new MutableLiveData<>();
 
             if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
                 ticketListLiveData.setValue(ticketListResp);
@@ -195,6 +239,27 @@ public class DataRepository implements IManager {
             }
             return ticketListLiveData;
         }
+    }
+
+    public LiveData<DataResponse<String>> updateBankDetails(BankDetailsReqBody requestBody) {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            // Handle network data fetching
+            return mNetworkManager.addBankDetails(requestBody);
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            DataResponse<String> ticketListResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                updateBankDetailsLiveData.setValue(ticketListResp);
+            } else {
+                updateBankDetailsLiveData.postValue(ticketListResp);
+            }
+            return updateBankDetailsLiveData;
+        }
+    }
+
+    public void cacheContents() {
+        List<Long> ids = mDatabaseManager.storeGigsList(gigList);
     }
 
 

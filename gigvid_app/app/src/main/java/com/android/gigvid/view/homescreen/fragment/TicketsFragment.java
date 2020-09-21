@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
@@ -28,22 +31,41 @@ import timber.log.Timber;
 
 public class TicketsFragment extends Fragment implements AdapterEventCommunicator {
 
+    private String LOADING_ANIMATION = "progress_bar.json";
+    private String ERROR_ANIMATION = "error.json";
+
     private TicketsViewModel ticketsViewModel;
     private LinearLayoutManager mLayoutManager;
     private RecyclerView mTicketGigsRecyclerView;
     private TicketListAdapter mTicketGigListAdapter;
     private AdapterEventCommunicator mAdapterEventCommunicator;
+    private ConstraintLayout progressBarLayoutView;
+    private Button retryButton;
+    private LottieAnimationView progressBarLottieView;
+    String loadingAnimation;
 
     private Observer<ListResponse<TicketResp>> ticketListRespStatusObserver = new Observer<ListResponse<TicketResp>>() {
         @Override
         public void onChanged(ListResponse<TicketResp> ticketRespListResponse) {
             if (ticketRespListResponse.getStatus() == StateDefinition.State.COMPLETED) {
                 Timber.d("ticket gig success %d", ticketRespListResponse.getData().size());
-
+                progressBarLayoutView.setVisibility(View.GONE);
                 mTicketGigListAdapter.setData(ticketRespListResponse.getData());
                 mTicketGigListAdapter.notifyDataSetChanged();
+            } else if (ticketRespListResponse.getStatus() == StateDefinition.State.ERROR) {
+                if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
+                    progressBarLayoutView.setVisibility(View.VISIBLE);
+                }
+                loadingAnimation = ERROR_ANIMATION;
+                loadLottieAnimations(loadingAnimation);
+                retryButton.setVisibility(View.VISIBLE);
+                handleRetryButtonClick();
             } else {
-                Timber.d("ticket gig api failed");
+                Timber.d("ticket gig api loading");
+                progressBarLayoutView.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.GONE);
+                loadingAnimation = LOADING_ANIMATION;
+                loadLottieAnimations(loadingAnimation);
             }
         }
     };
@@ -65,6 +87,9 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mTicketGigsRecyclerView = view.findViewById(R.id.tickets_gig_recycler_view);
+        progressBarLayoutView = view.findViewById(R.id.progress_bar_view);
+        progressBarLottieView = view.findViewById(R.id.display_current_progress);
+        retryButton = view.findViewById(R.id.retry_button);
         setUpRecyclerViewAdapter();
     }
 
@@ -89,5 +114,31 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
         //TODO launch zoom meeting
         Timber.d("Launch zoom meeting URL -- %s",joinUrl);
 //        Intent launchMeeting = new Intent();
+    }
+
+    /**
+     * Method: Load Lottie Animation View to display progress
+     */
+    private void loadLottieAnimations(String animationName) {
+        if(progressBarLottieView.isAnimating()) {
+            progressBarLottieView.cancelAnimation();
+        }
+        progressBarLottieView.setAnimation(animationName);
+        progressBarLottieView.loop(true);
+        progressBarLottieView.playAnimation();
+    }
+
+    /**
+     * Method: Retry Button
+     *          1. Hides progress UI
+     *          2. TODO: Will reconnect to network
+     */
+    private void handleRetryButtonClick() {
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBarLayoutView.setVisibility(View.GONE);
+            }
+        });
     }
 }

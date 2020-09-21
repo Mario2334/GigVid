@@ -13,6 +13,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.Bu
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.LoginSignUpApi;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LogInReqBody;
@@ -26,6 +27,7 @@ import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.network.RetrofitUtils;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -45,9 +47,11 @@ public class NetworkManager implements IManager {
     private MutableLiveData<DataResponse<LoginResp>> mLogInMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<DataResponse<SignUpResp>> mSignUpResStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<ListResponse<GigListResp>> gigListRespStatusMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ListResponse<GigListResp>> myGigListRespStatusMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<DataResponse<CreateGigResp>> createGigRespStatusMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<DataResponse<BuyGigResp>> mBuyGugMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<DataResponse<String>> mBankDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<ListResponse<TicketResp>> mTicketListMutableLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
@@ -67,6 +71,17 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<LoginResp>> loginToGigVid(String username, String password) {
+        LoginResp loginResp = new LoginResp();
+        DataResponse<LoginResp> loginResponseStatus = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                loginResp,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mLogInMutableLiveData.setValue(loginResponseStatus);
+        } else {
+            mLogInMutableLiveData.postValue(loginResponseStatus);
+        }
         LogInReqBody logInReqBody = new LogInReqBody(username, password);
 
         if (client == null) {
@@ -146,6 +161,17 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<SignUpResp>> signUpForGigVid(SignUpReqBody signUpBody) {
+        SignUpResp signUpResp = new SignUpResp();
+        DataResponse<SignUpResp> signUpResponseStatus = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                signUpResp,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mSignUpResStatusMutableLiveData.setValue(signUpResponseStatus);
+        } else {
+            mSignUpResStatusMutableLiveData.postValue(signUpResponseStatus);
+        }
         if (client == null) {
             client = RetrofitUtils.getInstance().getLoginClient();
         }
@@ -220,6 +246,19 @@ public class NetworkManager implements IManager {
 
 
     public LiveData<ListResponse<GigListResp>> getGigList() {
+        List<GigListResp> gigListRespList = new ArrayList<>();
+        ListResponse<GigListResp> gigListResponseStatus;
+
+        gigListResponseStatus = new ListResponse<>(
+                StateDefinition.State.LOADING,
+                gigListRespList,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            gigListRespStatusMutableLiveData.setValue(gigListResponseStatus);
+        } else {
+            gigListRespStatusMutableLiveData.postValue(gigListResponseStatus);
+        }
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -295,6 +334,21 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
+        CreateGigResp createGigResp = new CreateGigResp("Dummy object");
+        DataResponse<CreateGigResp> createGigRespDataResponse;
+
+        createGigRespDataResponse = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                createGigResp,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            createGigRespStatusMutableLiveData.setValue(createGigRespDataResponse);
+        } else {
+            createGigRespStatusMutableLiveData.postValue(createGigRespDataResponse);
+        }
+
+
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -372,6 +426,18 @@ public class NetworkManager implements IManager {
 
 
     public LiveData<DataResponse<BuyGigResp>> buyGigApiCall(BuyGigReqBody buyGigReqBody) {
+        BuyGigResp buyGigResp = new BuyGigResp();
+        DataResponse<BuyGigResp> buyGigRespDataResponse = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                buyGigResp,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mBuyGugMutableLiveData.setValue(buyGigRespDataResponse);
+        } else {
+            mBuyGugMutableLiveData.postValue(buyGigRespDataResponse);
+        }
+
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -445,6 +511,19 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<ListResponse<TicketResp>> getTicketsApiCall() {
+        List<TicketResp> ticketRespList = new ArrayList<>();
+        ListResponse<TicketResp> ticketListResponse = new ListResponse<>(
+                StateDefinition.State.LOADING,
+                ticketRespList,
+                null
+        );
+
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mTicketListMutableLiveData.setValue(ticketListResponse);
+        } else {
+            mTicketListMutableLiveData.postValue(ticketListResponse);
+        }
+
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -515,6 +594,180 @@ public class NetworkManager implements IManager {
             }
         });
         return mTicketListMutableLiveData;
+    }
+
+
+    public LiveData<ListResponse<GigListResp>> getMyGigList() {
+        ListResponse<GigListResp> myGigListResponseStatus;
+
+        List<GigListResp> data = new ArrayList<>();
+        myGigListResponseStatus = new ListResponse<>(
+                StateDefinition.State.LOADING,
+                data,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            myGigListRespStatusMutableLiveData.setValue(myGigListResponseStatus);
+        } else {
+            myGigListRespStatusMutableLiveData.postValue(myGigListResponseStatus);
+        }
+        if (homeScreenApiClient == null) {
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<List<GigListResp>> callGigList = homeScreenApiClient.getMyGigsList(authToken);
+        callGigList.enqueue(new Callback<List<GigListResp>>() {
+            @Override
+            public void onResponse(Call<List<GigListResp>> call, Response<List<GigListResp>> response) {
+
+
+                ListResponse<GigListResp> myGigListRespStatus;
+                if (response.isSuccessful()) {
+
+                    List<GigListResp> myGigList = response.body();
+                    if (myGigList != null) {
+                        myGigListRespStatus = new ListResponse<>(StateDefinition.State.COMPLETED, myGigList, null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        myGigListRespStatus = new ListResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    myGigListRespStatus = new ListResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    myGigListRespStatusMutableLiveData.setValue(myGigListRespStatus);
+                } else {
+                    myGigListRespStatusMutableLiveData.postValue(myGigListRespStatus);
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<GigListResp>> call, Throwable t) {
+
+                ListResponse<GigListResp> myGigsResponseStatus;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                myGigsResponseStatus = new ListResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    myGigListRespStatusMutableLiveData.setValue(myGigsResponseStatus);
+                } else {
+                    myGigListRespStatusMutableLiveData.postValue(myGigsResponseStatus);
+                }
+            }
+        });
+
+        return myGigListRespStatusMutableLiveData;
+    }
+
+    public LiveData<DataResponse<String>> addBankDetails(BankDetailsReqBody bankDetailsReqBody) {
+        DataResponse<String> buyGigRespDataResponse = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                "bank details",
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mBankDetailsLiveData.setValue(buyGigRespDataResponse);
+        } else {
+            mBankDetailsLiveData.postValue(buyGigRespDataResponse);
+        }
+
+        if (homeScreenApiClient == null) {
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+        //        TODO("Use Transformations for live data ")
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<String> call = homeScreenApiClient.addBankDetails(authToken, bankDetailsReqBody);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                DataResponse<String> buyGigRespDataResponse;
+                if (response.isSuccessful()) {
+                    String signUpRes = (String) response.body();
+
+                    if (signUpRes != null) {
+                        Timber.d("onResponse: res" + response.body());
+                        buyGigRespDataResponse = new DataResponse<String>(StateDefinition.State.COMPLETED, "String", null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        buyGigRespDataResponse = new DataResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    buyGigRespDataResponse = new DataResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mBankDetailsLiveData.setValue(buyGigRespDataResponse);
+                } else {
+                    mBankDetailsLiveData.postValue(buyGigRespDataResponse);
+                }
+
+            }
+
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                DataResponse<String> buyGigRespDataResponse;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                buyGigRespDataResponse = new DataResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mBankDetailsLiveData.setValue(buyGigRespDataResponse);
+                } else {
+                    mBankDetailsLiveData.postValue(buyGigRespDataResponse);
+                }
+            }
+        });
+        return mBankDetailsLiveData;
     }
 
     @Override
