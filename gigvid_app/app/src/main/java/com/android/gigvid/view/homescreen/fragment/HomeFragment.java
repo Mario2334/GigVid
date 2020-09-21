@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -62,6 +63,7 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
                 } else {
                     Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
                 }
+                gigListLiveData.removeObservers(HomeFragment.this);
             } else if (gigListRespStatus.getStatus() == StateDefinition.State.ERROR) {
                 if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
                     progressBarLayoutView.setVisibility(View.VISIBLE);
@@ -70,6 +72,7 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
                 loadLottieAnimations(loadingAnimation);
                 retryButton.setVisibility(View.VISIBLE);
                 handleRetryButtonClick();
+                gigListLiveData.removeObservers(HomeFragment.this);
             } else {
                 Timber.d("list gig api LOADING");
                 progressBarLayoutView.setVisibility(View.VISIBLE);
@@ -80,6 +83,7 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
         }
     };
     private LinearLayoutManager mLayoutManager;
+    private LiveData<ListResponse<GigListResp>> gigListLiveData;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -87,7 +91,8 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        homeViewModel.getGigListLiveData().observe(this, gigListRespStatusObserver);
+        gigListLiveData = homeViewModel.getGigListLiveData();
+        gigListLiveData.observe(this, gigListRespStatusObserver);
 
         mAdapterEventCommunicator = this;
         Timber.d("HomeFrag on create");
@@ -181,6 +186,8 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
             @Override
             public void onClick(View v) {
                 progressBarLayoutView.setVisibility(View.GONE);
+                gigListLiveData = homeViewModel.getGigListLiveData();
+                gigListLiveData.observe(HomeFragment.this, gigListRespStatusObserver);
             }
         });
     }

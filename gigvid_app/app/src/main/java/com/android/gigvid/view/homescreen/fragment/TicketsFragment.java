@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -58,6 +59,7 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
                 } else {
                     Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
                 }
+                ticketsLiveData.removeObservers(TicketsFragment.this);
             } else if (ticketRespListResponse.getStatus() == StateDefinition.State.ERROR) {
                 if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
                     progressBarLayoutView.setVisibility(View.VISIBLE);
@@ -72,6 +74,7 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
                 loadLottieAnimations(loadingAnimation);
                 retryButton.setVisibility(View.VISIBLE);
                 handleRetryButtonClick();
+                ticketsLiveData.removeObservers(TicketsFragment.this);
             } else {
                 Timber.d("ticket gig api loading");
                 progressBarLayoutView.setVisibility(View.VISIBLE);
@@ -81,6 +84,7 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
             }
         }
     };
+    private LiveData<ListResponse<TicketResp>> ticketsLiveData;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -88,7 +92,8 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
                 ViewModelProviders.of(this).get(TicketsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_tickets, container, false);
 
-        ticketsViewModel.getTicketList().observe(this, ticketListRespStatusObserver);
+        ticketsLiveData = ticketsViewModel.getTicketList();
+        ticketsLiveData.observe(this, ticketListRespStatusObserver);
 
 
         mAdapterEventCommunicator = this;
@@ -149,6 +154,9 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
             @Override
             public void onClick(View v) {
                 progressBarLayoutView.setVisibility(View.GONE);
+                ticketsLiveData = ticketsViewModel.getTicketList();
+                ticketsLiveData.observe(TicketsFragment.this, ticketListRespStatusObserver);
+
             }
         });
     }
