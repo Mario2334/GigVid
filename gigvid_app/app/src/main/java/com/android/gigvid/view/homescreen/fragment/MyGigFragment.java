@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -55,8 +56,8 @@ public class MyGigFragment extends Fragment {
                     mMyGigAdapter.notifyDataSetChanged();
                 } else {
                     Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
-
                 }
+                myGigLiveData.removeObservers(MyGigFragment.this);
             } else if (gigListRespStatus.getStatus() == StateDefinition.State.ERROR) {
                 if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
                     progressBarLayoutView.setVisibility(View.VISIBLE);
@@ -71,6 +72,7 @@ public class MyGigFragment extends Fragment {
                 loadLottieAnimations(loadingAnimation);
                 retryButton.setVisibility(View.VISIBLE);
                 handleRetryButtonClick();
+                myGigLiveData.removeObservers(MyGigFragment.this);
             } else {
                 Timber.d("my gig api loading");
                 progressBarLayoutView.setVisibility(View.VISIBLE);
@@ -80,13 +82,15 @@ public class MyGigFragment extends Fragment {
             }
         }
     };
+    private LiveData<ListResponse<GigListResp>> myGigLiveData;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         myGigViewModel =
                 ViewModelProviders.of(this).get(MyGigViewModel.class);
         View root = inflater.inflate(R.layout.fragment_mygig, container, false);
-        myGigViewModel.getMyGigList().observe(this, mMyGigRespStatusObserver);
+        myGigLiveData = myGigViewModel.getMyGigList();
+        myGigLiveData.observe(this, mMyGigRespStatusObserver);
 
         return root;
     }
@@ -134,6 +138,8 @@ public class MyGigFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 progressBarLayoutView.setVisibility(View.GONE);
+                myGigLiveData = myGigViewModel.getMyGigList();
+                myGigLiveData.observe(MyGigFragment.this, mMyGigRespStatusObserver);
             }
         });
     }
