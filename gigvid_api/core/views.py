@@ -10,11 +10,16 @@ import os
 
 from .razorpay import Razorpay
 from .zoom import ZoomApi
-
+from django.contrib.auth.models import AnonymousUser
 
 class GigListView(ListAPIView):
     serializer_class = serializers.GigSerializer
-    queryset = models.Gig.objects.filter(scheduled_time__gt=timezone.now())
+    authentication_classes = [TokenAuthentication]
+
+    def get_queryset(self):
+        if isinstance(self.request.user, AnonymousUser):
+            return models.Gig.objects.filter(scheduled_time__gt=timezone.now())
+        return models.Gig.objects.filter(scheduled_time__gt=timezone.now()).exclude(user=self.request.user)
 
 
 class CreateGigView(CreateAPIView):
@@ -51,7 +56,7 @@ class CreateGigView(CreateAPIView):
             print(gig)
             return Response(status=201, data={"message": "success"})
         else:
-            return Response(status=400, data={"message":serializer.errors})
+            return Response(status=400, data={"message": serializer.errors})
 
 
 class CreatePaymentLinkView(APIView):
@@ -91,7 +96,7 @@ class CreatePaymentLinkView(APIView):
                 "order_id": order.id
             }, status=200)
         else:
-            return Response({"message":payment_serializer.errors}, status=400)
+            return Response({"message": payment_serializer.errors}, status=400)
 
 
 class ConfirmPaymentLinkView(APIView):
@@ -116,9 +121,18 @@ class ConfirmPaymentLinkView(APIView):
                 ticket.gig.user.bankaccount.save()
                 return Response(ticket_serializer.data)
             else:
-                return Response(data={"message":"Payment Failed"},status=503)
+                return Response(data={"message": "Payment Failed"}, status=503)
         else:
-            return Response({"message":payment_serializer.errors}, status=400)
+            return Response({"message": payment_serializer.errors}, status=400)
+
+
+class MyGigsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = serializers.GigSerializer
+
+    def get_queryset(self):
+        return models.Gig.objects.filter(user=self.request.user)
 
 
 class ListTicketView(ListAPIView):

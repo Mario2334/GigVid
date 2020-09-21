@@ -92,3 +92,28 @@ class BankAccountView(APIView):
 
         else:
             return Response({"message": serializer.errors}, status=400)
+
+
+class InitiatePayoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def post(self,request):
+        bank_account = request.user.bankaccount
+        if bank_account.balance > 10:
+            params = {
+                "account_number":"2323230051699679",
+                "fund_account_id":bank_account.fund_account_id,
+                "amount" : bank_account.balance*100,
+                "currency": "INR",
+                "mode": "IMPS",
+                "purpose": "refund",
+                "queue_if_low_balance": True,
+                "reference_id": "Acme Transaction ID 12345",
+            }
+            response = Razorpay().initiate_payout(params)
+            bank_account.balance = 0
+            bank_account.save()
+            return Response(status=200 , data={"message":"Payout Successful"})
+        else:
+            return Response(status=400,data={"message":"Balance more than 10 rs needed"} )

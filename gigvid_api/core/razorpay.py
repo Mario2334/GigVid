@@ -43,3 +43,11 @@ class Razorpay():
             return resp.json()
         else:
             raise Exception(f"{resp.content}")
+
+    def initiate_payout(self,params):
+        url = self.base_url + "payouts"
+        resp = requests.post(url, data=json.dumps(params), headers=self.headers)
+        if resp.status_code == 201 or resp.status_code == 200:
+            return resp.json()
+        else:
+            raise Exception(f"{resp.content}")
