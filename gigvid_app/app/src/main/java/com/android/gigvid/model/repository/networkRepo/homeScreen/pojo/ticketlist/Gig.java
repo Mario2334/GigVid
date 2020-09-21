@@ -31,6 +31,58 @@ public class Gig {
     @SerializedName("host_url")
     public String mHostUrl;
 
+    public int getmId() {
+        return mId;
+    }
+
+    public String getmUrl() {
+        return mUrl;
+    }
+
+    public boolean ismIsActive() {
+        return mIsActive;
+    }
+
+    public String getmScheduledTime() {
+        return mScheduledTime;
+    }
+
+    public String getmName() {
+        return mName;
+    }
+
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public String getmJoinUrl() {
+        return mJoinUrl;
+    }
+
+    public String getmHostUrl() {
+        return mHostUrl;
+    }
+
+    public int getmDuration() {
+        return mDuration;
+    }
+
+    public String getmHeaderImage() {
+        return mHeaderImage;
+    }
+
+    public String getmCreatedAt() {
+        return mCreatedAt;
+    }
+
+    public int getmPrice() {
+        return mPrice;
+    }
+
+    public int getmUser() {
+        return mUser;
+    }
+
     @SerializedName("duration")
     public int mDuration;
 
