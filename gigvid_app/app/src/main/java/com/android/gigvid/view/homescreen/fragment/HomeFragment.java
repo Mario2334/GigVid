@@ -108,9 +108,11 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
 
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(buyGigRespDataResponse.getData().getLink()));
                 startActivity(browserIntent);
-            } else {
+            } else if (buyGigRespDataResponse.getStatus() == StateDefinition.State.ERROR) {
                 Log.d("SMP", "onChanged: error");
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), buyGigRespDataResponse.getError().getErrorMsg(), Toast.LENGTH_SHORT).show();
+            } else {
+//                Handle loading screen
             }
 
         }

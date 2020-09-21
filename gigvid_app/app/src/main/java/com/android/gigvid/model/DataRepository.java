@@ -157,6 +157,7 @@ public class DataRepository implements IManager {
 
 
     public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
+
         if (mNetworkUtils.isConnectedToInternet()) {
             return mNetworkManager.createGig(createGig);
         } else {

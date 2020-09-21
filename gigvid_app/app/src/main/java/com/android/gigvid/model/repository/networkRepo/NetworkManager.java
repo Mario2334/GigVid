@@ -67,6 +67,16 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<LoginResp>> loginToGigVid(String username, String password) {
+        DataResponse<LoginResp> loginResponseStatus = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mLogInMutableLiveData.setValue(loginResponseStatus);
+        } else {
+            mLogInMutableLiveData.postValue(loginResponseStatus);
+        }
         LogInReqBody logInReqBody = new LogInReqBody(username, password);
 
         if (client == null) {
@@ -146,6 +156,16 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<SignUpResp>> signUpForGigVid(SignUpReqBody signUpBody) {
+        DataResponse<SignUpResp> signUpResponseStatus = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mSignUpResStatusMutableLiveData.setValue(signUpResponseStatus);
+        } else {
+            mSignUpResStatusMutableLiveData.postValue(signUpResponseStatus);
+        }
         if (client == null) {
             client = RetrofitUtils.getInstance().getLoginClient();
         }
@@ -220,6 +240,18 @@ public class NetworkManager implements IManager {
 
 
     public LiveData<ListResponse<GigListResp>> getGigList() {
+        ListResponse<GigListResp> gigListResponseStatus;
+
+        gigListResponseStatus = new ListResponse<>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            gigListRespStatusMutableLiveData.setValue(gigListResponseStatus);
+        } else {
+            gigListRespStatusMutableLiveData.postValue(gigListResponseStatus);
+        }
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -295,6 +327,20 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
+        DataResponse<CreateGigResp> createGigRespDataResponse;
+
+        createGigRespDataResponse = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            createGigRespStatusMutableLiveData.setValue(createGigRespDataResponse);
+        } else {
+            createGigRespStatusMutableLiveData.postValue(createGigRespDataResponse);
+        }
+
+
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -372,6 +418,17 @@ public class NetworkManager implements IManager {
 
 
     public LiveData<DataResponse<BuyGigResp>> buyGigApiCall(BuyGigReqBody buyGigReqBody) {
+        DataResponse<BuyGigResp> buyGigRespDataResponse = new DataResponse<>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mBuyGugMutableLiveData.setValue(buyGigRespDataResponse);
+        } else {
+            mBuyGugMutableLiveData.postValue(buyGigRespDataResponse);
+        }
+
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
@@ -445,6 +502,19 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<ListResponse<TicketResp>> getTicketsApiCall() {
+
+        ListResponse<TicketResp> ticketListResponse = new ListResponse<>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mTicketListMutableLiveData.setValue(ticketListResponse);
+        } else {
+            mTicketListMutableLiveData.postValue(ticketListResponse);
+        }
+
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
