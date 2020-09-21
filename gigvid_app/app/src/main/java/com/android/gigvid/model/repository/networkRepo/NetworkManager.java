@@ -26,6 +26,7 @@ import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.network.RetrofitUtils;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -67,9 +68,10 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<LoginResp>> loginToGigVid(String username, String password) {
+        LoginResp loginResp = new LoginResp();
         DataResponse<LoginResp> loginResponseStatus = new DataResponse<>(
                 StateDefinition.State.LOADING,
-                null,
+                loginResp,
                 null
         );
         if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
@@ -156,9 +158,10 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<SignUpResp>> signUpForGigVid(SignUpReqBody signUpBody) {
+        SignUpResp signUpResp = new SignUpResp();
         DataResponse<SignUpResp> signUpResponseStatus = new DataResponse<>(
                 StateDefinition.State.LOADING,
-                null,
+                signUpResp,
                 null
         );
         if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
@@ -240,11 +243,12 @@ public class NetworkManager implements IManager {
 
 
     public LiveData<ListResponse<GigListResp>> getGigList() {
+        List<GigListResp> gigListRespList = new ArrayList<>();
         ListResponse<GigListResp> gigListResponseStatus;
 
         gigListResponseStatus = new ListResponse<>(
                 StateDefinition.State.LOADING,
-                null,
+                gigListRespList,
                 null
         );
         if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
@@ -327,11 +331,12 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<DataResponse<CreateGigResp>> createGig(CreateGigReqBody createGig) {
+        CreateGigResp createGigResp = new CreateGigResp("Dummy object");
         DataResponse<CreateGigResp> createGigRespDataResponse;
 
         createGigRespDataResponse = new DataResponse<>(
                 StateDefinition.State.LOADING,
-                null,
+                createGigResp,
                 null
         );
         if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
@@ -418,9 +423,10 @@ public class NetworkManager implements IManager {
 
 
     public LiveData<DataResponse<BuyGigResp>> buyGigApiCall(BuyGigReqBody buyGigReqBody) {
+        BuyGigResp buyGigResp = new BuyGigResp();
         DataResponse<BuyGigResp> buyGigRespDataResponse = new DataResponse<>(
                 StateDefinition.State.LOADING,
-                null,
+                buyGigResp,
                 null
         );
         if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
@@ -502,10 +508,10 @@ public class NetworkManager implements IManager {
     }
 
     public LiveData<ListResponse<TicketResp>> getTicketsApiCall() {
-
+        List<TicketResp> ticketRespList = new ArrayList<>();
         ListResponse<TicketResp> ticketListResponse = new ListResponse<>(
                 StateDefinition.State.LOADING,
-                null,
+                ticketRespList,
                 null
         );
 
