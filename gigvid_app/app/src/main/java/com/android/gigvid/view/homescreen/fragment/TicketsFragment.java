@@ -25,6 +25,7 @@ import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 import com.android.gigvid.view.homescreen.adapter.TicketListAdapter;
 import com.android.gigvid.viewModel.homescreen.TicketsViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import timber.log.Timber;
 
@@ -48,13 +49,24 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
         @Override
         public void onChanged(ListResponse<TicketResp> ticketRespListResponse) {
             if (ticketRespListResponse.getStatus() == StateDefinition.State.COMPLETED) {
-                Timber.d("ticket gig success %d", ticketRespListResponse.getData().size());
                 progressBarLayoutView.setVisibility(View.GONE);
-                mTicketGigListAdapter.setData(ticketRespListResponse.getData());
-                mTicketGigListAdapter.notifyDataSetChanged();
+
+                if (ticketRespListResponse.getData().size() > 0) {
+                    Timber.d("ticket gig success %d", ticketRespListResponse.getData().size());
+                    mTicketGigListAdapter.setData(ticketRespListResponse.getData());
+                    mTicketGigListAdapter.notifyDataSetChanged();
+                } else {
+                    Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
+                }
             } else if (ticketRespListResponse.getStatus() == StateDefinition.State.ERROR) {
                 if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
                     progressBarLayoutView.setVisibility(View.VISIBLE);
+                }
+                if (ticketRespListResponse.getError().getErrorStatus() == StateDefinition.ErrorState.NO_INTERNET_ERROR) {
+                    Snackbar.make(retryButton, ticketRespListResponse.getError().getErrorMsg(), Snackbar.LENGTH_SHORT).show();
+
+                } else {
+                    Snackbar.make(retryButton, "Something went wrong! Try again later", Snackbar.LENGTH_SHORT).show();
                 }
                 loadingAnimation = ERROR_ANIMATION;
                 loadLottieAnimations(loadingAnimation);
@@ -77,7 +89,6 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
         View root = inflater.inflate(R.layout.fragment_tickets, container, false);
 
         ticketsViewModel.getTicketList().observe(this, ticketListRespStatusObserver);
-
 
 
         mAdapterEventCommunicator = this;
@@ -112,7 +123,7 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
     @Override
     public void joinEventBtnClick(String joinUrl) {
         //TODO launch zoom meeting
-        Timber.d("Launch zoom meeting URL -- %s",joinUrl);
+        Timber.d("Launch zoom meeting URL -- %s", joinUrl);
 //        Intent launchMeeting = new Intent();
     }
 
@@ -120,7 +131,7 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
      * Method: Load Lottie Animation View to display progress
      */
     private void loadLottieAnimations(String animationName) {
-        if(progressBarLottieView.isAnimating()) {
+        if (progressBarLottieView.isAnimating()) {
             progressBarLottieView.cancelAnimation();
         }
         progressBarLottieView.setAnimation(animationName);
@@ -130,8 +141,8 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
 
     /**
      * Method: Retry Button
-     *          1. Hides progress UI
-     *          2. TODO: Will reconnect to network
+     * 1. Hides progress UI
+     * 2. TODO: Will reconnect to network
      */
     private void handleRetryButtonClick() {
         retryButton.setOnClickListener(new View.OnClickListener() {

@@ -32,6 +32,7 @@ import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 import com.android.gigvid.view.homescreen.adapter.GigListAdapter;
 import com.android.gigvid.viewModel.homescreen.HomeViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import timber.log.Timber;
 
@@ -53,10 +54,14 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
         @Override
         public void onChanged(ListResponse<GigListResp> gigListRespStatus) {
             if (gigListRespStatus.getStatus() == StateDefinition.State.COMPLETED) {
-                Timber.d("list gig success %d", gigListRespStatus.getData().size());
                 progressBarLayoutView.setVisibility(View.GONE);
-                gigListAdapter.setData(gigListRespStatus.getData());
-                gigListAdapter.notifyDataSetChanged();
+                if (gigListRespStatus.getData().size() > 0) {
+                    Timber.d("list gig success %d", gigListRespStatus.getData().size());
+                    gigListAdapter.setData(gigListRespStatus.getData());
+                    gigListAdapter.notifyDataSetChanged();
+                } else {
+                    Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
+                }
             } else if (gigListRespStatus.getStatus() == StateDefinition.State.ERROR) {
                 if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
                     progressBarLayoutView.setVisibility(View.VISIBLE);
@@ -142,7 +147,8 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
                 loadLottieAnimations(loadingAnimation);
                 retryButton.setVisibility(View.VISIBLE);
                 handleRetryButtonClick();
-                Toast.makeText(GigVidApplication.getGigVidAppContext(), buyGigRespDataResponse.getError().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                Snackbar.make(retryButton, buyGigRespDataResponse.getError().getErrorMsg(), Snackbar.LENGTH_SHORT).show();
+//                Toast.makeText(GigVidApplication.getGigVidAppContext(), buyGigRespDataResponse.getError().getErrorMsg(), Toast.LENGTH_SHORT).show();
             } else {
                 progressBarLayoutView.setVisibility(View.VISIBLE);
                 retryButton.setVisibility(View.GONE);
@@ -157,7 +163,7 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
      * Method: Load Lottie Animation View to display progress
      */
     private void loadLottieAnimations(String animationName) {
-        if(progressBarLottieView.isAnimating()) {
+        if (progressBarLottieView.isAnimating()) {
             progressBarLottieView.cancelAnimation();
         }
         progressBarLottieView.setAnimation(animationName);
@@ -167,8 +173,8 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
 
     /**
      * Method: Retry Button
-     *          1. Hides progress UI
-     *          2. TODO: Will reconnect to network
+     * 1. Hides progress UI
+     * 2. TODO: Will reconnect to network
      */
     private void handleRetryButtonClick() {
         retryButton.setOnClickListener(new View.OnClickListener() {

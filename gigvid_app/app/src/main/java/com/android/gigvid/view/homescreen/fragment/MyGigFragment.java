@@ -25,6 +25,7 @@ import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.homescreen.adapter.GigListAdapter;
 import com.android.gigvid.view.homescreen.adapter.MyGigAdapter;
 import com.android.gigvid.viewModel.homescreen.MyGigViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import timber.log.Timber;
 
@@ -46,20 +47,31 @@ public class MyGigFragment extends Fragment {
         @Override
         public void onChanged(ListResponse<GigListResp> gigListRespStatus) {
             if (gigListRespStatus.getStatus() == StateDefinition.State.COMPLETED) {
-                Timber.d("my gig success %d", gigListRespStatus.getData().size());
                 progressBarLayoutView.setVisibility(View.GONE);
-                mMyGigAdapter.setData(gigListRespStatus.getData());
-                mMyGigAdapter.notifyDataSetChanged();
+
+                if (gigListRespStatus.getData().size() > 0) {
+                    Timber.d("my gig success %d", gigListRespStatus.getData().size());
+                    mMyGigAdapter.setData(gigListRespStatus.getData());
+                    mMyGigAdapter.notifyDataSetChanged();
+                } else {
+                    Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
+
+                }
             } else if (gigListRespStatus.getStatus() == StateDefinition.State.ERROR) {
                 if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
                     progressBarLayoutView.setVisibility(View.VISIBLE);
+                }
+                if (gigListRespStatus.getError().getErrorStatus() == StateDefinition.ErrorState.NO_INTERNET_ERROR) {
+                    Snackbar.make(retryButton, gigListRespStatus.getError().getErrorMsg(), Snackbar.LENGTH_SHORT).show();
+
+                } else {
+                    Snackbar.make(retryButton, "Something went wrong! Try again later", Snackbar.LENGTH_SHORT).show();
                 }
                 loadingAnimation = ERROR_ANIMATION;
                 loadLottieAnimations(loadingAnimation);
                 retryButton.setVisibility(View.VISIBLE);
                 handleRetryButtonClick();
-            }
-            else {
+            } else {
                 Timber.d("my gig api loading");
                 progressBarLayoutView.setVisibility(View.VISIBLE);
                 retryButton.setVisibility(View.GONE);
@@ -74,7 +86,7 @@ public class MyGigFragment extends Fragment {
         myGigViewModel =
                 ViewModelProviders.of(this).get(MyGigViewModel.class);
         View root = inflater.inflate(R.layout.fragment_mygig, container, false);
-        myGigViewModel.getMyGigList().observe(this,mMyGigRespStatusObserver);
+        myGigViewModel.getMyGigList().observe(this, mMyGigRespStatusObserver);
 
         return root;
     }
@@ -104,7 +116,7 @@ public class MyGigFragment extends Fragment {
      * Method: Load Lottie Animation View to display progress
      */
     private void loadLottieAnimations(String animationName) {
-        if(progressBarLottieView.isAnimating()) {
+        if (progressBarLottieView.isAnimating()) {
             progressBarLottieView.cancelAnimation();
         }
         progressBarLottieView.setAnimation(animationName);
@@ -114,8 +126,8 @@ public class MyGigFragment extends Fragment {
 
     /**
      * Method: Retry Button
-     *          1. Hides progress UI
-     *          2. TODO: Will reconnect to network
+     * 1. Hides progress UI
+     * 2. TODO: Will reconnect to network
      */
     private void handleRetryButtonClick() {
         retryButton.setOnClickListener(new View.OnClickListener() {

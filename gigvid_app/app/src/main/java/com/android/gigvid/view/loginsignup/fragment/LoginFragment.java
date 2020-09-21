@@ -153,6 +153,7 @@ public class LoginFragment extends Fragment {
                 SharedPrefUtils.saveTokenValueToSP(loginResp.getData().getToken());
 
                 progressBarLayoutView.setVisibility(View.GONE);
+                Snackbar.make(retryButton, "Login Success", Snackbar.LENGTH_SHORT).show();
                 launchHomeScreenActivity();
 
             } else if (loginResp.getStatus() == StateDefinition.State.ERROR) {
@@ -183,11 +184,10 @@ public class LoginFragment extends Fragment {
     private void handleErrorScenario(@StateDefinition.ErrorState int errorState) {
         switch (errorState) {
             case StateDefinition.ErrorState.NO_INTERNET_ERROR:
-                Timber.d("Check internet connectivity");
-//                Snackbar.make(retryButton, "Check internet connectivity", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(retryButton, "Check internet connectivity", Snackbar.LENGTH_SHORT).show();
                 break;
             case StateDefinition.ErrorState.INTERNAL_SERVER_ERROR:
-//                Snackbar.make(retryButton, "Something went wrong! Try again later.", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(retryButton, "Something went wrong! Try again later.", Snackbar.LENGTH_SHORT).show();
                 break;
             default:
                 Snackbar.make(retryButton, "Invalid Credentials", Snackbar.LENGTH_SHORT).show();

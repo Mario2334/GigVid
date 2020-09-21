@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +14,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpReqBody;
 import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.SignUpResp;
@@ -23,6 +21,7 @@ import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import timber.log.Timber;
@@ -139,13 +138,13 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private void handleErrorScenario(@StateDefinition.ErrorState int errorState) {
         switch (errorState) {
             case StateDefinition.ErrorState.NO_INTERNET_ERROR:
-                Toast.makeText(getActivity(), "Check internet connectivity", Toast.LENGTH_SHORT).show();
+                Snackbar.make(retryButton, "Check internet connectivity", Snackbar.LENGTH_SHORT).show();
                 break;
             case StateDefinition.ErrorState.INTERNAL_SERVER_ERROR:
-                Toast.makeText(getActivity(), "Something went wrong! Try again later.", Toast.LENGTH_SHORT).show();
+                Snackbar.make(retryButton, "Something went wrong! Try again later.", Snackbar.LENGTH_SHORT).show();
                 break;
             default:
-                Toast.makeText(getActivity(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                Snackbar.make(retryButton, "Invalid Credentials", Snackbar.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -178,7 +177,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             proceedWithSignUpButton.setOnClickListener(null);
             loginSignUpViewModel.signUp(signUpBody).observe(this, signUpRespObserver);
         } else {
-            Toast.makeText(GigVidApplication.getGigVidAppContext(), "Invalid data", Toast.LENGTH_SHORT).show();
+            Snackbar.make(retryButton, "Invalid entry", Snackbar.LENGTH_SHORT).show();
         }
 
     }
@@ -196,7 +195,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
      * Method: Load Lottie Animation View to display progress
      */
     private void loadLottieAnimations(String animationName) {
-        if(progressBarLottieView.isAnimating()) {
+        if (progressBarLottieView.isAnimating()) {
             progressBarLottieView.cancelAnimation();
         }
         progressBarLottieView.setAnimation(animationName);
@@ -206,8 +205,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     /**
      * Method: Retry Button
-     *          1. Hides progress UI
-     *          2. TODO: Will reconnect to network
+     * 1. Hides progress UI
+     * 2. TODO: Will reconnect to network
      */
     private void handleRetryButtonClick() {
         retryButton.setOnClickListener(new View.OnClickListener() {
