@@ -1,5 +1,7 @@
 package com.android.gigvid.view.homescreen.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
+import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 import com.android.gigvid.view.homescreen.adapter.GigListAdapter;
 import com.android.gigvid.view.homescreen.adapter.MyGigAdapter;
 import com.android.gigvid.viewModel.homescreen.MyGigViewModel;
@@ -30,7 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import timber.log.Timber;
 
-public class MyGigFragment extends Fragment {
+public class MyGigFragment extends Fragment implements AdapterEventCommunicator {
 
     private String LOADING_ANIMATION = "progress_bar.json";
     private String ERROR_ANIMATION = "error.json";
@@ -83,6 +86,7 @@ public class MyGigFragment extends Fragment {
         }
     };
     private LiveData<ListResponse<GigListResp>> myGigLiveData;
+    private Button startButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -91,6 +95,7 @@ public class MyGigFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_mygig, container, false);
         myGigLiveData = myGigViewModel.getMyGigList();
         myGigLiveData.observe(this, mMyGigRespStatusObserver);
+
 
         return root;
     }
@@ -102,6 +107,7 @@ public class MyGigFragment extends Fragment {
         progressBarLayoutView = view.findViewById(R.id.progress_bar_view);
         progressBarLottieView = view.findViewById(R.id.display_current_progress);
         retryButton = view.findViewById(R.id.retry_button);
+        startButton = view.findViewById(R.id.start_event_button);
         setUpRecyclerViewAdapter();
     }
 
@@ -111,7 +117,7 @@ public class MyGigFragment extends Fragment {
         mMyGigsRecyclerView.setLayoutManager(mLayoutManager);
         mMyGigsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         if (mMyGigAdapter == null) {
-            mMyGigAdapter = new MyGigAdapter();
+            mMyGigAdapter = new MyGigAdapter(this);
         }
         mMyGigsRecyclerView.setAdapter(mMyGigAdapter);
     }
@@ -142,5 +148,17 @@ public class MyGigFragment extends Fragment {
                 myGigLiveData.observe(MyGigFragment.this, mMyGigRespStatusObserver);
             }
         });
+    }
+
+
+    @Override
+    public void buyBtnClickEvent(int gigId) {
+
+    }
+
+    @Override
+    public void joinEventBtnClick(String joinUrl) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(joinUrl));
+        startActivity(browserIntent);
     }
 }

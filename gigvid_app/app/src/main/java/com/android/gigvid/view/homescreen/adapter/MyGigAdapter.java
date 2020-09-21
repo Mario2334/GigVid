@@ -1,5 +1,7 @@
 package com.android.gigvid.view.homescreen.adapter;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,22 +15,29 @@ import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ScheduleDateTime;
 import com.android.gigvid.utils.dateTime.DateTimeUtils;
+import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 
 import java.util.List;
 
 public class MyGigAdapter extends RecyclerView.Adapter<MyGigAdapter.MyGigAdapterVH> {
 
     private List<GigListResp> gigList;
+    private AdapterEventCommunicator mAdapterEventCommunicator;
+
+    public MyGigAdapter(AdapterEventCommunicator adapterEventCommunicator) {
+        mAdapterEventCommunicator = adapterEventCommunicator;
+    }
+
     @NonNull
     @Override
     public MyGigAdapterVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gig_item_my_gigs, parent , false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gig_item_my_gigs, parent, false);
         return new MyGigAdapterVH(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyGigAdapterVH holder, int position) {
-        GigListResp myGigData = gigList.get(position);
+        final GigListResp myGigData = gigList.get(position);
 
         ScheduleDateTime scheduleDateTime = DateTimeUtils.getSchedDtTime(myGigData.getScheduledTime());
         holder.getGigTitle().setText(myGigData.getName());
@@ -38,7 +47,13 @@ public class MyGigAdapter extends RecyclerView.Adapter<MyGigAdapter.MyGigAdapter
         holder.getGigDate().setText(scheduleDateTime.getDate());
         holder.getGigTime().setText(scheduleDateTime.getTime());
         holder.getGigMonth().setText(scheduleDateTime.getMonth());
-        holder.getGigDuration().setText(myGigData.getDuration().toString()+"hr(s)");
+        holder.getGigDuration().setText(myGigData.getDuration().toString() + "hr(s)");
+        holder.startGigBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapterEventCommunicator.joinEventBtnClick(myGigData.getHostUrl());
+            }
+        });
 
 //        holder.getGigBuyBtn().setTag(Constants.BUY_BTN_TAG_KEY, gigListResp.getId());
     }
