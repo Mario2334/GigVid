@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -14,10 +15,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
@@ -34,11 +37,18 @@ import timber.log.Timber;
 
 public class HostGigFragment extends DialogFragment {
 
+    private String LOADING_ANIMATION = "progress_bar.json";
+    private String ERROR_ANIMATION = "error.json";
+
     private HostGigViewModel hostGigViewModel;
     private TextView eventDate;
     private TextView eventTime;
     private MaterialButton submitBtn;
     private TextInputLayout eventName, eventDescrip, eventPrice, eventDuration;
+    private ConstraintLayout progressBarLayoutView;
+    private Button retryButton;
+    private LottieAnimationView progressBarLottieView;
+    String loadingAnimation;
     private int hour;
     private int minute;
     private int year;
@@ -52,7 +62,10 @@ public class HostGigFragment extends DialogFragment {
             Timber.d("created gig");
             if (createGigRespStatus.getStatus() == StateDefinition.State.COMPLETED) {
                 Timber.d("Create Gig response: %s", createGigRespStatus.getData().getMessage());
+                progressBarLayoutView.setVisibility(View.GONE);
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), "Successfully hosted", Toast.LENGTH_SHORT).show();
+                clearTextFieldsOnSuccess();
+                
                 if (!submitBtn.hasOnClickListeners()) {
                     Timber.d("No on click listeners. So adding them.");
                     submitBtn.setOnClickListener(submitBtnClickListener);
@@ -60,13 +73,24 @@ public class HostGigFragment extends DialogFragment {
             } else if (createGigRespStatus.getStatus() == StateDefinition.State.ERROR) {
 
                 //Enable OnClickListener to allow retry
+                if (progressBarLayoutView.getVisibility() != View.VISIBLE) {
+                    progressBarLayoutView.setVisibility(View.VISIBLE);
+                }
+                loadingAnimation = ERROR_ANIMATION;
+                loadLottieAnimations(loadingAnimation);
+                retryButton.setVisibility(View.VISIBLE);
+                handleRetryButtonClick();
+
                 handleErrorScenario(createGigRespStatus.getError().getErrorStatus());
                 if (!submitBtn.hasOnClickListeners()) {
                     Timber.d("No on click listeners. So adding them.");
                     submitBtn.setOnClickListener(submitBtnClickListener);
                 }
             } else {
-//               TODO("Handle loading screen here.")
+                progressBarLayoutView.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.GONE);
+                loadingAnimation = LOADING_ANIMATION;
+                loadLottieAnimations(loadingAnimation);
             }
         }
     };
@@ -126,6 +150,9 @@ public class HostGigFragment extends DialogFragment {
         submitBtn = view.findViewById(R.id.host_gig_button);
         submitBtn.setOnClickListener(submitBtnClickListener);
         eventTime = view.findViewById(R.id.event_time);
+        progressBarLayoutView = view.findViewById(R.id.progress_bar_view);
+        progressBarLottieView = view.findViewById(R.id.display_current_progress);
+        retryButton = view.findViewById(R.id.retry_button);
 
         buildDatePicker();
         buildTimePicker();
@@ -240,4 +267,42 @@ public class HostGigFragment extends DialogFragment {
             }
         }
     };
+
+    /**
+     * Method: Clear All editTexts on Success
+     */
+    private void clearTextFieldsOnSuccess() {
+        eventTime.setText("");
+        eventDate.setText("");
+        eventName.getEditText().setText("");
+        eventDescrip.getEditText().setText("");
+        eventDuration.getEditText().setText("");
+        eventPrice.getEditText().setText("");
+    }
+
+    /**
+     * Method: Load Lottie Animation View to display progress
+     */
+    private void loadLottieAnimations(String animationName) {
+        if(progressBarLottieView.isAnimating()) {
+            progressBarLottieView.cancelAnimation();
+        }
+        progressBarLottieView.setAnimation(animationName);
+        progressBarLottieView.loop(true);
+        progressBarLottieView.playAnimation();
+    }
+
+    /**
+     * Method: Retry Button
+     *          1. Hides progress UI
+     *          2. TODO: Will reconnect to network
+     */
+    private void handleRetryButtonClick() {
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBarLayoutView.setVisibility(View.GONE);
+            }
+        });
+    }
 }
