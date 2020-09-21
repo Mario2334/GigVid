@@ -2,7 +2,6 @@ package com.android.gigvid.view.homescreen;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,8 +21,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-
-import timber.log.Timber;
 
 public class HomeScreenActivity extends AppCompatActivity {
     private BottomNavigationView navView;
@@ -51,9 +48,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.app_logo_drawable);// set drawable icon
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.app_logo_drawable);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
     }
 
     @Override
@@ -141,10 +140,6 @@ public class HomeScreenActivity extends AppCompatActivity {
                 })
                 .show();
     }
-
-    /**
-     * Method: Access Shared pref and clear
-     */
 
     /**
      * Method: Launch UserAuthActivity and open Login fragment
