@@ -1,4 +1,4 @@
-package com.android.gigvid.view.homescreen;
+package com.android.gigvid.view.homescreen.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;

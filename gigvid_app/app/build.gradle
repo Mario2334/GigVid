@@ -56,4 +56,7 @@ dependencies {
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
+    // Jitsi-Meet
+    implementation ('org.jitsi.react:jitsi-meet-sdk:2.+') { transitive = true }
+
 }
