@@ -26,6 +26,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListRe
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
+import com.android.gigvid.view.homescreen.activity.VideoPlayerActivity;
 import com.android.gigvid.view.homescreen.adapter.GigListAdapter;
 import com.android.gigvid.view.homescreen.adapter.MyGigAdapter;
 import com.android.gigvid.viewModel.homescreen.MyGigViewModel;
@@ -160,5 +161,12 @@ public class MyGigFragment extends Fragment implements AdapterEventCommunicator 
     public void joinEventBtnClick(String joinUrl) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(joinUrl));
         startActivity(browserIntent);
+    }
+
+    @Override
+    public void launchVideoPlayer(String meetingName) {
+        Intent launchVideoPlayerIntent = new Intent(getContext(), VideoPlayerActivity.class);
+        launchVideoPlayerIntent.putExtra("meetingName", meetingName);
+        startActivity(launchVideoPlayerIntent);
     }
 }

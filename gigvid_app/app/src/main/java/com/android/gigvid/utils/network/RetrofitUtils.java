@@ -21,7 +21,7 @@ public class RetrofitUtils {
 
     private static Retrofit mRetrofit;
 
-    private static final String BASE_URL = "https://31yqq2xqt7.execute-api.ap-south-1.amazonaws.com";
+    private static final String BASE_URL = "https://rwvdnpmk4l.execute-api.ap-south-1.amazonaws.com/dev/";
 
     public static RetrofitUtils getInstance(){
         if(INSTANCE == null){

@@ -133,6 +133,11 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
 
     }
 
+    @Override
+    public void launchVideoPlayer(String meetingName) {
+
+    }
+
 
     private Observer<DataResponse<BuyGigResp>> mBuyGigRespObsever = new Observer<DataResponse<BuyGigResp>>() {
         @Override

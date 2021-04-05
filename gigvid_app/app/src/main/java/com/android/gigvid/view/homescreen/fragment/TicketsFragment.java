@@ -132,6 +132,11 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
 //        Intent launchMeeting = new Intent();
     }
 
+    @Override
+    public void launchVideoPlayer(String meetingName) {
+
+    }
+
     /**
      * Method: Load Lottie Animation View to display progress
      */

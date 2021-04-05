@@ -1,7 +1,5 @@
 package com.android.gigvid.view.homescreen.adapter;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +49,9 @@ public class MyGigAdapter extends RecyclerView.Adapter<MyGigAdapter.MyGigAdapter
         holder.startGigBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAdapterEventCommunicator.joinEventBtnClick(myGigData.getHostUrl());
+                // mAdapterEventCommunicator.joinEventBtnClick(myGigData.getHostUrl());
+
+                mAdapterEventCommunicator.launchVideoPlayer(myGigData.getName());
             }
         });
 
