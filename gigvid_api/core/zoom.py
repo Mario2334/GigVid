@@ -4,7 +4,7 @@ import json
 
 class ZoomApi():
     def __init__(self):
-        self.jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6IlFjR0luX2xkUmxDd1NDWDEyQVUyR1EiLCJleHAiOjE2MDEwNzE2NzAsImlhdCI6MTYwMDQ2Njg3MX0.2oi-y7bP-DWZgVYBs3vrXilMjHXLw-Neprw9SeNW4ss"
+        self.jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6IlFjR0luX2xkUmxDd1NDWDEyQVUyR1EiLCJleHAiOjE2MTk4NTA2MDAsImlhdCI6MTYxNzg4NTM1Mn0.a3DPhWac6cDL_LIJtLxL-rrWCPp9qeJB_HMxXncWxow"
         self.headers = {"Authorization": f"Bearer {self.jwt}", "Content-Type": "application/json"}
         self.base = "https://api.zoom.us/v2/"
 
