@@ -21,7 +21,7 @@ import com.android.gigvid.model.repository.networkRepo.loginsignup.pojo.LoginRes
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
-import com.android.gigvid.view.homescreen.HomeScreenActivity;
+import com.android.gigvid.view.homescreen.activity.HomeScreenActivity;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
 import com.android.gigvid.view.loginsignup.UserAuthFragmentCommunicator;
 import com.android.gigvid.viewModel.loginsignup.LoginSignUpViewModel;

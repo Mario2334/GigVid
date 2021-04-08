@@ -16,11 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
+        <activity android:name=".view.homescreen.activity.VideoPlayerActivity"></activity>
         <activity
-            android:name=".view.homescreen.HomeScreenActivity"
+            android:name=".view.homescreen.activity.HomeScreenActivity"
             android:label="@string/title_activity_home_screen"
-            android:theme="@style/AppThemeActionBar"></activity>
+            android:theme="@style/AppThemeActionBar" />
         <activity android:name=".view.loginsignup.UserAuthActivity" />
         <activity android:name=".view.MainActivity">
             <intent-filter>

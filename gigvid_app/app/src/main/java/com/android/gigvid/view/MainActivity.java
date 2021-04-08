@@ -1,6 +1,5 @@
 package com.android.gigvid.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,12 +7,9 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.gigvid.R;
-import com.android.gigvid.model.DataRepository;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
-import com.android.gigvid.view.homescreen.HomeScreenActivity;
+import com.android.gigvid.view.homescreen.activity.HomeScreenActivity;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
-
-import java.lang.ref.WeakReference;
 
 import timber.log.Timber;
 
