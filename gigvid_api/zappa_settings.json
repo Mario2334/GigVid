@@ -5,7 +5,7 @@
         "profile_name": "default",
         "project_name": "gigvid-api",
         "runtime": "python3.8",
-        "s3_bucket": "gigvid-api-static",
+        "s3_bucket": "gigvid-api-new",
         "use_precompiled_packages": false
     }
 }
