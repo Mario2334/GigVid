@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-# import pymysql
-# pymysql.install_as_MySQLdb()
+import pymysql
+pymysql.install_as_MySQLdb()
 # pymysql.version_info = (1, 3, 13, "final", 0)
 
 
@@ -94,14 +94,14 @@ print(os.environ["ENV"])
 if os.environ["ENV"] == "prod":
     DATABASES = {
         'default': {
-            "ENGINE": "django_s3_sqlite",
-            "NAME": "sqlite.db",
-            "BUCKET": "gigvid-db",
-            # 'ENGINE': 'django.db.backends.mysql',
-            # "HOST":os.environ['DB_HOST'],
-            # "NAME":os.environ["DATABASE"],
-            # "PASSWORD":os.environ["PASSWORD"],
-            # "USER":os.environ["USERNAME"]
+            # "ENGINE": "django_s3_sqlite",
+            # "NAME": "sqlite.db",
+            # "BUCKET": "gigvid-db",
+            'ENGINE': 'django.db.backends.mysql',
+            "HOST":os.environ['DB_HOST'],
+            "NAME":os.environ["DATABASE"],
+            "PASSWORD":os.environ["PASSWORD"],
+            "USER":os.environ["USER"]
         }
     }
 else:
