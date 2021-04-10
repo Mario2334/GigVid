@@ -13,11 +13,11 @@ public class PaymentResp {
 
     @SerializedName("id")
     @Expose
-    private String id;
+    public String id;
 
     @SerializedName("created_at")
     @Expose
-    private String createdAt;
+    public String createdAt;
 
     @SerializedName("gig")
     public Gig gig;

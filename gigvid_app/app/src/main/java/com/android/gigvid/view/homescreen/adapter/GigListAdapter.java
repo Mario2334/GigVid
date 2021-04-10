@@ -25,13 +25,15 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
 
     private List<GigListResp> gigList;
     private AdapterEventCommunicator mAdapterEventCommunicator;
-    public GigListAdapter(AdapterEventCommunicator adapterEventCommunicator){
+
+    public GigListAdapter(AdapterEventCommunicator adapterEventCommunicator) {
         mAdapterEventCommunicator = adapterEventCommunicator;
     }
+
     @NonNull
     @Override
     public GigListAdapterVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gig_item_home, parent , false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.gig_item_home, parent, false);
         return new GigListAdapterVH(view);
     }
 
@@ -46,7 +48,7 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
         holder.getGigDate().setText(scheduleDateTime.getDate());
         holder.getGigTime().setText(scheduleDateTime.getTime());
         holder.getGigMonth().setText(scheduleDateTime.getMonth());
-        holder.getGigDuration().setText(gigListResp.getDuration().toString()+"hr(s)");
+        holder.getGigDuration().setText(gigListResp.getDuration().toString() + "hr(s)");
 
         holder.getGigBuyBtn().setTag(Constants.BUY_BTN_TAG_KEY, gigListResp);
         holder.getGigBuyBtn().setOnClickListener(buyBtnClickEvent);
@@ -134,11 +136,10 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
         public void onClick(View view) {
             Timber.d("onClick: buy btn");
             Button btn = (Button) view;
-            GigListResp gigData = (GigListResp)btn.getTag(Constants.BUY_BTN_TAG_KEY);
+            GigListResp gigData = (GigListResp) btn.getTag(Constants.BUY_BTN_TAG_KEY);
             mAdapterEventCommunicator.buyBtnClickEvent(gigData);
         }
     };
-
 
 
 }

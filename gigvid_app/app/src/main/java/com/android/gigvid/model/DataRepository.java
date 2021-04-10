@@ -16,6 +16,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.Bu
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.payment.PaymentResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
@@ -61,6 +62,7 @@ public class DataRepository implements IManager {
     public MutableLiveData<ListResponse<TicketResp>> ticketListLiveData = new MutableLiveData<>();
     public MutableLiveData<DataResponse<String>> updateBankDetailsLiveData = new MutableLiveData<>();
     public MutableLiveData<DataResponse<BankDetailResp>> userBankDetails = new MutableLiveData<>();
+    public MutableLiveData<DataResponse<PaymentResp>> paymentLivedata = new MutableLiveData<>();
 
     //IN-RAM caching
     public List<GigListResp> gigList = new ArrayList<>();
@@ -291,4 +293,20 @@ public class DataRepository implements IManager {
         mDatabaseManager = null;
     }
 
+    public LiveData<DataResponse<PaymentResp>> uploadPaymentInfoToServer(int gigId, String orderId) {
+        if (mNetworkUtils.isConnectedToInternet()) {
+            // Handle network data fetching
+            return mNetworkManager.uploadPaymentInfoToServer(gigId, orderId);
+        } else {
+            Timber.d("Is NOT connected to internet!");
+            DataResponse<PaymentResp> paymentResponse = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+
+            if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                paymentLivedata.setValue(paymentResponse);
+            } else {
+                paymentLivedata.postValue(paymentResponse);
+            }
+            return paymentLivedata;
+        }
+    }
 }

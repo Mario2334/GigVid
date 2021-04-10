@@ -13,6 +13,7 @@ import com.android.gigvid.model.DataRepository;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.payment.PaymentResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 
@@ -64,5 +65,13 @@ public class HomeViewModel extends AndroidViewModel {
 
     private void clear() {
         mDataRepository = null;
+    }
+
+    public LiveData<DataResponse<PaymentResp>> uploadPaymentInfoToServer(int gigId, String orderId) {
+        LiveData<DataResponse<PaymentResp>> mPaymentResp = mDataRepository.uploadPaymentInfoToServer(gigId, orderId);
+        return Transformations.map(mPaymentResp, input -> {
+//                Modification to Data as per UI to be done here
+            return input;
+        });
     }
 }

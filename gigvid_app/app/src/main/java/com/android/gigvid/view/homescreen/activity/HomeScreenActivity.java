@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import com.android.gigvid.R;
@@ -28,6 +29,8 @@ import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultListener;
 import com.razorpay.PaymentResultWithDataListener;
 
+import timber.log.Timber;
+
 public class HomeScreenActivity extends AppCompatActivity implements PaymentResultWithDataListener {
     private BottomNavigationView navView;
     private MaterialToolbar topAppBar;
@@ -35,6 +38,7 @@ public class HomeScreenActivity extends AppCompatActivity implements PaymentResu
     private MenuItem logoutMenuItem;
     private SearchView searchView;
     private View activityView;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +55,7 @@ public class HomeScreenActivity extends AppCompatActivity implements PaymentResu
         activityView = findViewById(android.R.id.content);
         navView = findViewById(R.id.nav_view);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupWithNavController(navView, navController);
 
         if (getSupportActionBar() != null) {
@@ -166,8 +170,12 @@ public class HomeScreenActivity extends AppCompatActivity implements PaymentResu
 
     @Override
     public void onPaymentSuccess(String s, PaymentData paymentData) {
-        HomeFragment fr = (HomeFragment)getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        fr.checkApiAfterRazorPaySuccess(paymentData.getOrderId());
+//        HomeFragment fr = (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_home);
+        Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+        if (navHostFragment != null) {
+            HomeFragment fragment = (HomeFragment) navHostFragment.getChildFragmentManager().getFragments().get(0);
+            fragment.checkApiAfterRazorPaySuccess(paymentData.getPaymentId());
+        }
     }
 
     @Override

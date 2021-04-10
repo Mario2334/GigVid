@@ -1,7 +1,7 @@
 package com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.payment;
 
 public class Gig {
-    private int id;
+    public int id;
 
     private String url;
 

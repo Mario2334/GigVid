@@ -1,5 +1,7 @@
 package com.android.gigvid.model.repository.networkRepo.homeScreen;
 
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.payment.PaymentReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.payment.PaymentResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
@@ -55,4 +57,8 @@ public interface HomeScreenApi {
 
     @GET("/dev/user/bank_account/")
     Call<BankDetailResp> getBankDetailsForUser(@Header("authorization") String auth);
+
+
+    @POST("/dev/gig/confirm_payment/")
+    Call<PaymentResp> confirmPayment(@Header("authorization") String auth, @Body PaymentReqBody paymentReqBody);
 }

@@ -13,6 +13,8 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.Bu
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.creategig.CreateGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.payment.PaymentReqBody;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.payment.PaymentResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.profile.BankDetailsReqBody;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
@@ -56,6 +58,8 @@ public class NetworkManager implements IManager {
     private MutableLiveData<ListResponse<TicketResp>> mTicketListMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<DataResponse<BankDetailResp>> mBankDetailsRespMutableLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<DataResponse<PaymentResp>> mPaymentLiveData = new MutableLiveData<>();
 
     public static NetworkManager getInstance() {
         if (INSTANCE == null) {
@@ -774,7 +778,6 @@ public class NetworkManager implements IManager {
     }
 
 
-
     public LiveData<DataResponse<BankDetailResp>> getBankDetails() {
         DataResponse<BankDetailResp> buyGigRespDataResponse = new DataResponse<>(
                 StateDefinition.State.LOADING,
@@ -860,9 +863,98 @@ public class NetworkManager implements IManager {
     }
 
 
-
     @Override
     public void clear() {
 
+    }
+
+    public LiveData<DataResponse<PaymentResp>> uploadPaymentInfoToServer(int gigId, String orderId) {
+        DataResponse<PaymentResp> paymentResponseStatus;
+
+        paymentResponseStatus = new DataResponse<PaymentResp>(
+                StateDefinition.State.LOADING,
+                null,
+                null
+        );
+        if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+            mPaymentLiveData.setValue(paymentResponseStatus);
+        } else {
+            mPaymentLiveData.postValue(paymentResponseStatus);
+        }
+        if (homeScreenApiClient == null) {
+            homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
+        }
+
+        PaymentReqBody paymentReqBody = new PaymentReqBody(gigId, orderId);
+
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<PaymentResp> callGigList = homeScreenApiClient.confirmPayment(authToken, paymentReqBody);
+        callGigList.enqueue(new Callback<PaymentResp>() {
+            @Override
+            public void onResponse(Call<PaymentResp> call, Response<PaymentResp> response) {
+
+
+                DataResponse<PaymentResp> paymentResponseStatus;
+                if (response.isSuccessful()) {
+
+                    PaymentResp paymentResp = response.body();
+                    if (paymentResp != null) {
+                        paymentResponseStatus = new DataResponse<>(StateDefinition.State.COMPLETED, paymentResp, null);
+                    } else {
+                        ErrorData error = new ErrorData(
+                                StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                                response.message());
+
+                        paymentResponseStatus = new DataResponse<>(
+                                StateDefinition.State.ERROR,
+                                null,
+                                error
+                        );
+                    }
+
+                } else {
+                    Timber.d("onResponse: fail");
+                    ErrorData error = new ErrorData(
+                            StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                            response.message());
+
+                    paymentResponseStatus = new DataResponse<>(
+                            StateDefinition.State.ERROR,
+                            null,
+                            error
+                    );
+                }
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mPaymentLiveData.setValue(paymentResponseStatus);
+                } else {
+                    mPaymentLiveData.postValue(paymentResponseStatus);
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<PaymentResp> call, Throwable t) {
+
+                DataResponse<PaymentResp> paymentResponseStatus;
+                ErrorData error = new ErrorData(
+                        StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
+                        t.getMessage());
+
+                paymentResponseStatus = new DataResponse<>(
+                        StateDefinition.State.ERROR,
+                        null,
+                        error
+                );
+                Timber.d("onFailure: t %s", t.getMessage());
+                if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
+                    mPaymentLiveData.setValue(paymentResponseStatus);
+                } else {
+                    mPaymentLiveData.postValue(paymentResponseStatus);
+                }
+            }
+        });
+
+        return mPaymentLiveData;
     }
 }
