@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlist.TicketResp;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
@@ -121,7 +122,7 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
     }
 
     @Override
-    public void buyBtnClickEvent(int gigId) {
+    public void buyBtnClickEvent(GigListResp gigInfo) {
 
     }
 

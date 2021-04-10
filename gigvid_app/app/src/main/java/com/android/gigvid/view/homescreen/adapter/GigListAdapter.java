@@ -48,7 +48,7 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
         holder.getGigMonth().setText(scheduleDateTime.getMonth());
         holder.getGigDuration().setText(gigListResp.getDuration().toString()+"hr(s)");
 
-        holder.getGigBuyBtn().setTag(Constants.BUY_BTN_TAG_KEY, gigListResp.getId());
+        holder.getGigBuyBtn().setTag(Constants.BUY_BTN_TAG_KEY, gigListResp);
         holder.getGigBuyBtn().setOnClickListener(buyBtnClickEvent);
 
 //        Timber.d("date time == %s"+", duration == %d", gigListResp.getScheduledTime(), gigListResp.getDuration());
@@ -134,8 +134,8 @@ public class GigListAdapter extends RecyclerView.Adapter<GigListAdapter.GigListA
         public void onClick(View view) {
             Timber.d("onClick: buy btn");
             Button btn = (Button) view;
-            int gigId = (int)btn.getTag(Constants.BUY_BTN_TAG_KEY);
-            mAdapterEventCommunicator.buyBtnClickEvent(gigId);
+            GigListResp gigData = (GigListResp)btn.getTag(Constants.BUY_BTN_TAG_KEY);
+            mAdapterEventCommunicator.buyBtnClickEvent(gigData);
         }
     };
 

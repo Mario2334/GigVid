@@ -10,20 +10,25 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.android.gigvid.R;
 import com.android.gigvid.utils.sharedPref.SharedPrefUtils;
+import com.android.gigvid.view.homescreen.fragment.HomeFragment;
 import com.android.gigvid.view.loginsignup.UserAuthActivity;
 import com.android.gigvid.model.BackupService;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.razorpay.PaymentData;
+import com.razorpay.PaymentResultListener;
+import com.razorpay.PaymentResultWithDataListener;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity implements PaymentResultWithDataListener {
     private BottomNavigationView navView;
     private MaterialToolbar topAppBar;
     private MenuItem searchMenuItem;
@@ -156,5 +161,17 @@ public class HomeScreenActivity extends AppCompatActivity {
         super.onDestroy();
         Intent intent = new Intent(this, BackupService.class);
         startService(intent);
+    }
+
+
+    @Override
+    public void onPaymentSuccess(String s, PaymentData paymentData) {
+        HomeFragment fr = (HomeFragment)getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        fr.checkApiAfterRazorPaySuccess(paymentData.getOrderId());
+    }
+
+    @Override
+    public void onPaymentError(int i, String s, PaymentData paymentData) {
+
     }
 }

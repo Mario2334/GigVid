@@ -153,7 +153,7 @@ public class MyGigFragment extends Fragment implements AdapterEventCommunicator 
 
 
     @Override
-    public void buyBtnClickEvent(int gigId) {
+    public void buyBtnClickEvent(GigListResp gigInfo) {
 
     }
 

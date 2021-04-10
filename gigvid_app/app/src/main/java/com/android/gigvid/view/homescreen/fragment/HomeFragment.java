@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,9 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.gigvid.GigVidApplication;
 import com.android.gigvid.R;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigReqBody;
-import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
 import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.GigListResp;
+import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.buygig.BuyGigResp;
 import com.android.gigvid.model.repository.reponseData.DataResponse;
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
@@ -34,6 +32,10 @@ import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
 import com.android.gigvid.view.homescreen.adapter.GigListAdapter;
 import com.android.gigvid.viewModel.homescreen.HomeViewModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.razorpay.Checkout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import timber.log.Timber;
 
@@ -50,6 +52,8 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
     private Button retryButton;
     private LottieAnimationView progressBarLottieView;
     String loadingAnimation;
+
+    private int gigId;
 
     private Observer<ListResponse<GigListResp>> gigListRespStatusObserver = new Observer<ListResponse<GigListResp>>() {
         @Override
@@ -92,7 +96,7 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         gigListLiveData = homeViewModel.getGigListLiveData();
-        gigListLiveData.observe(this, gigListRespStatusObserver);
+        gigListLiveData.observe(getViewLifecycleOwner(), gigListRespStatusObserver);
 
         mAdapterEventCommunicator = this;
         Timber.d("HomeFrag on create");
@@ -123,9 +127,35 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
     }
 
     @Override
-    public void buyBtnClickEvent(int gigId) {
+    public void buyBtnClickEvent(GigListResp gigInfo) {
 
-        homeViewModel.buyGigTicket(new BuyGigReqBody(gigId)).observe(this, mBuyGigRespObsever);
+//        homeViewModel.buyGigTicket(new BuyGigReqBody(gigId)).observe(this, mBuyGigRespObsever);
+        gigId = gigInfo.getId();
+        Checkout checkout = new Checkout();
+
+        checkout.setKeyID("rzp_test_2YOMyazqXuU6zk");
+
+        checkout.setImage(R.drawable.rp_icon);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name",gigInfo.getName() );
+            jsonObject.put("description", gigInfo.getDescription());
+            jsonObject.put("theme.color", "#0093DD");
+            jsonObject.put("currency", "INR");
+            jsonObject.put("amount", gigInfo.getPrice()*100);
+            jsonObject.put("prefill.contact", "8124573519");
+            jsonObject.put("prefill.email", "test@gmail.com");
+
+            checkout.open(getActivity(), jsonObject);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkApiAfterRazorPaySuccess(String orderId){
+        Log.d("HomeFrag", "SMP checkApiAfterRazorPaySuccess: id == "+gigId);
     }
 
     @Override

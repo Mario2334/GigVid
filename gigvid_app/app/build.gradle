@@ -64,4 +64,7 @@ dependencies {
     // Jitsi-Meet
     implementation ('org.jitsi.react:jitsi-meet-sdk:2.+') { transitive = true }
 
+    //razorpay
+    implementation 'com.razorpay:checkout:1.6.4'
+
 }
