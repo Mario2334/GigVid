@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
 
     private String LOADING_ANIMATION = "progress_bar.json";
     private String ERROR_ANIMATION = "error.json";
+    private String NO_DATA_ANIMATION = "no_data.json";
 
     private HomeViewModel homeViewModel;
     private RecyclerView listGigsRecyclerView;
@@ -59,13 +60,18 @@ public class HomeFragment extends Fragment implements AdapterEventCommunicator {
         @Override
         public void onChanged(ListResponse<GigListResp> gigListRespStatus) {
             if (gigListRespStatus.getStatus() == StateDefinition.State.COMPLETED) {
-                progressBarLayoutView.setVisibility(View.GONE);
                 if (gigListRespStatus.getData().size() > 0) {
                     Timber.d("list gig success %d", gigListRespStatus.getData().size());
+                    progressBarLayoutView.setVisibility(View.GONE);
+
                     gigListAdapter.setData(gigListRespStatus.getData());
                     gigListAdapter.notifyDataSetChanged();
                 } else {
-                    Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
+                    progressBarLayoutView.setVisibility(View.VISIBLE);
+
+                    loadingAnimation = NO_DATA_ANIMATION;
+                    loadLottieAnimations(loadingAnimation);
+
                 }
                 gigListLiveData.removeObservers(HomeFragment.this);
             } else if (gigListRespStatus.getStatus() == StateDefinition.State.ERROR) {

@@ -38,6 +38,7 @@ public class MyGigFragment extends Fragment implements AdapterEventCommunicator 
 
     private String LOADING_ANIMATION = "progress_bar.json";
     private String ERROR_ANIMATION = "error.json";
+    private String NO_DATA_ANIMATION = "no_data.json";
 
     private MyGigViewModel myGigViewModel;
     private RecyclerView mMyGigsRecyclerView;
@@ -52,14 +53,18 @@ public class MyGigFragment extends Fragment implements AdapterEventCommunicator 
         @Override
         public void onChanged(ListResponse<GigListResp> gigListRespStatus) {
             if (gigListRespStatus.getStatus() == StateDefinition.State.COMPLETED) {
-                progressBarLayoutView.setVisibility(View.GONE);
 
                 if (gigListRespStatus.getData().size() > 0) {
                     Timber.d("my gig success %d", gigListRespStatus.getData().size());
+                    progressBarLayoutView.setVisibility(View.GONE);
+
                     mMyGigAdapter.setData(gigListRespStatus.getData());
                     mMyGigAdapter.notifyDataSetChanged();
                 } else {
-                    Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
+                    progressBarLayoutView.setVisibility(View.VISIBLE);
+
+                    loadingAnimation = NO_DATA_ANIMATION;
+                    loadLottieAnimations(loadingAnimation);
                 }
                 myGigLiveData.removeObservers(MyGigFragment.this);
             } else if (gigListRespStatus.getStatus() == StateDefinition.State.ERROR) {

@@ -36,6 +36,7 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
 
     private String LOADING_ANIMATION = "progress_bar.json";
     private String ERROR_ANIMATION = "error.json";
+    private String NO_DATA_ANIMATION = "no_data.json";
 
     private TicketsViewModel ticketsViewModel;
     private LinearLayoutManager mLayoutManager;
@@ -51,14 +52,17 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
         @Override
         public void onChanged(ListResponse<TicketResp> ticketRespListResponse) {
             if (ticketRespListResponse.getStatus() == StateDefinition.State.COMPLETED) {
-                progressBarLayoutView.setVisibility(View.GONE);
-
                 if (ticketRespListResponse.getData().size() > 0) {
                     Timber.d("ticket gig success %d", ticketRespListResponse.getData().size());
+                    progressBarLayoutView.setVisibility(View.GONE);
+
                     mTicketGigListAdapter.setData(ticketRespListResponse.getData());
                     mTicketGigListAdapter.notifyDataSetChanged();
                 } else {
-                    Snackbar.make(retryButton, "No data available!", Snackbar.LENGTH_LONG).show();
+                    progressBarLayoutView.setVisibility(View.VISIBLE);
+
+                    loadingAnimation = NO_DATA_ANIMATION;
+                    loadLottieAnimations(loadingAnimation);
                 }
                 ticketsLiveData.removeObservers(TicketsFragment.this);
             } else if (ticketRespListResponse.getStatus() == StateDefinition.State.ERROR) {
