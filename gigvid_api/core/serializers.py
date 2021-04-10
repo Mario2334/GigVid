@@ -18,7 +18,8 @@ class IssuePaymentSerializer(serializers.Serializer):
 
 class ConfirmPaymentSerializer(serializers.Serializer):
     gig = serializers.IntegerField(source="gig.id")
-    order_id = serializers.CharField(source="order.id")
+    # order_id = serializers.CharField(source="order.id")
+    order_id = serializers.CharField()
 
 
 class TicketSerializer(serializers.ModelSerializer):

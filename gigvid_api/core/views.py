@@ -106,12 +106,21 @@ class ConfirmPaymentLinkView(APIView):
     def post(self, request):
         payment_serializer = serializers.ConfirmPaymentSerializer(data=request.data)
         if payment_serializer.is_valid():
-            order = models.Order.objects.get(id=payment_serializer.validated_data["order"]["id"])
-            resp = Razorpay().get_payment(order.payment_link_id)
+            # order = models.Order.objects.get(id=payment_serializer.validated_data["order"]["id"])
+            resp = Razorpay().get_payment(payment_serializer.validated_data["order_id"])
             if resp["status"] == "paid":
+                gst_amount = round((int(os.environ.get("GST")) * payment_serializer.validated_data["gig"]["price"]) / 100)
+                order_data = {
+                    "id": resp["order_id"],
+                    "payment_link_id":payment_serializer.validated_data["order_id"],
+                    "final_price":gst_amount,
+                    "is_successful":True
+                }
+                order_serializer = serializers.OrderSerializer(order_data)
+                order_serializer.save()
                 ser_data = {
                     "gig": payment_serializer.validated_data["gig"]["id"],
-                    "order": payment_serializer.validated_data["order"]["id"],
+                    "order": order_serializer.validated_data["id"],
                     "user": request.user.id
                 }
                 ticket_serializer = serializers.TicketSerializer(data=ser_data)
