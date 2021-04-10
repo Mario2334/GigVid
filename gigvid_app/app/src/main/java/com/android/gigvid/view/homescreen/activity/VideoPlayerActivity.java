@@ -1,9 +1,14 @@
 package com.android.gigvid.view.homescreen.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.facebook.react.modules.core.PermissionListener;
@@ -18,6 +23,7 @@ import java.net.URL;
 
 public class VideoPlayerActivity extends FragmentActivity implements JitsiMeetActivityInterface {
     private JitsiMeetView mView;
+    private final String uniqueMeetingID = "GigVid_M_2468";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,11 +37,8 @@ public class VideoPlayerActivity extends FragmentActivity implements JitsiMeetAc
         try {
             options = new JitsiMeetConferenceOptions.Builder()
                     .setServerURL(new URL("https://meet.jit.si"))
-                    .setRoom(roomName)
+                    .setRoom(roomName + uniqueMeetingID)
                     .setWelcomePageEnabled(false)
-                    .setAudioOnly(false)
-                    .setAudioMuted(true)
-                    .setVideoMuted(true)
                     .build();
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -99,8 +102,29 @@ public class VideoPlayerActivity extends FragmentActivity implements JitsiMeetAc
         JitsiMeetActivityDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
-    public void requestPermissions(String[] strings, int i, PermissionListener permissionListener) {
+    public void requestPermissions(String[] permissions, int requestCode, PermissionListener permissionListener) {
+        String[] PERMISSIONS = {
+                Manifest.permission.RECORD_AUDIO,
+                android.Manifest.permission.CAMERA
+        };
 
+        this.requestPermissions(permissions, requestCode);
+
+        if (!hasPermissions(PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, 200);
+        }
+    }
+
+    private boolean hasPermissions(String... permissions) {
+        if (permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
