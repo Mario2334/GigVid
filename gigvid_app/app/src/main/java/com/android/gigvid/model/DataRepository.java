@@ -60,7 +60,7 @@ public class DataRepository implements IManager {
 
     public MutableLiveData<ListResponse<GigListResp>> gigListLiveData = new MutableLiveData<>();
     public MutableLiveData<ListResponse<TicketResp>> ticketListLiveData = new MutableLiveData<>();
-    public MutableLiveData<DataResponse<String>> updateBankDetailsLiveData = new MutableLiveData<>();
+    public MutableLiveData<DataResponse<BankDetailResp>> updateBankDetailsLiveData = new MutableLiveData<>();
     public MutableLiveData<DataResponse<BankDetailResp>> userBankDetails = new MutableLiveData<>();
     public MutableLiveData<DataResponse<PaymentResp>> paymentLivedata = new MutableLiveData<>();
 
@@ -245,13 +245,13 @@ public class DataRepository implements IManager {
         }
     }
 
-    public LiveData<DataResponse<String>> updateBankDetails(BankDetailsReqBody requestBody) {
+    public LiveData<DataResponse<BankDetailResp>> updateBankDetails(BankDetailsReqBody requestBody) {
         if (mNetworkUtils.isConnectedToInternet()) {
             // Handle network data fetching
             return mNetworkManager.addBankDetails(requestBody);
         } else {
             Timber.d("Is NOT connected to internet!");
-            DataResponse<String> ticketListResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
+            DataResponse<BankDetailResp> ticketListResp = new DataResponse<>(StateDefinition.State.ERROR, null, mNoInternetError);
 
             if (Thread.currentThread().equals(Looper.getMainLooper().getThread())) {
                 updateBankDetailsLiveData.setValue(ticketListResp);

@@ -32,7 +32,7 @@ public class ProfileViewModel extends AndroidViewModel {
         return mText;
     }
 
-    public LiveData<DataResponse<String>> addBankDetails(BankDetailsReqBody bankDetailsReqBody) {
+    public LiveData<DataResponse<BankDetailResp>> addBankDetails(BankDetailsReqBody bankDetailsReqBody) {
 //        BankDetailsReqBody bankDetailsReqBody = new BankDetailsReqBody("Gaurav Kumar", "HDFC0000053", "765432123456789");
         return mDataRepository.updateBankDetails(bankDetailsReqBody);
     }

@@ -25,7 +25,7 @@ public interface HomeScreenApi {
         get list of all gigs
      */
     @GET("/dev/gig/")
-    Call<List<GigListResp>> getGigList();
+    Call<List<GigListResp>> getGigList(@Header("authorization") String auth);
 
     /*
         Create new gig
@@ -52,7 +52,7 @@ public interface HomeScreenApi {
     Call<List<GigListResp>> getMyGigsList(@Header("authorization") String auth);
 
     @POST("/dev/user/bank_account/")
-    Call<String> addBankDetails(@Header("authorization") String auth, @Body BankDetailsReqBody bankDetailsReqBody);
+    Call<BankDetailResp> addBankDetails(@Header("authorization") String auth, @Body BankDetailsReqBody bankDetailsReqBody);
 
 
     @GET("/dev/user/bank_account/")

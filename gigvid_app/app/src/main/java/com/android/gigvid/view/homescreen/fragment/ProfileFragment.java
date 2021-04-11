@@ -55,9 +55,9 @@ public class ProfileFragment extends Fragment {
     };
 
 
-    private Observer<DataResponse<String>> mBankDetailObserver = new Observer<DataResponse<String>>() {
+    private Observer<DataResponse<BankDetailResp>> mBankDetailObserver = new Observer<DataResponse<BankDetailResp>>() {
         @Override
-        public void onChanged(DataResponse<String> data) {
+        public void onChanged(DataResponse<BankDetailResp> data) {
             if (data.getStatus() == StateDefinition.State.COMPLETED) {
                 Timber.d("success available %s", data.getData());
                 Toast.makeText(GigVidApplication.getGigVidAppContext(), "Bank added", Toast.LENGTH_SHORT).show();

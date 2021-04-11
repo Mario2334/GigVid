@@ -54,7 +54,7 @@ public class NetworkManager implements IManager {
     private MutableLiveData<DataResponse<CreateGigResp>> createGigRespStatusMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<DataResponse<BuyGigResp>> mBuyGugMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<DataResponse<String>> mBankDetailsLiveData = new MutableLiveData<>();
+    private MutableLiveData<DataResponse<BankDetailResp>> mBankDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<ListResponse<TicketResp>> mTicketListMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<DataResponse<BankDetailResp>> mBankDetailsRespMutableLiveData = new MutableLiveData<>();
@@ -269,8 +269,8 @@ public class NetworkManager implements IManager {
         if (homeScreenApiClient == null) {
             homeScreenApiClient = RetrofitUtils.getInstance().getHomeScreenApiClient();
         }
-
-        Call<List<GigListResp>> callGigList = homeScreenApiClient.getGigList();
+        String authToken = "Token " + SharedPrefUtils.getAuthToken();
+        Call<List<GigListResp>> callGigList = homeScreenApiClient.getGigList(authToken);
         callGigList.enqueue(new Callback<List<GigListResp>>() {
             @Override
             public void onResponse(Call<List<GigListResp>> call, Response<List<GigListResp>> response) {
@@ -693,8 +693,8 @@ public class NetworkManager implements IManager {
         return myGigListRespStatusMutableLiveData;
     }
 
-    public LiveData<DataResponse<String>> addBankDetails(BankDetailsReqBody bankDetailsReqBody) {
-        DataResponse<String> buyGigRespDataResponse = new DataResponse<>(
+    public LiveData<DataResponse<BankDetailResp>> addBankDetails(BankDetailsReqBody bankDetailsReqBody) {
+        DataResponse<BankDetailResp> buyGigRespDataResponse = new DataResponse(
                 StateDefinition.State.LOADING,
                 "bank details",
                 null
@@ -710,17 +710,17 @@ public class NetworkManager implements IManager {
         }
         //        TODO("Use Transformations for live data ")
         String authToken = "Token " + SharedPrefUtils.getAuthToken();
-        Call<String> call = homeScreenApiClient.addBankDetails(authToken, bankDetailsReqBody);
-        call.enqueue(new Callback<String>() {
+        Call<BankDetailResp> call = homeScreenApiClient.addBankDetails(authToken, bankDetailsReqBody);
+        call.enqueue(new Callback<BankDetailResp>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                DataResponse<String> buyGigRespDataResponse;
+            public void onResponse(Call<BankDetailResp> call, Response<BankDetailResp> response) {
+                DataResponse<BankDetailResp> buyGigRespDataResponse;
                 if (response.isSuccessful()) {
-                    String signUpRes = (String) response.body();
+                    BankDetailResp signUpRes = response.body();
 
                     if (signUpRes != null) {
                         Timber.d("onResponse: res" + response.body());
-                        buyGigRespDataResponse = new DataResponse<String>(StateDefinition.State.COMPLETED, "String", null);
+                        buyGigRespDataResponse = new DataResponse<BankDetailResp>(StateDefinition.State.COMPLETED, null, null);
                     } else {
                         ErrorData error = new ErrorData(
                                 StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
@@ -755,8 +755,8 @@ public class NetworkManager implements IManager {
 
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                DataResponse<String> buyGigRespDataResponse;
+            public void onFailure(Call<BankDetailResp> call, Throwable t) {
+                DataResponse<BankDetailResp> buyGigRespDataResponse;
                 ErrorData error = new ErrorData(
                         StateDefinition.ErrorState.INTERNAL_SERVER_ERROR,
                         t.getMessage());
