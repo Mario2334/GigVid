@@ -2,6 +2,9 @@ import requests
 import base64
 import json
 
+from core.exceptions import BadRequest
+
+
 class Razorpay():
     def __init__(self):
         self.api_key = "rzp_test_2YOMyazqXuU6zk"
@@ -37,12 +40,14 @@ class Razorpay():
             raise Exception(f"{resp.content}")
 
     def get_payment(self , id):
-        url = self.base_url + f"invoices/{id}"
+        url = self.base_url + f"payments/{id}"
         resp = requests.get(url,headers=self.headers)
         if resp.status_code == 200:
             return resp.json()
+        elif resp.status_code == 400:
+            raise BadRequest("Payment Not Found")
         else:
-            raise Exception(f"{resp.content}")
+            raise Exception("${resp.content}")
 
     def initiate_payout(self,params):
         url = self.base_url + "payouts"

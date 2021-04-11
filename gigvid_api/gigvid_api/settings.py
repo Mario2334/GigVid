@@ -35,7 +35,9 @@ SECRET_KEY = '4hor-=vd^eb(zl87f=b!#u74e3r62c#x3=_3%ag($6(!x)@-i7'
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
+REST_FRAMEWORK = {
+    'DATE_FORMAT': '%d %b %y %I:%M %p'
+}
 
 # Application definition
 

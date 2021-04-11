@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -8,9 +9,12 @@ from . import models
 from django.utils import timezone
 import os
 
+from .exceptions import BadRequest
 from .razorpay import Razorpay
 from .zoom import ZoomApi
 from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ObjectDoesNotExist
+
 
 class GigListView(ListAPIView):
     serializer_class = serializers.GigSerializer
@@ -19,7 +23,9 @@ class GigListView(ListAPIView):
     def get_queryset(self):
         if isinstance(self.request.user, AnonymousUser):
             return models.Gig.objects.filter(scheduled_time__gt=timezone.now())
-        return models.Gig.objects.filter(scheduled_time__gt=timezone.now()).exclude(user=self.request.user)
+        scheduled_time_q = Q(scheduled_time__gt=timezone.now())
+        not_in_ticket_user = Q(ticket__user__in=[self.request.user,])
+        return models.Gig.objects.filter(scheduled_time_q & ~not_in_ticket_user).exclude(user=self.request.user)
 
 
 class CreateGigView(CreateAPIView):
@@ -107,30 +113,40 @@ class ConfirmPaymentLinkView(APIView):
         payment_serializer = serializers.ConfirmPaymentSerializer(data=request.data)
         if payment_serializer.is_valid():
             # order = models.Order.objects.get(id=payment_serializer.validated_data["order"]["id"])
-            resp = Razorpay().get_payment(payment_serializer.validated_data["order_id"])
-            if resp["status"] == "paid":
-                gst_amount = round((int(os.environ.get("GST")) * payment_serializer.validated_data["gig"]["price"]) / 100)
-                order_data = {
-                    "id": resp["order_id"],
-                    "payment_link_id":payment_serializer.validated_data["order_id"],
-                    "final_price":gst_amount,
-                    "is_successful":True
-                }
-                order_serializer = serializers.OrderSerializer(order_data)
-                order_serializer.save()
-                ser_data = {
-                    "gig": payment_serializer.validated_data["gig"]["id"],
-                    "order": order_serializer.validated_data["id"],
-                    "user": request.user.id
-                }
-                ticket_serializer = serializers.TicketSerializer(data=ser_data)
-                ticket_serializer.is_valid(raise_exception=True)
-                ticket = ticket_serializer.save()
+            resp = {}
+            try:
+                resp = Razorpay().get_payment(payment_serializer.validated_data["order_id"])
+            except BadRequest as p:
+                return Response(data={"message": "Payment Failed"}, status=503)
+            except Exception as e:
+                return Response(data={"message": "Server Issue"}, status=500)
+            gig = models.Gig.objects.get(id=payment_serializer.validated_data["gig"]["id"])
+            gig_serializer = serializers.GigSerializer(instance=gig)
+            gst_amount = round((int(os.environ.get("GST")) * gig.price) / 100)
+            order_data = {
+                "id": resp["id"],
+                "payment_link_id": payment_serializer.validated_data["order_id"],
+                "final_price": gst_amount,
+                "is_successful": True
+            }
+            order_serializer = serializers.OrderSerializer(data=order_data)
+            order_serializer.is_valid(raise_exception=True)
+            order = order_serializer.save()
+            ser_data = {
+                "gig_id": gig_serializer.data["id"],
+                "order": order.id,
+                "user": request.user.id
+            }
+            ticket_serializer = serializers.TicketSerializer(data=ser_data)
+            ticket_serializer.is_valid(raise_exception=True)
+            ticket = ticket_serializer.save()
+            try:
                 ticket.gig.user.bankaccount.balance = ticket.gig.user.bankaccount.balance + ticket.gig.price
                 ticket.gig.user.bankaccount.save()
-                return Response(ticket_serializer.data)
-            else:
-                return Response(data={"message": "Payment Failed"}, status=503)
+            except ObjectDoesNotExist as e:
+                return Response({"message":"Bank Account Doesnt Exist For Gig Host"},status=400)
+
+            return Response(ticket_serializer.data)
         else:
             return Response({"message": payment_serializer.errors}, status=400)
 
