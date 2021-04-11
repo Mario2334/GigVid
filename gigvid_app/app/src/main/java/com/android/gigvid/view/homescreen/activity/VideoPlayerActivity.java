@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.gigvid.Constants;
 import com.facebook.react.modules.core.PermissionListener;
 
 import org.jitsi.meet.sdk.JitsiMeetActivityDelegate;
@@ -23,7 +24,6 @@ import java.net.URL;
 
 public class VideoPlayerActivity extends FragmentActivity implements JitsiMeetActivityInterface {
     private JitsiMeetView mView;
-    private final String uniqueMeetingID = "GigVid_M_2468";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class VideoPlayerActivity extends FragmentActivity implements JitsiMeetAc
         try {
             options = new JitsiMeetConferenceOptions.Builder()
                     .setServerURL(new URL("https://meet.jit.si"))
-                    .setRoom(roomName + uniqueMeetingID)
+                    .setRoom(roomName + Constants.UNIQUE_MEETING_ID)
                     .setWelcomePageEnabled(false)
                     .build();
         } catch (MalformedURLException e) {

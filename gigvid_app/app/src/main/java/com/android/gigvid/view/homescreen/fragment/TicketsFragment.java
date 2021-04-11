@@ -1,5 +1,6 @@
 package com.android.gigvid.view.homescreen.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.android.gigvid.model.repository.networkRepo.homeScreen.pojo.ticketlis
 import com.android.gigvid.model.repository.reponseData.ListResponse;
 import com.android.gigvid.model.repository.reponseData.StateDefinition;
 import com.android.gigvid.view.homescreen.AdapterEventCommunicator;
+import com.android.gigvid.view.homescreen.activity.VideoPlayerActivity;
 import com.android.gigvid.view.homescreen.adapter.TicketListAdapter;
 import com.android.gigvid.viewModel.homescreen.TicketsViewModel;
 import com.google.android.material.snackbar.Snackbar;
@@ -132,14 +134,14 @@ public class TicketsFragment extends Fragment implements AdapterEventCommunicato
 
     @Override
     public void joinEventBtnClick(String joinUrl) {
-        //TODO launch zoom meeting
-        Timber.d("Launch zoom meeting URL -- %s", joinUrl);
-//        Intent launchMeeting = new Intent();
+
     }
 
     @Override
     public void launchVideoPlayer(String meetingName) {
-
+        Intent launchVideoPlayerIntent = new Intent(getContext(), VideoPlayerActivity.class);
+        launchVideoPlayerIntent.putExtra("meetingName", meetingName);
+        startActivity(launchVideoPlayerIntent);
     }
 
     /**

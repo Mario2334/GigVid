@@ -1,5 +1,6 @@
 package com.android.gigvid.view.homescreen.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,8 +53,13 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
         holder.getGigMonth().setText(scheduleDateTime.getMonth());
         holder.getGigTime().setText(scheduleDateTime.getTime());
 
-        holder.getGigJoinBtn().setOnClickListener(joinBtnClick);
-        holder.getGigJoinBtn().setTag(Constants.JOIN_URL_KEY, gigData.getmJoinUrl());
+        holder.getGigJoinBtn().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("RRG", "onClick: "+ticketResp.getGig().getmName());
+                mAdapterEventCommunicator.launchVideoPlayer(ticketResp.getGig().getmName());
+            }
+        });
 
     }
 
@@ -118,12 +124,4 @@ public class TicketListAdapter extends RecyclerView.Adapter<TicketListAdapter.Ti
 
 
     }
-
-    private View.OnClickListener joinBtnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            String joinUrl = (String) view.getTag(Constants.JOIN_URL_KEY);
-            mAdapterEventCommunicator.joinEventBtnClick(joinUrl);
-        }
-    };
 }

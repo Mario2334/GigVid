@@ -12,4 +12,6 @@ public class Constants {
     public static final String PAYMENT_URL_KEY = "pay_key";
 
     public static final int JOIN_URL_KEY = -12;
+
+    public static final String UNIQUE_MEETING_ID = "GigVid_M_2468";
 }
